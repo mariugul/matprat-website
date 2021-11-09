@@ -34,10 +34,10 @@ CREATE TABLE recipes (
     id serial PRIMARY KEY,
     name recipe_name NOT NULL UNIQUE,
     description recipe_description,
-    default_portions int NOT NULL DEFAULT 2,
+    default_portions int NOT NULL DEFAULT 2 CHECK (default_portions > 0),
     nr_of_ingredients int DEFAULT 0 CHECK (nr_of_ingredients >= 0),
     nr_of_steps int DEFAULT 0 CHECK (nr_of_ingredients >= 0)
-);
+); 
 
 -- Contains the ingredients for all recipes, the amounts
 -- and also the units. The recipe_id column references the id
@@ -47,7 +47,7 @@ CREATE TABLE ingredients (
     recipe_id int,
     name ingredient_name NOT NULL,
     note note_description, -- Fill in this for a special note on the ingredient. It will be shown in its own "note field".
-    amount float NOT NULL,
+    amount float NOT NULL CHECK (amount > 0), -- NB!! I DON'T KNOW IF FLOATS AND > 0 CHECK GO WELL TOGETHER
     unit measurement_units NOT NULL,
     PRIMARY KEY (recipe_id, name),
     CONSTRAINT fk_ingredients FOREIGN KEY (recipe_id) REFERENCES recipes (id) ON DELETE CASCADE
