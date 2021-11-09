@@ -1,0 +1,1 @@
+DELETE FROM ingredients WHERE recipe_id=1;
