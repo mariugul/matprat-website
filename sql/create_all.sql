@@ -36,7 +36,7 @@ CREATE TABLE recipes (
     description recipe_description,
     default_portions int NOT NULL DEFAULT 2 CHECK (default_portions > 0),
     nr_of_ingredients int DEFAULT 0 CHECK (nr_of_ingredients >= 0),
-    nr_of_steps int DEFAULT 0 CHECK (nr_of_ingredients >= 0)
+    nr_of_steps int DEFAULT 0 CHECK (nr_of_steps >= 0)
 ); 
 
 -- Contains the ingredients for all recipes, the amounts
@@ -125,4 +125,3 @@ CREATE TRIGGER stepDownIngredient
     AFTER DELETE ON ingredients
     FOR EACH ROW
     EXECUTE PROCEDURE stepDownIngredientAmounts ();
-
