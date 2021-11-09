@@ -44,21 +44,23 @@ CREATE TABLE recipes (
 -- of the recipes table so you can't have ingredients that are not
 -- connected to a specific recipe.
 CREATE TABLE ingredients (
-    recipe_id int REFERENCES recipes (id),
+    recipe_id int,
     name ingredient_name NOT NULL,
     note note_description, -- Fill in this for a special note on the ingredient. It will be shown in its own "note field".
     amount float NOT NULL,
     unit measurement_units NOT NULL,
-    PRIMARY KEY (recipe_id, name)
+    PRIMARY KEY (recipe_id, name),
+    CONSTRAINT fk_ingredients FOREIGN KEY (recipe_id) REFERENCES recipes (id) ON DELETE CASCADE
 );
 
 -- Contains the individual steps to take to make the recipe
 CREATE TABLE steps (
-    recipe_id int REFERENCES recipes (id),
+    recipe_id int,
     step_nr int NOT NULL CHECK (step_nr > 0), -- The numbering of each step so they line up correctly. Has to start from nr 1.
     description step_description NOT NULL, -- Describe this step with text.
     note note_description, -- This is if you have something specific to highlight about this step. It will be shown in a "note field".
-    PRIMARY KEY (recipe_id, step_nr) -- A recipe_id can only be paired with a step_nr once.
+    PRIMARY KEY (recipe_id, step_nr), -- A recipe_id can only be paired with a step_nr once.
+    CONSTRAINT fk_ingredients FOREIGN KEY (recipe_id) REFERENCES recipes (id) ON DELETE CASCADE
 );
 
 -- Holds the links to the images for the recipes.
@@ -66,11 +68,12 @@ CREATE TABLE steps (
 -- This makes it possible to have as many images as you want displayed on a recipe page
 -- and you are able to sort them in order based on image_nr in the same way as the steps-table.
 CREATE TABLE images (
-    recipe_id int REFERENCES recipes (id),
+    recipe_id int,
     image_nr int NOT NULL CHECK (image_nr > 0),
     link image_link,
     description image_description NOT NULL, -- Describe the image in short words. This can be used as the "alt" property.
-    PRIMARY KEY (recipe_id, image_nr)
+    PRIMARY KEY (recipe_id, image_nr),
+    CONSTRAINT fk_ingredients FOREIGN KEY (recipe_id) REFERENCES recipes (id) ON DELETE CASCADE
 );
 
 -- Functions --
