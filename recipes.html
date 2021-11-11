@@ -31,78 +31,112 @@
     </span>
   </div>
 
-  <!-- Image of the Finished Product -->
-  <img class="finished-image" src="images/waffles.jpg" alt="finished-img">
+  <!-- CENTER ENITRE PAGE CONTENT -->
+  <div class="w3-content" style="max-width:80%;">
 
-  <!-- Recipe Heading -->
-  <h1 class="recipe-heading">Waffles</h1>
+    <!-- Image of the Finished Product -->
+    <img class="finished-image" src="images/waffles.jpg" alt="finished-img">
 
-  <!-- Recipe Description  -->
-  <p class="w3-center">
-    These are homemade delicious waffles that taste just like your grandma used to make them!
-    It only takes 10 minutes to make these!
-  </p>
+    <!-- Recipe Heading -->
+    <h1 class="recipe-heading">Waffles</h1>
+
+    <!-- Recipe Description  -->
+    <p class="w3-center">
+      These are homemade delicious waffles that taste just like your grandma used to make them!
+      It only takes 10 minutes to make these!
+    </p>
 
 
-  <div class="w3-container w3-cell w3-mobile">
-    <div class="ingredients-block">
-      <h2 class="ingredients-header">Ingredients</h2>
-      <!-- Ingredients Block -->
-      <div class="w3-container w3-cell" style="padding-right: 0; text-align: right;">
-        <p class="egg-amounts">3</p>
-        <p>10</p>
-        <p>500</p>
-        <p>100</p>
-        <p>1</p>
-        <p>1</p>
-        <p>100</p>
+
+    <!-- TEEST --------------------------------------->
+    <!-- -------------------------------------------------- -->
+    <div class="w3-row">
+
+      <!-- INGREDIENTS THAT GOES IN THE RECIPE  -->
+      <!-- LEFT SIDE -->
+      <div class="w3-quarter w3-container">
+        <!-- CENTER CONTENT -->
+        <div>
+          <!-- HEADER -->
+          <h2 class="steps-header w3-container w3-cell-top w3-left-align">Ingredients</h2>
+
+          <!-- BOX THE 3 LISTS OF INGREDIENTS, UNIT and NAME -->
+          <div class="w3-content w3-centered" style="min-width: fit-content">
+            <!-- INGREDIENTS -->
+            <div class="w3-container w3-cell" style="padding-right: 0; text-align: right;">
+              <p class="egg-amounts">3</p>
+              <p>10</p>
+              <p>500</p>
+              <p>100</p>
+              <p>1</p>
+              <p>1</p>
+              <p>100</p>
+            </div>
+
+            <div class="w3-container w3-cell" style="padding-left: 4pt; padding-right: 0;">
+              <p>L</p>
+              <p>dl</p>
+              <p>g</p>
+              <p>g</p>
+              <p>ts</p>
+              <p>ts</p>
+              <p>g</p>
+            </div>
+
+            <div class="w3-container w3-cell" style="padding-left: 16pt; text-align: left;">
+              <p>Egg</p>
+              <p>Milk</p>
+              <p>Flour</p>
+              <p>Sugar</p>
+              <p>Baking soda</p>
+              <p>Vanilla sugar</p>
+              <p>Butter</p>
+            </div>
+
+            <!-- BOX PORTIONS PICKER -->
+            <div class="portions-block w3-mobile">
+
+              <!-- Portions Picker -->
+              <span class="portions-picker">
+                <!-- Minus button -->
+                <button class="w3-button w3-green w3-circle w3-center w3-ripple portion-buttons" onclick="stepDownPortions()">-</button>
+
+                <!-- Portions number  -->
+                <input class="portions-number w3-center" id="nr-of-portions" type="number" name="" min="1" max="99" maxlength="3"
+                  value="2">
+
+                <!-- Plus button   -->
+                <button class="w3-button w3-green w3-circle w3-center w3-medium w3-ripple portion-buttons" onclick="stepUpPortions()">+</button>
+              </span>
+
+              <div class="portions-text">PORTIONS</div>
+            </div>
+            <!-- END OF PORTIONS PICKER -->
+          </div>
+          <!-- END OF INGREDIENTS BOX -->
+        </div>
+        <!--END OF CENTER CONTENT-->
       </div>
+      <!-- END OF FIRST HALF  -->
 
-      <div class="w3-container w3-cell" style="padding-left: 4pt; padding-right: 0;">
-        <p>L</p>
-        <p>dl</p>
-        <p>g</p>
-        <p>g</p>
-        <p>ts</p>
-        <p>ts</p>
-        <p>g</p>
-      </div>
-
-      <div class="w3-container w3-cell" style="padding-left: 16pt; text-align: left;">
-        <p>Egg</p>
-        <p>Milk</p>
-        <p>Flour</p>
-        <p>Sugar</p>
-        <p>Baking soda</p>
-        <p>Vanilla sugar</p>
-        <p>Butter</p>
+      <!-- STEPS TO TAKE TO COOK THE RECIPE  -->
+      <!-- RIGHT SIDE  -->
+      <div class="w3-threequarter w3-container">
+        <div class="w3-content" style="max-width:90%; padding-left: 40pt;">
+          <h2 class="steps-header w3-container w3-cell-top w3-center">Steps</h2>
+          <ol class="">
+            <li>Mix eggs and sugar until white.</li>
+            <li>Add milk and mix.</li>
+            <li>Add flour, baking soda and vanilla sugar and mix until even.</li>
+            <li>Add melted butter</li>
+            <li>Let the waffle batter rest for 30 minutes.</li>
+          </ol>
+        </div>
+        <!-- END OF SECOND HALF  -->
       </div>
     </div>
-    <!-- Portions Picker -->
-    <div class="portions-block w3-mobile">
-      <span class="portions-picker">
-        <input class="portions-button" type="button" value="—" onclick="stepDownPortions()" />
-        <!-- <button class="w3-button w3-green w3-circle w3-large">—</button> -->
-        <input class="portions-number" id="nr-of-portions" type="number" name="" min="1" max="1000" maxlength="3"
-          value="2">
-        <!-- <button class="w3-button w3-green w3-circle w3-xlarge">+</button> -->
-        <input class="portions-button" type="button" value="+" onclick="stepUpPortions()" />
-      </span>
-      <div class="portions-text">PORTIONS</div>
-    </div>
   </div>
-
-  <div class="w3-container w3-light-green w3-cell w3-mobile">
-    <h2 class="steps-header w3-container w3-cell-top w3-left-align">Steps</h2>
-    <p>Mix eggs and sugar until white.</p>
-    <p>Add milk and mix.</p>
-    <p>Add flour, baking soda and vanilla sugar and mix until even.</p>
-    <p>Add melted butter</p>
-    <p>Let the waffle batter rest for 30 minutes.</p>
-  </div>
-
-  <!-- Footer Information -->
-  <!-- <footer>Thank you for making waffles! <input type="button" value="top" onclick=""></footer> -->
+  <!-- END OF CENTER PAGE -->
 </body>
 
 </html>
