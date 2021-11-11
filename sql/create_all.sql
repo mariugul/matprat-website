@@ -30,20 +30,20 @@ CREATE DOMAIN note_description AS varchar(100);
 -- Tables for recipe page
 -------------------------
 -- Holds the actual recipe names and descriptions
-CREATE TABLE recipes (
+CREATE TABLE IF NOT EXISTS recipes (
     id serial PRIMARY KEY,
     name recipe_name NOT NULL UNIQUE,
     description recipe_description,
     default_portions int NOT NULL DEFAULT 2 CHECK (default_portions > 0),
     nr_of_ingredients int DEFAULT 0 CHECK (nr_of_ingredients >= 0),
     nr_of_steps int DEFAULT 0 CHECK (nr_of_steps >= 0)
-); 
+);
 
 -- Contains the ingredients for all recipes, the amounts
 -- and also the units. The recipe_id column references the id
 -- of the recipes table so you can't have ingredients that are not
 -- connected to a specific recipe.
-CREATE TABLE ingredients (
+CREATE TABLE IF NOT EXISTS ingredients (
     recipe_id int,
     name ingredient_name NOT NULL,
     note note_description, -- Fill in this for a special note on the ingredient. It will be shown in its own "note field".
@@ -54,7 +54,7 @@ CREATE TABLE ingredients (
 );
 
 -- Contains the individual steps to take to make the recipe
-CREATE TABLE steps (
+CREATE TABLE IF NOT EXISTS steps (
     recipe_id int,
     step_nr int NOT NULL CHECK (step_nr > 0), -- The numbering of each step so they line up correctly. Has to start from nr 1.
     description step_description NOT NULL, -- Describe this step with text.
@@ -67,7 +67,7 @@ CREATE TABLE steps (
 -- Every image holds the recipe_id combined with an image_nr.
 -- This makes it possible to have as many images as you want displayed on a recipe page
 -- and you are able to sort them in order based on image_nr in the same way as the steps-table.
-CREATE TABLE images (
+CREATE TABLE IF NOT EXISTS images (
     recipe_id int,
     image_nr int NOT NULL CHECK (image_nr > 0),
     link image_link,
@@ -125,3 +125,10 @@ CREATE TRIGGER stepDownIngredient
     AFTER DELETE ON ingredients
     FOR EACH ROW
     EXECUTE PROCEDURE stepDownIngredientAmounts ();
+
+-- COMMENTS --
+--------------------------
+COMMENT ON TABLE public.recipes IS 'Contains the information about the recipe name, a short description and the number of ingredients and steps.';
+
+COMMENT ON COLUMN recipes.name IS 'The name of the recipe.';
+

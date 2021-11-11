@@ -1,17 +1,20 @@
-DROP TABLE recipes CASCADE;
-DROP TABLE ingredients CASCADE;
-DROP TABLE steps CASCADE;
-DROP TABLE images CASCADE;
+-- Drop Tables 
+DROP TABLE IF EXISTS recipes CASCADE;
+DROP TABLE IF EXISTS ingredients CASCADE;
+DROP TABLE IF EXISTS steps CASCADE;
+DROP TABLE IF EXISTS images CASCADE;
 
-DROP FUNCTION stepDownIngredientAmounts CASCADE;
-DROP FUNCTION stepUpIngredientAmounts CASCADE;
+-- Drop Functions
+DROP FUNCTION IF EXISTS stepDownIngredientAmounts CASCADE;
+DROP FUNCTION IF EXISTS stepUpIngredientAmounts CASCADE;
 
-DROP DOMAIN image_link;
-DROP DOMAIN recipe_name;
-DROP DOMAIN ingredient_name;
-DROP DOMAIN note_description;
-DROP DOMAIN step_description;
-DROP DOMAIN image_description;
-DROP DOMAIN recipe_description;
+-- Drop Domains and Types
+DROP DOMAIN IF EXISTS image_link;
+DROP DOMAIN IF EXISTS recipe_name;
+DROP DOMAIN IF EXISTS ingredient_name;
+DROP DOMAIN IF EXISTS note_description;
+DROP DOMAIN IF EXISTS step_description;
+DROP DOMAIN IF EXISTS image_description;
+DROP DOMAIN IF EXISTS recipe_description;
 
-DROP TYPE measurement_units;
+DROP TYPE IF EXISTS measurement_units;

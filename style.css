@@ -30,11 +30,11 @@ body {
 .portions-picker {
   display: table;
   margin: 0 auto;
-  padding-bottom: 5pt;
+  padding-bottom: 2pt;
 }
 
 .portions-button {
-  font-size: 25px;
+  font-size: 20px;
   font-weight: bold;
   background-color: #4caf50; /* Green */
   border: none;
@@ -43,7 +43,8 @@ body {
   text-align: center;
   text-decoration: none;
   display: inline-block;
-  margin: 5pt;
+  margin-right: 6pt;
+  margin-left: 6pt;
   border-radius: 100%;
 }
 
