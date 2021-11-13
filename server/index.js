@@ -3,6 +3,16 @@ const exp = require("constants");
 const express = require("express");
 const app = express();
 
+// Set up postgres parameters
+const { Pool, Client } = require("pg");
+const pool = new Pool({
+  user: "nodejs",
+  host: "localhost",
+  database: "matprat",
+  password: "nodejs",
+  port: 5432,
+});
+
 app.use(express.json());
 
 const courses = [
@@ -95,3 +105,23 @@ function validateCourse(course) {
 // If it doesn't exist, use port 3000.
 const port = process.env.PORT || 3000;
 app.listen(port, () => console.log(`Listening on port ${port}...`));
+
+// POSTGRES TESTING -> Put in another script later
+// -----------------------------------------------
+// Test query that works
+pool.query("SELECT name, description FROM recipes WHERE id=1", (err, res) => {
+  if (err) {
+    console.log(err.stack);
+  } else {
+    console.table(res.rows[0]);
+  }
+});
+
+// Callback
+pool.query("SELECT name, description FROM recipes WHERE id=2", (err, res) => {
+  if (err) {
+    console.log(err.stack);
+  } else {
+    console.table(res.rows[0]);
+  }
+});
