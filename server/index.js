@@ -1,7 +1,8 @@
 const Joi = require("joi");
 const exp = require("constants");
 const express = require("express");
-const app = express();
+var cors = require('cors') // CORS for local development
+var app = express();
 
 // Set up postgres parameters
 const { Pool, Client } = require("pg");
@@ -13,7 +14,7 @@ const pool = new Pool({
   port: 5432,
 });
 
-app.use(express.json());
+app.use(express.json(), cors());
 
 const courses = [
   { id: 1, name: "course1" },
@@ -40,6 +41,38 @@ app.get("/api/courses/:id", (req, res) => {
   }
 
   res.send(course);
+});
+
+// Get recipe information by name
+app.get("/api/db/select/recipe/:name", (req, res) => {
+
+  pool.query("SELECT * FROM recipes WHERE name=$1", [req.params.name], (err, res_db) => {
+    if (err) {
+      // console.log(err.stack);
+      return res.status(404).send("There was an error getting the recipes from the database.");
+    } else {
+      // console.table(res_db.rows[0]);
+      return res.status(200).send(res_db.rows[0]);
+    }
+  });
+});
+
+// Get all recipe names
+app.get("/api/db/select/recipes", (req, res) => {
+  const query = {
+    text: 'SELECT name FROM recipes',
+    rowMode: 'array',
+  }
+
+  pool.query(query, (err, res_db) => {
+    if (err) {
+      // console.log(err.stack);
+      return res.status(404).send("There was an error getting the recipe names from the database.");
+    } else {
+      // console.table(res_db.rows);
+      return res.status(200).send(res_db.rows);
+    }
+  });
 });
 
 // Post
@@ -108,20 +141,16 @@ app.listen(port, () => console.log(`Listening on port ${port}...`));
 
 // POSTGRES TESTING -> Put in another script later
 // -----------------------------------------------
-// Test query that works
-pool.query("SELECT name, description FROM recipes WHERE id=1", (err, res) => {
-  if (err) {
-    console.log(err.stack);
-  } else {
-    console.table(res.rows[0]);
-  }
-});
-
-// Callback
-pool.query("SELECT name, description FROM recipes WHERE id=2", (err, res) => {
-  if (err) {
-    console.log(err.stack);
-  } else {
-    console.table(res.rows[0]);
-  }
-});
+// INSERT recipe into recipes table
+// const recipe_params = ["Biff", "God biff bby", 1];
+// pool.query(
+//   "INSERT INTO recipes (name, description, default_portions) VALUES($1, $2, $3)",
+//   recipe_params,
+//   (err, res) => {
+//     if (err) {
+//       console.log(err.stack);
+//     } else {
+//       console.table(res.rows[0]);
+//     }
+//   }
+// );

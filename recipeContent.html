@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Marius Foods</title>
+  <link rel="icon" type="image/x-icon" href="images/favicon.ico">
+  <link rel="stylesheet" href="style.css" type="text/css" />
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+  <script src="http_requests.js"></script>
+
+</head>
+
+<body>
+  <!-- Header Navigation Menu -->
+  <div class="w3-bar w3-border w3-light-grey w3-large">
+    <span class="w3-bar-item w3-left">Marius Foods</span>
+    <span class="">
+      <a href="index.html" class="w3-bar-item w3-button">Home</a>
+      <a href="recipes.html" class="w3-bar-item w3-button w3-green">Recipes</a>
+      <div class="w3-dropdown-hover">
+        <button class="w3-button">About<i class="fa fa-caret-down"></i></button>
+        <div class="w3-dropdown-content w3-bar-block w3-card-4">
+          <a href="#" class="w3-bar-item w3-button">This page</a>
+          <a href="#" class="w3-bar-item w3-button">Contact</a>
+        </div>
+      </div>
+      <!-- <input type="text" class="w3-mobile w3-bar-item w3-input w3-right" placeholder="Search.."> -->
+      <!-- <a href="#" class="w3-bar-item w3-button w3-green">Go</a> -->
+    </span>
+  </div>
+
+  <!-- CENTER ENITRE PAGE CONTENT -->
+  <div class="w3-content" style="max-width:80%;">
+
+    <!-- Image of the Finished Product -->
+    <img class="finished-image" src="images/waffles.jpg" alt="finished-img">
+
+    <!-- Recipe Heading -->
+    <h1 class="recipe-heading">Waffles</h1>
+
+    <!-- Recipe Description  -->
+    <p class="w3-center">
+      These are homemade delicious waffles that taste just like your grandma used to make them!
+      It only takes 10 minutes to make these!
+    </p>
+
+
+
+    <!-- TEEST --------------------------------------->
+    <!-- -------------------------------------------------- -->
+    <div class="w3-row">
+
+      <!-- INGREDIENTS THAT GOES IN THE RECIPE  -->
+      <!-- LEFT SIDE -->
+      <div class="w3-quarter w3-container">
+        <!-- CENTER CONTENT -->
+        <div>
+          <!-- HEADER -->
+          <h2 class="steps-header w3-container w3-cell-top w3-left-align">Ingredients</h2>
+
+          <!-- BOX THE 3 LISTS OF INGREDIENTS, UNIT and NAME -->
+          <div class="w3-content w3-centered" style="min-width: fit-content">
+            <!-- INGREDIENTS -->
+            <div class="w3-container w3-cell" style="padding-right: 0; text-align: right;">
+              <p class="egg-amounts">3</p>
+              <p>10</p>
+              <p>500</p>
+              <p>100</p>
+              <p>1</p>
+              <p>1</p>
+              <p>100</p>
+            </div>
+
+            <div class="w3-container w3-cell" style="padding-left: 4pt; padding-right: 0;">
+              <p>L</p>
+              <p>dl</p>
+              <p>g</p>
+              <p>g</p>
+              <p>ts</p>
+              <p>ts</p>
+              <p>g</p>
+            </div>
+
+            <div class="w3-container w3-cell" style="padding-left: 16pt; text-align: left;">
+              <p>Egg</p>
+              <p>Milk</p>
+              <p>Flour</p>
+              <p>Sugar</p>
+              <p>Baking soda</p>
+              <p>Vanilla sugar</p>
+              <p>Butter</p>
+            </div>
+
+            <!-- BOX PORTIONS PICKER -->
+            <div class="portions-block w3-mobile">
+
+              <!-- Portions Picker -->
+              <span class="portions-picker">
+                <!-- Minus button -->
+                <button class="w3-button w3-green w3-circle w3-center w3-ripple portion-buttons" onclick="stepDownPortions()">-</button>
+
+                <!-- Portions number  -->
+                <input class="portions-number w3-center" id="nr-of-portions" type="number" name="" min="1" max="99" maxlength="3"
+                  value="2">
+
+                <!-- Plus button   -->
+                <button class="w3-button w3-green w3-circle w3-center w3-medium w3-ripple portion-buttons" onclick="stepUpPortions()">+</button>
+              </span>
+
+              <div class="portions-text">PORTIONS</div>
+            </div>
+            <!-- END OF PORTIONS PICKER -->
+          </div>
+          <!-- END OF INGREDIENTS BOX -->
+        </div>
+        <!--END OF CENTER CONTENT-->
+      </div>
+      <!-- END OF FIRST HALF  -->
+
+      <!-- STEPS TO TAKE TO COOK THE RECIPE  -->
+      <!-- RIGHT SIDE  -->
+      <div class="w3-threequarter w3-container">
+        <div class="w3-content" style="max-width:90%; padding-left: 40pt;">
+          <h2 class="steps-header w3-container w3-cell-top w3-center">Steps</h2>
+          <ol class="">
+            <li>Mix eggs and sugar until white.</li>
+            <li>Add milk and mix.</li>
+            <li>Add flour, baking soda and vanilla sugar and mix until even.</li>
+            <li>Add melted butter</li>
+            <li>Let the waffle batter rest for 30 minutes.</li>
+          </ol>
+        </div>
+        <!-- END OF SECOND HALF  -->
+      </div>
+    </div>
+  </div>
+  <!-- END OF CENTER PAGE -->
+</body>
+
+</html>
