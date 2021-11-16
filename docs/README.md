@@ -3,9 +3,14 @@
 [![GitHub Super-Linter](https://github.com/mariugul/matprat-website/workflows/Lint%20Code%20Base/badge.svg)](https://github.com/mariugul/matprat-website/actions/workflows/super-linter.yml)
 [![CodeFactor](https://www.codefactor.io/repository/github/mariugul/matprat-website/badge)](https://www.codefactor.io/repository/github/mariugul/matprat-website)
 
+# Website
+The website is constructed with the w3.css framework and JavaScript for dynamically loading in information from the database.
+
+# Server
+The server runs on node.js with express.js to handle the API's. The server communicates with the database using the 'pg' package to connect to postgres.
 
 ## Database
-The website information will be hosted in a PostgreSQL database. This is at least true for the *recipes* page. That means a good database design is crucial. The implementation of the database is found in the folder `sql`.
+The website information will be hosted in a PostgreSQL database. That means a good database design is crucial. The implementation of the database is found in the folder `sql`.
  
 ### Recipes Page
 This is basic implementation of the content for the recipes page. A recipe is identified by a unique id and a unique name. Therefore, duplicate recipes are not possible. Due to this fact, all the other tables reference the recipes-table's `id` and `name`. This is how the website will identify which content belongs on the recipe site.
