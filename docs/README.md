@@ -1,4 +1,6 @@
 # matprat-website
+[![GitHub Super-Linter](https://github.com/mariugul/matprat-website/workflows/Lint%20Code%20Base/badge.svg)](https://github.com/marketplace/actions/super-linter)
+
 
 ## Database
 The website information will be hosted in a PostgreSQL database. This is at least true for the *recipes* page. That means a good database design is crucial. The implementation of the database is found in the folder `sql`.
