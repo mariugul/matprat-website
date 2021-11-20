@@ -42,11 +42,11 @@ CREATE TABLE IF NOT EXISTS recipes (
 -- connected to a specific recipe.
 CREATE TABLE IF NOT EXISTS ingredients (
     recipe_name recipe_name,
-    name ingredient_name NOT NULL,
+    ingredient ingredient_name NOT NULL,
     note note_description, -- Fill in this for a special note on the ingredient. It will be shown in its own "note field".
     amount float NOT NULL CHECK (amount > 0), -- NB!! I DON'T KNOW IF FLOATS AND > 0 CHECK GO WELL TOGETHER
     unit measurement_units NOT NULL,
-    PRIMARY KEY (recipe_name, name),
+    PRIMARY KEY (recipe_name, ingredient),
     CONSTRAINT fk_ingredients FOREIGN KEY (recipe_name) REFERENCES recipes (name) ON DELETE CASCADE
 );
 
@@ -75,6 +75,30 @@ CREATE TABLE IF NOT EXISTS images (
 
 -- Functions --
 -------------------------
+-- Gets all existing recipes
+CREATE OR REPLACE FUNCTION recipes() RETURNS TABLE (LIKE recipes) AS $$
+    SELECT * FROM recipes;
+$$ LANGUAGE SQL;
+
+-- Gets information about a specific recipe
+CREATE OR REPLACE FUNCTION recipeInfo(recipe_name) RETURNS TABLE (LIKE recipes) AS $$
+    SELECT * FROM recipes WHERE name=$1;
+$$ LANGUAGE SQL;
+
+-- Gets all the ingredients for a specific recipe
+CREATE OR REPLACE FUNCTION ingredients(recipe_name) RETURNS TABLE (ingredient ingredient_name, note note_description, amount float, unit measurement_units) AS $$
+    SELECT  ingredient, note, amount, unit FROM ingredients WHERE recipe_name=$1;
+$$ LANGUAGE SQL;
+
+-- Gets all the steps (instructions) for a specific recipe
+CREATE OR REPLACE FUNCTION steps(recipe_name) RETURNS TABLE (step_nr int, description step_description, note note_description) AS $$
+    SELECT step_nr, description, note FROM steps WHERE recipe_name=$1;
+$$ LANGUAGE SQL;
+
+-- Gets all the image-links for a specific recipe
+CREATE OR REPLACE FUNCTION images(recipe_name) RETURNS TABLE (image_nr int, link image_link, description image_description) AS $$
+    SELECT image_nr, link, description FROM images WHERE recipe_name=$1;
+$$ LANGUAGE SQL;
 
 
 -- TRIGGERS --

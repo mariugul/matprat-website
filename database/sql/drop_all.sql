@@ -5,7 +5,11 @@ DROP TABLE IF EXISTS steps CASCADE;
 DROP TABLE IF EXISTS images CASCADE;
 
 -- Drop Functions
--- DROP FUNCTION IF EXISTS <functionName> CASCADE;
+DROP FUNCTION IF EXISTS recipes();
+DROP FUNCTION IF EXISTS recipeInfo(recipe_name);
+DROP FUNCTION IF EXISTS ingredients(recipe_name);
+DROP FUNCTION IF EXISTS steps(recipe_name);
+DROP FUNCTION IF EXISTS images(recipe_name);
 
 -- Drop Domains and Types
 DROP DOMAIN IF EXISTS image_link;
