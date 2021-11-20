@@ -76,8 +76,8 @@ CREATE TABLE IF NOT EXISTS images (
 -- Functions --
 -------------------------
 -- Gets all existing recipes
-CREATE OR REPLACE FUNCTION recipes() RETURNS TABLE (LIKE recipes) AS $$
-    SELECT * FROM recipes;
+CREATE OR REPLACE FUNCTION recipes() RETURNS TABLE (name recipe_name) AS $$
+    SELECT name FROM recipes;
 $$ LANGUAGE SQL;
 
 -- Gets information about a specific recipe
