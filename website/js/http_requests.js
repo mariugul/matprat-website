@@ -10,7 +10,7 @@ function loadRecipeInfo(recipe) {
       }
     };
   
-    const getRecipeInfo = "http://localhost:3000/api/db/select/recipe/" + recipe;
+    const getRecipeInfo = "http://172.21.222.253:3000/api/db/select/recipe/" + recipe;
     xhttp.open("GET", getRecipeInfo, true);
     xhttp.send();
   }
@@ -26,6 +26,6 @@ function loadRecipeInfo(recipe) {
       }
     };
   
-    xhttp.open("GET", "http://localhost:3000/api/db/select/recipes", true);
+    xhttp.open("GET", "http://172.21.222.253:3000/api/db/select/recipes", true);
     xhttp.send();
   }
