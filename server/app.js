@@ -18,17 +18,72 @@ const pool = new Pool({
 
 // Functions
 // ----------------------------------------------
-function sqlQuery(query, values) {
+async function sqlQuery(query, queryArgs) {
   return new Promise((resolve, reject) => {
-    pool.query(query, values, (err, res) => {
+    pool.query(query, queryArgs, (err, res) => {
       if (err) return reject(err);
-      resolve(res.rows[0]);
+      resolve(res.rows);
     });
   });
 }
 
+async function sqlQuery2(query, queryArgs) {}
+
 // Get
 //-------------------------------------------
+// PROTOTYPE
+// Display a certain recipe
+app.get("/:name", (req, res) => {
+  // There are 4 queries to perform and it matters that the recipeInfo checks
+  // whether the recipe exists first and then the following 3 queries need to finish
+  // before the page can be generated and sent back. Therfore an inline async function
+  // is declared here to use the 'await' keyword on the sqlQuery function, which is also async.
+  queries = (async function () {
+    // Get info on recipe. If it doesn't exist, display error page
+    await sqlQuery("SELECT recipeInfo($1)", [req.params.name])
+      .then((result) => {
+        if (result === undefined) {
+          res.render("error", {
+            errorMessage:
+              'The recipe "' +
+              req.params.name +
+              '" does not exist in the database.',
+          });
+        }
+        recipeInfo = result;
+      })
+      .catch((err) =>
+        res.render("error", {
+          errorMessage: err,
+        })
+      );
+
+    // Get recipe ingredients
+    await sqlQuery("SELECT ingredients($1)", [req.params.name])
+      .then((result) => ingredients = result)
+      .catch((err) => console.log(err));
+
+    // Get recipe steps (instructions)
+    await sqlQuery("SELECT steps($1)", [req.params.name])
+      .then((result) => steps = result
+      )
+      .catch((err) => console.log(err));
+
+    // Get recipe images (links)
+    // await sqlQuery("SELECT images($1)", [req.params.name])
+    //   .then((result) => console.log())
+    //   .catch((err) => console.log());
+
+    // console.log(ingredients);
+
+    // Generate the webpage from template and send back
+    res.render("recipe", {
+      recipeInfo: recipeInfo,
+      ingredients: ingredients,
+      steps: steps
+    });
+  })();
+});
 
 // Home page
 app.get("/", (req, res) => {
@@ -42,9 +97,6 @@ app.get("/recipes", (req, res) => {
 
 // Display a certain recipe
 app.get("/recipes/:name", (req, res) => {
-  var query = "SELECT * FROM recipes WHERE name=$1";
-  values = [req.params.name];
-
   sqlQuery(query, values)
     .then((result) => {
       // Recipe doesn't exist in DB
