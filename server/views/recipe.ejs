@@ -5,11 +5,11 @@
   <meta charset="UTF-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Marius Foods</title>
-  <link rel="icon" type="image/x-icon" href="images/favicon.ico">
-  <link rel="stylesheet" href="../css/style.css" type="text/css" />
+  <title>Marius Foods: Recipes</title>
+  <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
   <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-  <script src="../js/http_requests.js"></script>
+  <script src="/js/http_requests.js"></script>
 
 </head>
 
@@ -19,10 +19,10 @@
 
 
   <!-- CENTER ENITRE PAGE CONTENT -->
-  <div class="w3-content" style="max-width:80%;">
+  <div class="w3-content w3-center" style="max-width:80%;">
 
     <!-- Image of the Finished Product -->
-    <img class="finished-image" src="../images/waffles.jpg" alt="finished-img">
+    <img class="finished-image" src="/images/waffles.jpg" alt="finished-img">
 
     <!-- Recipe Heading -->
     <h1>
@@ -30,14 +30,12 @@
     </h1>
 
     <!-- Recipe Description  -->
-    <p class="w3-center">
+    <p>
       <%= recipeInfo[0].description %>
     </p>
 
 
-
-    <!-- TEEST --------------------------------------->
-    <!-- -------------------------------------------------- -->
+    <!-- Ingredients and Steps Responsive Resize -->
     <div class="w3-row">
 
       <!-- INGREDIENTS THAT GOES IN THE RECIPE  -->
