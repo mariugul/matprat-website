@@ -129,7 +129,7 @@ input[type="number"] {
 
 /* Header and Footer */
 /* ---------------------------------------------------------- */
-header {
+/* header {
   color: white;
   background-color: rgba(0, 0, 0, 0.6);
   position: absolute;
@@ -186,7 +186,7 @@ nav a {
 nav a:hover,
 a:active {
   background-color: #009bff;
-}
+} */
 
 .front-image {
   display: block;
@@ -198,11 +198,9 @@ a:active {
 
 /* Medias */
 /* ---------------------------------------------------------- */
-@media screen and (max-width: 600px) {
+/* @media screen and (max-width: 600px) {
   .search_bar {
     visibility: hidden;
     display: none;
   }
-
-  
-}
+} */

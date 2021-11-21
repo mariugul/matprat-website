@@ -1,4 +1,4 @@
-<nav class="w3-bar w3-border w3-light-grey w3-large">
+<!-- <nav class="w3-bar w3-border w3-light-grey w3-large">
     <span class="w3-bar-item w3-mobile w3-left w3-border">Marius Foods</span>
     <span class="w3-mobile">
       <a href="/" class="w3-mobile w3-bar-item w3-button w3-green w3-border">Home</a>
@@ -6,6 +6,24 @@
       <input type="text" class="search_bar w3-bar-item w3-input" placeholder="Search..">
       <a href="#" class="search_bar w3-bar-item w3-button w3-green">Go</a>
     </span>
-  </nav>   
+  </nav>    -->
 
-  
+<nav class="topnav" id="myTopnav">
+  <a href="/" class="topnav">Home</a>
+  <a href="/recipes" class="" >Recipes</a>
+  <a href="#" class="icon" onclick="navDropdown()">
+    <i class="fa fa-bars"></i>
+  </a>
+</nav>
+
+<script>
+  function navDropdown() {
+    var x = document.getElementById("myTopnav");
+    if (x.className === "topnav") {
+      x.className += " responsive";
+    } else {
+      x.className = "topnav";
+    }
+  }
+</script>
+

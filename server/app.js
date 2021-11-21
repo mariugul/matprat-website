@@ -6,6 +6,9 @@ var app = express();
 
 app.set("view engine", "ejs"); // use EJS as template engine
 app.use(express.static("public"));
+app.use(express.static("public/css"));
+app.use(express.static("public/js"));
+app.use(express.static("public/images"));
 // app.use(express.json(), cors()); // Allow CORS
 
 // Set up postgres parameters
