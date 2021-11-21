@@ -4,6 +4,7 @@ const { object } = require("joi");
 var app = express();
 
 app.set("view engine", "ejs"); // use EJS as template engine
+app.use(express.static("public"));
 // app.use(express.json(), cors()); // Allow CORS
 
 // Set up postgres parameters
