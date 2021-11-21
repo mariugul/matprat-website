@@ -1,5 +1,5 @@
 -- Connect to Matprat DB
-\c matprat
+-- \c matprat
 
 -- Drop Tables 
 DROP TABLE IF EXISTS recipes CASCADE;
