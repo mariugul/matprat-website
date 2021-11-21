@@ -4,34 +4,30 @@
 <head>
   <!-- Partial Head Data -->
   <%- include('partials/head.ejs') %>
-  
+
     <script src="http_requests.js"></script>
 </head>
 
 <body>
   <!-- Navigation Menu -->
-  <!-- Put partial navigation template here -->
   <%- include('partials/nav.ejs') %>
 
 
     <!-- CENTER ENITRE PAGE CONTENT -->
+    <!-- -------------------------- -->
     <div class="w3-content w3-center" style="max-width:80%;">
 
       <!-- Image of the Finished Product -->
-      <img class="finished-image" src="/waffles.jpg" alt="finished-img">
+      <img class="finished-image" src="<%= images[0].link %> " alt="<%= images[0].description %> "></a>
 
       <!-- Recipe Heading -->
-      <h1>
-        <%= recipeInfo[0].name %>
-      </h1>
+      <h1><%= recipeInfo[0].name %></h1>
 
       <!-- Recipe Description  -->
-      <p>
-        <%= recipeInfo[0].description %>
-      </p>
-
+      <p><%= recipeInfo[0].description %></p>
 
       <!-- Ingredients and Steps Responsive Resize -->
+      <!-- --------------------------------------- -->
       <div class="w3-row">
 
         <!-- INGREDIENTS THAT GOES IN THE RECIPE  -->

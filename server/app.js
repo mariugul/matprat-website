@@ -97,11 +97,6 @@ app.get("/recipes/:name", (req, res) => {
       .then((result) => images = result)
       .catch((err) => console.log(err));
 
-    // Render the active page in the navbar
-    // render("nav", {
-    //   activePage: "recipes",
-    // });
-
     // Generate the webpage from template and send back
     res.render("recipe", {
       recipeInfo: recipeInfo,
