@@ -19,6 +19,6 @@ function currentDiv(n) {
   }
   
   function openRecipe(recipe) {
-    window.open("recipeContent.html", "_self");
+    window.open("recipes/" + recipe, "_self");
   }
   

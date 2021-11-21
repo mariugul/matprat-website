@@ -5,25 +5,20 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Marius Foods</title>
+  <title>Marius Foods: Home</title>
 
   <link rel="stylesheet" href="/css/style.css">
+  <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
   <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 </head>
 
 <body>
-  <!-- Header Navigation Menu -->
-  <div class="w3-bar w3-border w3-light-grey w3-large">
-    <span class="w3-bar-item w3-mobile w3-left">Marius Foods</span>
-    <span class="w3-mobile">
-      <a href="/" class="w3-mobile w3-bar-item w3-button w3-green">Home</a>
-      <a href="/recipes" class="w3-mobile w3-bar-item w3-button">Recipes</a>
-      <!-- <input type="text" class="w3-mobile w3-bar-item w3-input" placeholder="Search.."> -->
-      <!-- <a href="#" class="w3-bar-item w3-button w3-green">Go</a> -->
-    </span>
+    <!-- Header Navigation Menu -->
+    <%- include('partials/nav.ejs') %>
 
-    <h1 class="recipe-heading">Marius Foods</h1>
+    <h1 class="w3-center" style="margin-top: 80px;">Marius Foods</h1>
     <h2 style="text-align: center; font-size: 16pt;">YES CHEF!</h2>
     <img src="/images/marius.jpg" alt="Marius.jpg" class="front-image">
+
 
 </html

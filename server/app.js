@@ -1,3 +1,4 @@
+const { render } = require("ejs");
 const express = require("express");
 const { object } = require("joi");
 // var cors = require('cors') // CORS for local development
@@ -23,6 +24,7 @@ async function sqlQuery(query, queryArgs) {
   return new Promise((resolve, reject) => {
     pool.query(query, queryArgs, (err, res) => {
       if (err) return reject(err);
+      // console.log(res.rows);
       resolve(res.rows);
     });
   });
@@ -48,24 +50,34 @@ app.get("/recipes/:name", (req, res) => {
   // before the page can be generated and sent back. Therfore an inline async function
   // is declared here to use the 'await' keyword on the sqlQuery function, which is also async.
   queries = (async function () {
+    var recipeExists = false;
+
     // Get info on recipe. If it doesn't exist, display error page
     await sqlQuery("SELECT * FROM recipeInfo($1)", [req.params.name])
       .then((result) => {
-        if (result === undefined) {
+        if (result === undefined || result.length == 0) {
           res.render("error", {
             errorMessage:
               'The recipe "' +
               req.params.name +
               '" does not exist in the database.',
           });
+          recipeExists = false;
+        } else {
+          recipeExists = true;
+          recipeInfo = result;
         }
-        recipeInfo = result;
       })
       .catch((err) =>
         res.render("error", {
           errorMessage: err,
         })
       );
+
+    // If no recipe was returned from the previous query, exit this function
+    if (!recipeExists) {
+      return 0;
+    }
 
     // Get recipe ingredients
     await sqlQuery("SELECT * FROM ingredients($1)", [req.params.name])
@@ -78,19 +90,21 @@ app.get("/recipes/:name", (req, res) => {
       .catch((err) => console.log(err));
 
     // Get recipe images (links)
-    // await sqlQuery("SELECT * FROM images($1)", [req.params.name])
-    //   .then((result) => console.log())
-    //   .catch((err) => console.log());
+    await sqlQuery("SELECT * FROM images($1)", [req.params.name])
+      .then((result) => images = result)
+      .catch((err) => console.log(err));
 
-    // console.log(recipeInfo);
-    // console.log(ingredients);
-    // console.log(steps);
+    // Render the active page in the navbar
+    // render("nav", {
+    //   activePage: "recipes",
+    // });
 
     // Generate the webpage from template and send back
     res.render("recipe", {
       recipeInfo: recipeInfo,
       ingredients: ingredients,
       steps: steps,
+      images: images
     });
   })();
 });
