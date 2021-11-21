@@ -29,16 +29,26 @@ async function sqlQuery(query, queryArgs) {
 
 // Get
 //-------------------------------------------
-// PROTOTYPE
-// Display a certain recipe
-app.get("/:name", (req, res) => {
+
+// Home page
+app.get("/", (req, res) => {
+  res.render("index");
+});
+
+// Recipes
+app.get("/recipes", (req, res) => {
+  res.render("recipes");
+});
+
+// Display a specific recipe
+app.get("/recipes/:name", (req, res) => {
   // There are 4 queries to perform and it matters that the recipeInfo checks
   // whether the recipe exists first and then the following 3 queries need to finish
   // before the page can be generated and sent back. Therfore an inline async function
   // is declared here to use the 'await' keyword on the sqlQuery function, which is also async.
   queries = (async function () {
     // Get info on recipe. If it doesn't exist, display error page
-    await sqlQuery("SELECT recipeInfo($1)", [req.params.name])
+    await sqlQuery("SELECT * FROM recipeInfo($1)", [req.params.name])
       .then((result) => {
         if (result === undefined) {
           res.render("error", {
@@ -57,23 +67,23 @@ app.get("/:name", (req, res) => {
       );
 
     // Get recipe ingredients
-    await sqlQuery("SELECT ingredients($1)", [req.params.name])
+    await sqlQuery("SELECT * FROM ingredients($1)", [req.params.name])
       .then((result) => (ingredients = result))
       .catch((err) => console.log(err));
 
     // Get recipe steps (instructions)
-    await sqlQuery("SELECT steps($1)", [req.params.name])
+    await sqlQuery("SELECT * FROM steps($1)", [req.params.name])
       .then((result) => (steps = result))
       .catch((err) => console.log(err));
 
     // Get recipe images (links)
-    // await sqlQuery("SELECT images($1)", [req.params.name])
+    // await sqlQuery("SELECT * FROM images($1)", [req.params.name])
     //   .then((result) => console.log())
     //   .catch((err) => console.log());
 
-    console.log(recipeInfo);
-    console.log(ingredients);
-    console.log(steps);
+    // console.log(recipeInfo);
+    // console.log(ingredients);
+    // console.log(steps);
 
     // Generate the webpage from template and send back
     res.render("recipe", {
@@ -82,43 +92,6 @@ app.get("/:name", (req, res) => {
       steps: steps,
     });
   })();
-});
-
-// Home page
-app.get("/", (req, res) => {
-  res.render("index");
-});
-
-// Recipes
-app.get("/recipes", (req, res) => {
-  res.render("recipes");
-});
-
-// Display a certain recipe
-app.get("/recipes/:name", (req, res) => {
-  sqlQuery(query, values)
-    .then((result) => {
-      // Recipe doesn't exist in DB
-      if (result === undefined) {
-        res.render("error", {
-          errorMessage:
-            'The recipe "' +
-            req.params.name +
-            '" does not exist in the database.',
-        });
-      }
-
-      // Recipe exists in DB
-      res.render("recipe", {
-        recipeInfo: result,
-      });
-    })
-    .catch((err) =>
-      // Error quering DB
-      res.render("error", {
-        errorMessage: err,
-      })
-    );
 });
 
 // POSTGRES ----------------------------------------
@@ -166,19 +139,3 @@ app.get("/api/db/select/recipes", (req, res) => {
 // If it doesn't exist, use port 3000.
 const port = process.env.PORT || 3000;
 app.listen(port, () => console.log(`Listening on port ${port}...`));
-
-// POSTGRES TESTING -> Put in another script later
-// -----------------------------------------------
-// INSERT recipe into recipes table
-// const recipe_params = ["Biff", "God biff bby", 1];
-// pool.query(
-//   "INSERT INTO recipes (name, description, default_portions) VALUES($1, $2, $3)",
-//   recipe_params,
-//   (err, res) => {
-//     if (err) {
-//       console.log(err.stack);
-//     } else {
-//       console.table(res.rows[0]);
-//     }
-//   }
-// );

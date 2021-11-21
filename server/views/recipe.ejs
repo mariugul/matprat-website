@@ -25,18 +25,13 @@
     <img class="finished-image" src="../images/waffles.jpg" alt="finished-img">
 
     <!-- Recipe Heading -->
-    <h1><%= recipeInfo.name %> </h1>
-    <p>ID: <%= recipeInfo.id %></p> 
-    <p>Name: <%= recipeInfo.name %> </p>
-    <p>Description: <%= recipeInfo.description %> </p>
-    <p>default_portions: <%= recipeInfo.default_portions %> </p>
-    <p>Ingredients: <%= recipeInfo.nr_of_ingredients %> </p>
-    <p>Steps: <%= recipeInfo.nr_of_steps %> </p>
+    <h1>
+      <%= recipeInfo[0].name %>
+    </h1>
 
     <!-- Recipe Description  -->
     <p class="w3-center">
-      These are homemade delicious waffles that taste just like your grandma used to make them!
-      It only takes 10 minutes to make these!
+      <%= recipeInfo[0].description %>
     </p>
 
 
@@ -57,27 +52,27 @@
           <div class="w3-content w3-centered" style="min-width: fit-content">
             <!-- INGREDIENTS -->
             <div class="w3-container w3-cell" style="padding-right: 0; text-align: right;">
-            
+              <% ingredients.forEach(element=> { %>
+                <p>
+                  <%= element.amount %>
+                </p>
+                <% }) %>
             </div>
 
             <div class="w3-container w3-cell" style="padding-left: 4pt; padding-right: 0;">
-              <p>L</p>
-              <p>dl</p>
-              <p>g</p>
-              <p>g</p>
-              <p>ts</p>
-              <p>ts</p>
-              <p>g</p>
+              <% ingredients.forEach(element=> { %>
+                <p>
+                  <%= element.unit %>
+                </p>
+                <% }) %>
             </div>
 
             <div class="w3-container w3-cell" style="padding-left: 16pt; text-align: left;">
-              <p>Egg</p>
-              <p>Milk</p>
-              <p>Flour</p>
-              <p>Sugar</p>
-              <p>Baking soda</p>
-              <p>Vanilla sugar</p>
-              <p>Butter</p>
+              <% ingredients.forEach(element=> { %>
+                <p>
+                  <%= element.ingredient %>
+                </p>
+                <% }) %>
             </div>
 
             <!-- BOX PORTIONS PICKER -->
@@ -86,14 +81,16 @@
               <!-- Portions Picker -->
               <span class="portions-picker">
                 <!-- Minus button -->
-                <button class="w3-button w3-green w3-circle w3-center w3-ripple portion-buttons" onclick="stepDownPortions()">-</button>
+                <button class="w3-button w3-green w3-circle w3-center w3-ripple portion-buttons"
+                  onclick="stepDownPortions()">-</button>
 
                 <!-- Portions number  -->
-                <input class="portions-number w3-center" id="nr-of-portions" type="number" name="" min="1" max="99" maxlength="3"
-                  value="2">
+                <input class="portions-number w3-center" id="nr-of-portions" type="number" name="" min="1" max="99"
+                  maxlength="3" value="2">
 
                 <!-- Plus button   -->
-                <button class="w3-button w3-green w3-circle w3-center w3-medium w3-ripple portion-buttons" onclick="stepUpPortions()">+</button>
+                <button class="w3-button w3-green w3-circle w3-center w3-medium w3-ripple portion-buttons"
+                  onclick="stepUpPortions()">+</button>
               </span>
 
               <div class="portions-text">PORTIONS</div>
@@ -112,11 +109,11 @@
         <div class="w3-content" style="max-width:90%; padding-left: 40pt;">
           <h2 class="steps-header w3-container w3-cell-top w3-center">Steps</h2>
           <ol class="">
-            <li>Mix eggs and sugar until white.</li>
-            <li>Add milk and mix.</li>
-            <li>Add flour, baking soda and vanilla sugar and mix until even.</li>
-            <li>Add melted butter</li>
-            <li>Let the waffle batter rest for 30 minutes.</li>
+            <% steps.forEach(element=> { %>
+              <li>
+                <%= element.description %>
+              </li>
+              <% }) %>
           </ol>
         </div>
         <!-- END OF SECOND HALF  -->
