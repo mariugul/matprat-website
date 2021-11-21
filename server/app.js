@@ -27,8 +27,6 @@ async function sqlQuery(query, queryArgs) {
   });
 }
 
-async function sqlQuery2(query, queryArgs) {}
-
 // Get
 //-------------------------------------------
 // PROTOTYPE
@@ -60,13 +58,12 @@ app.get("/:name", (req, res) => {
 
     // Get recipe ingredients
     await sqlQuery("SELECT ingredients($1)", [req.params.name])
-      .then((result) => ingredients = result)
+      .then((result) => (ingredients = result))
       .catch((err) => console.log(err));
 
     // Get recipe steps (instructions)
     await sqlQuery("SELECT steps($1)", [req.params.name])
-      .then((result) => steps = result
-      )
+      .then((result) => (steps = result))
       .catch((err) => console.log(err));
 
     // Get recipe images (links)
@@ -74,13 +71,15 @@ app.get("/:name", (req, res) => {
     //   .then((result) => console.log())
     //   .catch((err) => console.log());
 
-    // console.log(ingredients);
+    console.log(recipeInfo);
+    console.log(ingredients);
+    console.log(steps);
 
     // Generate the webpage from template and send back
     res.render("recipe", {
       recipeInfo: recipeInfo,
       ingredients: ingredients,
-      steps: steps
+      steps: steps,
     });
   })();
 });
