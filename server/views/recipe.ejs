@@ -4,14 +4,14 @@
 <head>
   <!-- Partial Head Data -->
   <%- include('partials/head.ejs') %>
-
-    <script src="http_requests.js"></script>
+    <link rel="stylesheet" href="/recipe.css">
+    <script src="/http_requests.js"></script>
+    <script src="/recipe.js" defer></script>
 </head>
 
-<body>
+<body >
   <!-- Navigation Menu -->
   <%- include('partials/nav.ejs') %>
-
 
     <!-- CENTER ENITRE PAGE CONTENT -->
     <!-- -------------------------- -->
@@ -41,7 +41,7 @@
             <!-- BOX THE 3 LISTS OF INGREDIENTS, UNIT and NAME -->
             <div class="w3-content w3-centered" style="min-width: fit-content">
               <!-- INGREDIENTS -->
-              <div class="w3-container w3-cell" style="padding-right: 0; text-align: right;">
+              <div class="ingredient-amounts w3-container w3-cell" style="padding-right: 0; text-align: right;">
                 <% ingredients.forEach(element=> { %>
                   <p>
                     <%= element.amount %>
@@ -76,10 +76,10 @@
 
                   <!-- Portions number  -->
                   <input class="portions-number w3-center" id="nr-of-portions" type="number" name="" min="1" max="99"
-                    maxlength="3" value="2">
+                    maxlength="3" value="<%= parseInt(recipeInfo[0].default_portions) %>" onchange="updateIngredientValues(value)">
 
                   <!-- Plus button   -->
-                  <button class="w3-button w3-green w3-circle w3-center w3-medium w3-ripple portion-buttons"
+                  <button class="w3-button w3-green w3-circle w3-center w3-ripple portion-buttons"
                     onclick="stepUpPortions()">+</button>
                 </span>
 

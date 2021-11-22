@@ -7,11 +7,5 @@ VALUES
 ('Pancakes', 1, 'Mix the flour with sugar first.', null),
 ('Pancakes', 2, 'Add eggs and whisk until white.', null),
 ('Pancakes', 3, 'Let the batter rest.', null),
-('Pancakes', 4, 'Cook pancakes!', null),
-
-('Amor', 1, 'Approach your amor.', null),
-('Amor', 2, 'Give sexi suss', null),
-('Amor', 3, 'Say "knolle"', null),
-('Amor', 4, 'Say Amo-T', null),
-('Amor', 5, 'Klaske rompa.', null);
+('Pancakes', 4, 'Cook pancakes!', null);
 

@@ -94,7 +94,7 @@ app.get("/recipes/:name", (req, res) => {
 
     // Get recipe images (links)
     await sqlQuery("SELECT * FROM images($1)", [req.params.name])
-      .then((result) => images = result)
+      .then((result) => (images = result))
       .catch((err) => console.log(err));
 
     // Generate the webpage from template and send back
@@ -102,7 +102,7 @@ app.get("/recipes/:name", (req, res) => {
       recipeInfo: recipeInfo,
       ingredients: ingredients,
       steps: steps,
-      images: images
+      images: images,
     });
   })();
 });
