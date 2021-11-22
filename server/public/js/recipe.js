@@ -18,16 +18,21 @@ const DEFAULT_AMOUNTS = (function setDefaultIngredients(nr) {
   return defaultNumbers;
 })();
 
+const MAX_PORTIONS = 99;
+const MIN_PORTIONS = 1;
+
 // Functions
 // ----------------------------------------------------------------------
 
 // Scales the amount of each ingredient proportional to the chosen portions.
 function updateIngredientValues(portion) {
-  // Reset values to default on invalid input
-  if (portion == "" || portion == "0") {
-    portion = DEFAULT_PORTIONS;
-    document.getElementById("nr-of-portions").value = portion;
-  }
+  // Reset or limit portions
+  if (portion == "" || portion == "0") portion = DEFAULT_PORTIONS; // Reset values to default on invalid input
+  if (portion > MAX_PORTIONS) portion = MAX_PORTIONS; 
+  if (portion < MIN_PORTIONS) portion = MIN_PORTIONS; 
+
+  // Update portions number
+  document.getElementById("nr-of-portions").value = portion;
 
   // Get all ingredient's value
   const matches = document.querySelectorAll("div.ingredient-amounts > p");
