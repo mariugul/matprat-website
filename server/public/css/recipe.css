@@ -21,6 +21,16 @@
   border-width: 1pt;
 }
 
+.ingredient-lists{
+  display: inline-block; 
+  text-align: left;
+  width: fit-content;
+}
+
+.ingredient-lists ul li{
+  list-style: none
+}
+
 /* Portions block */
 /* ---------------------------------------------------------- */
 .portions-block {
@@ -44,38 +54,6 @@
     padding-bottom: 2pt;
   } */
 
-/* Ingredients Block */
-/* ---------------------------------------------------------- */
-.ingredients-block {
-  width: 250px;
-  margin: left;
-  /* border: 1px solid black; */
-  padding: 10pt;
-  float: left;
-  margin-bottom: 20px;
-}
-
-.ingredients-header {
-  text-align: center;
-}
-
-.ingredients-list {
-  float: left;
-  list-style-type: none;
-  padding: 10pt;
-}
-
-.ingredients-amounts {
-  float: left;
-  list-style-type: none;
-  padding: 10pt;
-}
-
-.ingredients-units {
-  list-style-type: none;
-  padding: 10pt;
-  float: left;
-}
 
 /* Steps block */
 /* ---------------------------------------------------------- */
