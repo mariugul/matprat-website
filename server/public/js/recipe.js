@@ -76,3 +76,24 @@ function stepDownPortions() {
 function getPortionsObject() {
   return document.getElementById("nr-of-portions");
 }
+
+function strikeThroughText(listId) {
+  const clickedListItem = document.getElementById(listId);
+  const spanElement = clickedListItem.querySelector("span");
+  const text = spanElement.innerHTML;
+  const strikedText = "<del>" + text + "</del>";
+
+  // If the text is striked through, unstrike
+  if (clickedListItem.querySelector("del") !== null) {
+    // Parse away the strike tag
+    let unstrikedText = text.replace("<del>", "");
+    unstrikedText = unstrikedText.replace("</del>", "");
+
+    // Set the text back
+    spanElement.innerHTML = unstrikedText;
+  } else {
+    spanElement.innerHTML = strikedText;
+  }
+
+  console.log(spanElement.innerHTML);
+}

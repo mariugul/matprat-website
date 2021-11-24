@@ -39,7 +39,7 @@
       <hr>
 
       <!-- Ingredients Header -->
-      <h2 class="w3-container">Ingredients</h2>
+      <h2 style="text-decoration: underline;">Ingredients</h2>
 
       <!-- Table of Ingredients -->
       <table id="ingredients-table" class="w3-table w3-bordered w3-hoverable w3-ripple"
@@ -63,63 +63,61 @@
           <% } %>
       </table>
 
+      <hr>
 
-      <!-- BOX PORTIONS PICKER -->
-      <div class="portions-block w3-mobile">
+      <!-- Portions picker -->
+      <div class="portions-block" style="margin: auto;">
 
-        <!-- Portions Picker -->
         <span class="portions-picker">
-          <!-- Minus button -->
-          <button id="minus-button" class="w3-button w3-green w3-circle w3-center w3-ripple portion-buttons"
+          <button id="minus-button" class="portion-buttons w3-button w3-green w3-circle w3-ripple"
             onclick="stepDownPortions()">-</button>
 
-          <!-- Portions number  -->
           <input class="portions-number w3-center" id="nr-of-portions" type="number" name="" min="1" max="99"
             maxlength="2" value="<%= parseInt(recipeInfo[0].default_portions) %>"
             onchange="updateIngredientValues(value)">
 
-          <!-- Plus button   -->
-          <button id="plus-button" class="w3-button w3-green w3-circle w3-center w3-ripple portion-buttons"
+          <button id="plus-button" class="portion-buttons w3-button w3-green w3-circle w3-ripple"
             onclick="stepUpPortions()">+</button>
         </span>
 
         <div class="portions-text">PORTIONS</div>
       </div>
       <hr>
-      <!-- Ingredients and Steps Responsive Resize -->
-      <!-- --------------------------------------- -->
-      <div class="w3-row">
 
-        <!-- INGREDIENTS THAT GOES IN THE RECIPE  -->
-        <!-- LEFT SIDE -->
-        <div class="w3-quarter w3-container">
-          <!-- CENTER CONTENT -->
-          <div>
 
-            <!-- END OF INGREDIENTS BOX -->
-          </div>
-          <!--END OF CENTER CONTENT-->
-        </div>
-        <!-- END OF FIRST HALF  -->
+      <div style="padding-right: 5px; width: fit-content; margin: auto;">
+        <h2 style="text-decoration: underline;">Steps</h2>
 
-        <!-- STEPS TO TAKE TO COOK THE RECIPE  -->
-        <!-- RIGHT SIDE  -->
-        <div style="padding-right: 5px;">
-          <div class="">
-            <h2 class="steps-header">Steps</h2>
-            <ol style="text-align:left;">
-              <% steps.forEach(element=> { %>
-                <li>
-                  <%= element.description %>
-                </li> <br>
-                <% }) %>
-            </ol>
-          </div>
-          <!-- END OF SECOND HALF  -->
-        </div>
+        <ul class="w3-ul w3-hoverable w3-ripple" style="text-align:left;">
+          <% for (let index=0; index < steps.length; index++) { %>
+            <li id="stepsList<%= index + 1 %>" onclick="strikeThroughText(this.id)">
+              <strong style="font-size: 16px;">
+                <%= index + 1 %>.
+              </strong>
+              <span>
+                <%= steps[index].description %>
+              </span>
+
+              <!-- Comment In This When The Logic Is Ready For Note Icons -->
+              <% if (steps[index].note !== null) { %>
+                <span class="w3-tooltip" style="width: fit-content;">
+                  <img src="/info-black.png" alt="" width="25px"></img>
+                  <span class="w3-text">
+                    <div class="w3-panel w3-pale-blue w3-border">
+                      <h3>Note</h3>
+                      <p><%= steps[index].note %> </p>
+                    </div>
+                  </span>
+                </span>
+              <% } %>
+
+            </li>
+            <% } %>
+        </ul>
       </div>
+
+      <!-- END OF CENTER PAGE -->
     </div>
-    <!-- END OF CENTER PAGE -->
 </body>
 
 </html>

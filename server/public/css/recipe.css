@@ -31,10 +31,11 @@
   list-style: none
 }
 
+
 /* Portions block */
 /* ---------------------------------------------------------- */
 .portions-block {
-  width: 200px;
+  width: fit-content;
   /* border: 1px solid black; */
   margin: 10pt;
   padding: 5pt;
