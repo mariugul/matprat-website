@@ -5,6 +5,7 @@
   <!-- Partial Head Data -->
   <%- include('partials/head.ejs') %>
     <link rel="stylesheet" href="/recipe.css">
+    <link rel="stylesheet" href="/footer.css">
     <script src="/http_requests.js"></script>
     <script src="/recipe.js" defer></script>
 </head>
@@ -13,12 +14,13 @@
   <!-- Navigation Menu -->
   <%- include('partials/nav.ejs') %>
 
+    <!-- Cover image of the recipe -->
+    <img class="cover-image" src="<%= images[0].link %> " alt="<%= images[0].description %> "></a>
+
     <!-- CENTER ENITRE PAGE CONTENT -->
     <!-- -------------------------- -->
     <div class="center-page-content w3-content w3-center">
 
-      <!-- Cover image of the recipe -->
-      <img class="cover-image" src="<%= images[0].link %> " alt="<%= images[0].description %> "></a>
 
       <!-- Recipe Heading -->
       <h1 style="font-size: xxx-large;">
@@ -85,6 +87,7 @@
       <hr>
 
 
+      <!-- Recipe Steps -->
       <div style="padding-right: 5px; width: fit-content; margin: auto;">
         <h2 style="text-decoration: underline;">Steps</h2>
 
@@ -98,18 +101,20 @@
                 <%= steps[index].description %>
               </span>
 
-              <!-- Comment In This When The Logic Is Ready For Note Icons -->
-              <% if (steps[index].note !== null) { %>
+              <!-- Inserts a NOTE icon with information if a note exists -->
+              <% if (steps[index].note !==null) { %>
                 <span class="w3-tooltip" style="width: fit-content;">
                   <img src="/info-black.png" alt="" width="25px"></img>
                   <span class="w3-text">
                     <div class="w3-panel w3-pale-blue w3-border">
                       <h3>Note</h3>
-                      <p><%= steps[index].note %> </p>
+                      <p>
+                        <%= steps[index].note %>
+                      </p>
                     </div>
                   </span>
                 </span>
-              <% } %>
+                <% } %>
 
             </li>
             <% } %>
@@ -118,6 +123,9 @@
 
       <!-- END OF CENTER PAGE -->
     </div>
+
+    <!-- Footer -->
+    <%- include('partials/footer.ejs') %>
 </body>
 
 </html>
