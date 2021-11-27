@@ -111,6 +111,11 @@ COMMENT ON TABLE public.recipes IS 'Contains the information about the recipe na
 
 COMMENT ON COLUMN recipes.name IS 'The name of the recipe.';
 
+
+-- CREATE ROLE --
+CREATE ROLE nodejs WITH CREATEDB LOGIN PASSWORD 'nodejs'; 
+
+
 -- GRANTS -- 
 --------------------------
 GRANT INSERT, DELETE, UPDATE, SELECT ON images, ingredients, recipes, steps TO nodejs;

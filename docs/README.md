@@ -3,10 +3,19 @@
 [![GitHub Super-Linter](https://github.com/mariugul/matprat-website/workflows/Lint%20Code%20Base/badge.svg)](https://github.com/mariugul/matprat-website/actions/workflows/super-linter.yml)
 [![CodeFactor](https://www.codefactor.io/repository/github/mariugul/matprat-website/badge)](https://www.codefactor.io/repository/github/mariugul/matprat-website)
 
-# Website
+## Setup
+Install NodeJS 17 
+
+```bash
+# Using Ubuntu
+curl -fsSL https://deb.nodesource.com/setup_17.x | sudo -E bash -
+sudo apt-get install -y nodejs
+```
+
+## Website
 The website is constructed with the w3.css framework and JavaScript for dynamically loading in information from the database.
 
-# Server
+## Server
 The server runs on node.js with express.js to handle the API's. The server communicates with the database using the 'pg' package to connect to postgres.
 
 ## Database

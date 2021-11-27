@@ -24,3 +24,5 @@ DROP DOMAIN IF EXISTS image_description;
 DROP DOMAIN IF EXISTS recipe_description;
 
 DROP TYPE IF EXISTS measurement_units;
+
+DROP ROLE nodejs;
