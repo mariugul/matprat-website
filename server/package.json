@@ -1,12 +1,12 @@
 {
-  "name": "node-api-postgres",
+  "name": "marius-recipes",
   "version": "1.0.0",
   "private": true,
-  "description": "RESTful API with Node.js, Express, and PostgreSQL",
-  "main": "index.js",
+  "description": "A website with all of my recipes.",
+  "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js"
+    "start": "node app.js"
   },
   "keywords": [],
   "author": "",
