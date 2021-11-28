@@ -16,7 +16,8 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
     fish \
     vim \
     python3-pip \
-    postgresql-client-14 
+    postgresql-client-14 \
+    && rm -rf /var/lib/apt/lists/*
 
 # Install SQL linter/formatter
 RUN pip install sqlfluff
