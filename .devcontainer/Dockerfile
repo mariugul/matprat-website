@@ -20,7 +20,7 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
     && rm -rf /var/lib/apt/lists/*
 
 # Install SQL linter/formatter
-RUN pip install sqlfluff
+RUN pip install --no-cache-dir sqlfluff
 
 # [Optional] Uncomment if you want to install an additional version of node using nvm
 # ARG EXTRA_NODE_VERSION=10
