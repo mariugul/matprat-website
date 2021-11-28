@@ -1,0 +1,51 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the README at:
+// https://github.com/microsoft/vscode-dev-containers/tree/v0.205.2/containers/javascript-node-postgres
+// Update the VARIANT arg in docker-compose.yml to pick a Node.js version
+{
+	"name": "Marius Foods",
+	"dockerComposeFile": "docker-compose.yml",
+	"service": "app",
+	"workspaceFolder": "/workspace",
+
+	// Set *default* container specific settings.json values on container create.
+	"settings": {
+		"sqltools.connections": [{
+			"name": "Container database",
+			"driver": "PostgreSQL",
+			"previewLimit": 50,
+			"server": "localhost",
+			"port": 5432,
+			"database": "postgres",
+			"username": "postgres",
+			"password": "postgres"
+		}]
+	},
+
+	// Add the IDs of extensions you want installed when the container is created.
+	"extensions": [
+		"dbaeumer.vscode-eslint",
+		"formulahendry.auto-rename-tag",
+		"digitalbrainstem.javascript-ejs-support",
+		"abusaidm.html-snippets",
+		"xabikos.javascriptsnippets",
+		"robole.markdown-snippets",
+		"vscode-icons-team.vscode-icons",
+		"rangav.vscode-thunder-client",
+		"fudd.toggle-zen-mode",
+		"wallabyjs.quokka-vscode",
+		"sketchbuch.vsc-quokka-statusbar",
+		"esbenp.prettier-vscode",
+		"dorzey.vscode-sqlfluff"
+		// "mtxr.sqltools",
+		// "mtxr.sqltools-driver-pg"
+	],
+
+	// Use 'forwardPorts' to make a list of ports inside the container available locally.
+	// "forwardPorts": [3000, 5432],
+
+	// Use 'postCreateCommand' to run commands after the container is created.
+	"postCreateCommand": "./database/init_database.sh && cd server && sudo npm ci && nodemon server/app.js",
+
+	// Comment out connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.
+	// "remoteUser": "node"
+}

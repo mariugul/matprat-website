@@ -113,7 +113,7 @@ COMMENT ON COLUMN recipes.name IS 'The name of the recipe.';
 
 
 -- CREATE ROLE --
-CREATE ROLE nodejs WITH CREATEDB LOGIN PASSWORD 'nodejs'; 
+-- CREATE ROLE nodejs WITH CREATEDB LOGIN PASSWORD 'nodejs'; 
 
 
 -- GRANTS -- 

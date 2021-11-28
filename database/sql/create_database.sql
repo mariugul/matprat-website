@@ -1,0 +1,1 @@
+CREATE DATABASE matprat WITH OWNER nodejs;

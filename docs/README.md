@@ -12,6 +12,11 @@ curl -fsSL https://deb.nodesource.com/setup_17.x | sudo -E bash -
 sudo apt-get install -y nodejs
 ```
 
+Connect to PostgreSQL container.
+```bash
+sudo psql -h website-db -U postgres
+```
+
 ## Website
 The website is constructed with the w3.css framework and JavaScript for dynamically loading in information from the database.
 
