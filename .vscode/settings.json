@@ -5,17 +5,19 @@
     "terminal.integrated.defaultProfile.linux": "fish",
     
     "editor.minimap.enabled": false,
-    "editor.rulers": [80],
     "editor.formatOnSave": true,
+    "editor.rulers": [120],
     
     "editor.defaultFormatter": "esbenp.prettier-vscode",
     "[html]": {
         "editor.defaultFormatter": "vscode.html-language-features"
     },
     "[sql]": {
-        "editor.defaultFormatter": "dorzey.vscode-sqlfluff"
+        "editor.defaultFormatter": "dorzey.vscode-sqlfluff",
+        "editor.rulers": [80]
     },
-    
+
+        
     "sql.linter.executablePath": "/usr/local/bin/sqlfluff",
 
 }
