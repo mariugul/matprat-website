@@ -7,6 +7,8 @@ on:
 jobs:
   test_pull_request:
     runs-on: ubuntu-latest
+    defaults: 
+      working-directory: server
     steps: 
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
