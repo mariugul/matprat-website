@@ -1,6 +1,6 @@
 -- Drop Functions
 DROP FUNCTION IF EXISTS recipes();
-DROP FUNCTION IF EXISTS recipeInfo(recipe_name);
+DROP FUNCTION IF EXISTS recipeinfo(recipe_name);
 DROP FUNCTION IF EXISTS ingredients(recipe_name);
 DROP FUNCTION IF EXISTS steps(recipe_name);
 DROP FUNCTION IF EXISTS images(recipe_name);

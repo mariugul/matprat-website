@@ -5,6 +5,7 @@
     "terminal.integrated.defaultProfile.linux": "fish",
     
     "editor.minimap.enabled": false,
+    "editor.rulers": [80],
     "editor.formatOnSave": true,
     
     "editor.defaultFormatter": "esbenp.prettier-vscode",
