@@ -28,12 +28,11 @@ jobs:
           DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           LOG_LEVEL: WARN
-          VALIDATE_SQLFLUFF: true
-          VALIDATE_NATURAL_LANGUAGE: true
-          VALIDATE_MARKDOWN: true
+          # VALIDATE_SQLFLUFF: true
+          # VALIDATE_NATURAL_LANGUAGE: true
+          # VALIDATE_MARKDOWN: true
           VALIDATE_JSON: true
-          VALIDATE_JSX: true
-          VALIDATE_JAVASCRIPT_STANDARD: true
+          # VALIDATE_JAVASCRIPT_STANDARD: true
           VALIDATE_JAVASCRIPT_ES: true
           VALIDATE_HTML: true
           VALIDATE_CSS: true
