@@ -10,12 +10,3 @@ body {
   margin: auto;
   border-radius: 100%;
 }
-
-/* Medias */
-/* ---------------------------------------------------------- */
-/* @media screen and (max-width: 600px) {
-  .search_bar {
-    visibility: hidden;
-    display: none;
-  }
-} */
