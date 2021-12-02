@@ -49,13 +49,13 @@ jobs:
         working-directory: server
     steps:
       - uses: actions/checkout@v2
-      # - name: Setup Node Environment
-      - uses: actions/setup-node@v1
+      - name: Setup Node Environment
+        uses: actions/setup-node@v1
         with:
           node-version: 16
       - name: Clean Install Packages
-      - run: npm ci
-      # - name: Test
-      - run: npm test
-      # - name: Build
-      - run: npm run build
+        run: npm ci
+      - name: Test
+        run: npm test
+      - name: Build
+        run: npm run build
