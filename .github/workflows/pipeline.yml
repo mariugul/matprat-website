@@ -2,7 +2,7 @@ name: Pipeline
 
 on:
   push:
-    branches: 
+    branches:
       - main
   pull_request:
     branches:
@@ -12,7 +12,7 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
+      - name: Checkout Code
         uses: actions/checkout@v2
         with:
           # Full git history is needed to get a proper list of changed files within `super-linter`
@@ -40,22 +40,22 @@ jobs:
           VALIDATE_BASH_EXEC: true
           VALIDATE_BASH: true
 
-  build:
-    needs: [lint]
-    runs-on: ubuntu-20.04
-    defaults:
-      run:
-        shell: bash
-        working-directory: server
-    steps:
-      - uses: actions/checkout@v2
-      - name: Setup Node Environment
-      - uses: actions/setup-node@v1
-        with:
-          node-version: 16
-      - name: Clean Install Packages
-      - run: npm ci
-      - name: Test
-      - run: npm test
-      - name: Build
-      - run: npm run build
+  # build:
+  #   needs: [lint]
+  #   runs-on: ubuntu-20.04
+  #   defaults:
+  #     run:
+  #       shell: bash
+  #       working-directory: server
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - name: Setup Node Environment
+  #     - uses: actions/setup-node@v1
+  #       with:
+  #         node-version: 16
+  #     - name: Clean Install Packages
+  #     - run: npm ci
+  #     - name: Test
+  #     - run: npm test
+  #     - name: Build
+  #     - run: npm run build
