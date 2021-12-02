@@ -1,6 +1,6 @@
 # matprat-website
 
-[![GitHub Super-Linter](https://github.com/mariugul/matprat-website/workflows/Lint%20Code%20Base/badge.svg)](https://github.com/mariugul/matprat-website/actions/workflows/super-linter.yml)
+[![Pipeline](https://github.com/mariugul/matprat-website/actions/workflows/pipeline.yml/badge.svg)](https://github.com/mariugul/matprat-website/actions/workflows/pipeline.yml)
 [![CodeFactor](https://www.codefactor.io/repository/github/mariugul/matprat-website/badge)](https://www.codefactor.io/repository/github/mariugul/matprat-website)
 
 ## Setup
