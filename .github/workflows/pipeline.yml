@@ -1,18 +1,15 @@
-# This workflow executes several linters on changed files based on languages used in your code base whenever
-# you push a code or open a pull request.
-#
-# You can adjust the behavior by modifying this file.
-# For more information, see:
-# https://github.com/github/super-linter
-name: Lint Code Base
+name: Pipeline
 
 on:
   push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+    branches: 
+      - main
+  pull-request:
+    branches:
+      - main
+
 jobs:
-  run-lint:
+  lint:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -42,3 +39,23 @@ jobs:
           # VALIDATE_DOCKERFILE_HADOLINT: true
           VALIDATE_BASH_EXEC: true
           VALIDATE_BASH: true
+          
+  build:
+    needs: [lint]
+    runs-on: ubuntu-20.04
+    defaults:
+      run:
+        shell: bash
+        working-directory: server
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup Node Environment
+      - uses: actions/setup-node@v1
+          with:
+            node-version: 16
+      - name: Clean Install Packages
+      - run: npm ci
+      - name: Test
+      - run: npm test
+      - name: Build
+      - run: npm run build
