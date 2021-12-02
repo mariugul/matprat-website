@@ -1,23 +1,24 @@
 {
-    "workbench.colorTheme": "Default Dark+",
-    "workbench.iconTheme": "vscode-icons",
-    "workbench.sideBar.location": "right",
-    "terminal.integrated.defaultProfile.linux": "fish",
-    
-    "editor.minimap.enabled": false,
-    "editor.formatOnSave": true,
-    "editor.rulers": [120],
-    
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
-    "[html]": {
-        "editor.defaultFormatter": "vscode.html-language-features"
-    },
-    "[sql]": {
-        "editor.defaultFormatter": "dorzey.vscode-sqlfluff",
-        "editor.rulers": [80]
-    },
+  "workbench.colorTheme": "Default Dark+",
+  "workbench.iconTheme": "vscode-icons",
+  "workbench.sideBar.location": "right",
+  "terminal.integrated.defaultProfile.linux": "fish",
 
-        
-    "sql.linter.executablePath": "/usr/local/bin/sqlfluff",
+  "editor.minimap.enabled": false,
+  "editor.formatOnSave": true,
+  "editor.rulers": [120],
 
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "[html]": {
+    "editor.defaultFormatter": "vscode.html-language-features"
+  },
+  "[sql]": {
+    "editor.defaultFormatter": "dorzey.vscode-sqlfluff",
+    "editor.rulers": [80]
+  },
+
+  "sql.linter.executablePath": "/usr/local/bin/sqlfluff",
+  "github-actions.workflows.pinned.workflows": [
+    ".github/workflows/pipeline.yml"
+  ]
 }

@@ -35,7 +35,8 @@
 		"wallabyjs.quokka-vscode",
 		"sketchbuch.vsc-quokka-statusbar",
 		"esbenp.prettier-vscode",
-		"dorzey.vscode-sqlfluff"
+		"dorzey.vscode-sqlfluff",
+		"cschleiden.vscode-github-actions"
 		// "mtxr.sqltools",
 		// "mtxr.sqltools-driver-pg"
 	],
