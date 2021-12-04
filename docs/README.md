@@ -3,7 +3,25 @@
 [![Pipeline](https://github.com/mariugul/matprat-website/actions/workflows/pipeline.yml/badge.svg)](https://github.com/mariugul/matprat-website/actions/workflows/pipeline.yml)
 [![CodeFactor](https://www.codefactor.io/repository/github/mariugul/matprat-website/badge)](https://www.codefactor.io/repository/github/mariugul/matprat-website)
 
-## Setup
+**Contents**
+
+<!-- vscode-markdown-toc -->
+
+- 1. [Setup](#Setup)
+- 2. [Website](#Website)
+- 3. [Server](#Server)
+- 4. [Database](#Database)
+  - 4.1. [Recipes Page](#RecipesPage)
+  - 4.2. [Domains and Enums](#DomainsandEnums)
+  - 4.3. [Trigger Functions](#TriggerFunctions)
+
+<!-- vscode-markdown-toc-config
+	numbering=true
+	autoSave=true
+	/vscode-markdown-toc-config -->
+<!-- /vscode-markdown-toc -->
+
+## 1. <a name='Setup'></a>Setup
 
 Install NodeJS 17
 
@@ -19,19 +37,19 @@ Connect to PostgreSQL container.
 sudo psql -h website-db -U postgres
 ```
 
-## Website
+## 2. <a name='Website'></a>Website
 
 The website is constructed with the w3.css framework and JavaScript for dynamically loading in information from the database.
 
-## Server
+## 3. <a name='Server'></a>Server
 
 The server runs on node.js with express.js to handle the API's. The server communicates with the database using the 'pg' package to connect to postgres.
 
-## Database
+## 4. <a name='Database'></a>Database
 
 The website information will be hosted in a PostgreSQL database. That means a good database design is crucial. The implementation of the database is found in the folder `sql`.
 
-### Recipes Page
+### 4.1. <a name='RecipesPage'></a>Recipes Page
 
 This is basic implementation of the content for the recipes page. A recipe is identified by a unique id and a unique name. Therefore, duplicate recipes are not possible. Due to this fact, all the other tables reference the recipes-table's `id` and `name`. This is how the website will identify which content belongs on the recipe site.
 
@@ -43,6 +61,6 @@ This is basic implementation of the content for the recipes page. A recipe is id
 
 - **Images** are the image(s) that will be displayed on the bottom (or the top?) of the page. This table contains merely the links to where those images are. Like the other tables this also has a unique combination of recipe_id and image_nr. A description is added for information about the image and can typically be used in an "alt" tag.
 
-### Domains and Enums
+### 4.2. <a name='DomainsandEnums'></a>Domains and Enums
 
-### Trigger Functions
+### 4.3. <a name='TriggerFunctions'></a>Trigger Functions
