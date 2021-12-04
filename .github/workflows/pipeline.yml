@@ -61,8 +61,12 @@ jobs:
         run: npm run build
 
   docker:
-    runs-on: ubuntu-20.04
     needs: [build]
+    runs-on: ubuntu-20.04
+    defaults:
+      run:
+        shell: bash
+        working-directory: .devcontainter
     steps:
       -
         name: Checkout
