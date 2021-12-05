@@ -18,7 +18,5 @@
   },
 
   "sql.linter.executablePath": "/usr/local/bin/sqlfluff",
-  "github-actions.workflows.pinned.workflows": [
-    ".github/workflows/pipeline.yml"
-  ]
+  "github-actions.workflows.pinned.workflows": []
 }

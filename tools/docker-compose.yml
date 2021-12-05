@@ -4,7 +4,7 @@ services:
   mariusrecipes:
     image: mariusrecipes
     build:
-      context: server
+      context: ../server
       dockerfile: ./Dockerfile
     environment:
       NODE_ENV: production
