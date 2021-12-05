@@ -9,84 +9,75 @@ on:
       - main
 
 jobs:
-  # lint:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout Code
-  #       uses: actions/checkout@v2
-  #       with:
-  #         # Full git history is needed to get a proper list of changed files within `super-linter`
-  #         fetch-depth: 0
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+        with:
+          # Full git history is needed to get a proper list of changed files within `super-linter`
+          fetch-depth: 0
 
-  #     - name: Lint Code Base
-  #       uses: github/super-linter/slim@v4
-  #       env:
-  #         VALIDATE_ALL_CODEBASE: true
-  #         DEFAULT_BRANCH: main
-  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  #         LOG_LEVEL: WARN
-  #         # VALIDATE_SQLFLUFF: true
-  #         # VALIDATE_NATURAL_LANGUAGE: true
-  #         # VALIDATE_MARKDOWN: true
-  #         VALIDATE_JSON: true
-  #         # VALIDATE_JAVASCRIPT_STANDARD: true
-  #         VALIDATE_JAVASCRIPT_ES: true
-  #         VALIDATE_HTML: true
-  #         # VALIDATE_CSS: true
-  #         VALIDATE_GITLEAKS: true
-  #         # VALIDATE_GITHUB_ACTIONS: true
-  #         VALIDATE_DOCKERFILE: true
-  #         # VALIDATE_DOCKERFILE_HADOLINT: true
-  #         VALIDATE_BASH_EXEC: true
-  #         VALIDATE_BASH: true
+      - name: Lint Code Base
+        uses: github/super-linter/slim@v4
+        env:
+          VALIDATE_ALL_CODEBASE: true
+          DEFAULT_BRANCH: main
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          LOG_LEVEL: WARN
+          # VALIDATE_SQLFLUFF: true
+          # VALIDATE_NATURAL_LANGUAGE: true
+          # VALIDATE_MARKDOWN: true
+          VALIDATE_JSON: true
+          # VALIDATE_JAVASCRIPT_STANDARD: true
+          VALIDATE_JAVASCRIPT_ES: true
+          VALIDATE_HTML: true
+          # VALIDATE_CSS: true
+          VALIDATE_GITLEAKS: true
+          # VALIDATE_GITHUB_ACTIONS: true
+          VALIDATE_DOCKERFILE: true
+          # VALIDATE_DOCKERFILE_HADOLINT: true
+          VALIDATE_BASH_EXEC: true
+          VALIDATE_BASH: true
 
-  # build:
-  #   needs: [lint]
-  #   runs-on: ubuntu-20.04
-  #   defaults:
-  #     run:
-  #       shell: bash
-  #       working-directory: server
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #     - name: Setup Node Environment
-  #       uses: actions/setup-node@v1
-  #       with:
-  #         node-version: 16
-  #     - name: Clean Install Packages
-  #       run: npm ci
-  #     - name: Test
-  #       run: npm test
-  #     - name: Build
-  #       run: npm run build
-
-  docker:
-    # needs: [build]
+  build:
+    needs: [lint]
     runs-on: ubuntu-20.04
     defaults:
       run:
         shell: bash
-        working-directory: .devcontainter
+        working-directory: server
     steps:
-      -
-        name: Checkout
+      - uses: actions/checkout@v2
+      - name: Setup Node Environment
+        uses: actions/setup-node@v1
+        with:
+          node-version: 16
+      - name: Clean Install Packages
+        run: npm ci
+      - name: Test
+        run: npm test
+      - name: Build
+        run: npm run build
+
+  deploy:
+    needs: [build]
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout
         uses: actions/checkout@v2
-      -
-        name: Set up QEMU
+      - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
-      -
-        name: Set up Docker Buildx
+      - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
-      -
-        name: Login to DockerHub
+      - name: Login to DockerHub
         uses: docker/login-action@v1
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      -
-        name: Build and push
+      - name: Build and push
         uses: docker/build-push-action@v2
         with:
           context: server/
           push: true
-          tags: mariugul/pipeline-test:latest
+          tags: mariugul/pratmat:alpha-latest
