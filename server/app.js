@@ -1,7 +1,9 @@
 const { render } = require("ejs");
 const express = require("express");
 const { object } = require("joi");
+const process = require('process');
 // var cors = require('cors') // CORS for local development
+
 var app = express();
 
 app.set("view engine", "ejs"); // use EJS as template engine
@@ -11,11 +13,26 @@ app.use(express.static("public/js"));
 app.use(express.static("public/images"));
 // app.use(express.json(), cors()); // Allow CORS
 
+//
+process.on('SIGINT', function onSigint() {
+  app.shutdown();
+});
+
+process.on('SIGTERM', function onSigterm() {
+  app.shutdown();
+});
+
+app.shutdown = function () {
+  // clean up your resources and exit 
+  process.exit();
+};
+
+
 // Set up postgres parameters
 const { Pool, Client } = require("pg");
 const pool = new Pool({
   user: "nodejs",
-  host: "localhost",
+  host: "db",
   database: "matprat",
   password: "nodejs",
   port: 5432,
