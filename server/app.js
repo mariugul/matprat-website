@@ -31,11 +31,11 @@ app.shutdown = function () {
 // Set up postgres parameters
 const { Pool, Client } = require("pg");
 const pool = new Pool({
-  user: "nodejs",
-  host: "db",
-  database: "matprat",
-  password: "nodejs",
-  port: 5432,
+  user: process.env.DB_USER || "nodejs",
+  host: process.env.DB_HOST || "localhost",
+  database: process.env.DB || "matprat",
+  password: process.env.DB_PASSWORD || "nodejs",
+  port: process.env.DB_PORT || 5432,
 });
 
 // Functions
@@ -167,5 +167,5 @@ app.get("/api/db/select/recipes", (req, res) => {
 
 // Read port from environment variable.
 // If it doesn't exist, use port 3000.
-const port = process.env.PORT || 3000;
+const port = process.env.NODE_PORT || 3000;
 app.listen(port, () => console.log(`Listening on port ${port}...`));
