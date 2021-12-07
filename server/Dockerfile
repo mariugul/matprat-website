@@ -1,4 +1,4 @@
-FROM node:16-buster-slim
+FROM node:16-alpine-3.14
 ENV NODE_ENV=production
 WORKDIR /usr/src/app
 COPY ["package.json", "package-lock.json*", "npm-shrinkwrap.json*", "./"]
