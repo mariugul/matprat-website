@@ -61,7 +61,7 @@ jobs:
   #       run: npm run build
 
   deploy:
-    needs: [build]
+    # needs: [build]
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout
