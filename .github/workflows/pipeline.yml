@@ -9,59 +9,40 @@ on:
       - main
 
 jobs:
-  # lint:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout Code
-  #       uses: actions/checkout@v2
-  #       with:
-  #         # Full git history is needed to get a proper list of changed files within `super-linter`
-  #         fetch-depth: 0
+  lint:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: "actions/checkout@v2"
+      - uses: "actions/setup-python@v2"
+        with:
+          python-version: "3.9.2"
+      - name: Install SQLFluff
+        run: "pip install sqlfluff==0.8.2"
+      - name: Lint SQL Files
+        run: "./database/lint.sh"
 
-  #     - name: Lint Code Base
-  #       uses: github/super-linter/slim@v4
-  #       env:
-  #         VALIDATE_ALL_CODEBASE: true
-  #         DEFAULT_BRANCH: main
-  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  #         LOG_LEVEL: WARN
-  #         # VALIDATE_SQLFLUFF: true
-  #         # VALIDATE_NATURAL_LANGUAGE: true
-  #         # VALIDATE_MARKDOWN: true
-  #         VALIDATE_JSON: true
-  #         # VALIDATE_JAVASCRIPT_STANDARD: true
-  #         VALIDATE_JAVASCRIPT_ES: true
-  #         VALIDATE_HTML: true
-  #         # VALIDATE_CSS: true
-  #         VALIDATE_GITLEAKS: true
-  #         # VALIDATE_GITHUB_ACTIONS: true
-  #         VALIDATE_DOCKERFILE: true
-  #         # VALIDATE_DOCKERFILE_HADOLINT: true
-  #         VALIDATE_BASH_EXEC: true
-  #         VALIDATE_BASH: true
-
-  # build:
-  #   needs: [lint]
-  #   runs-on: ubuntu-20.04
-  #   defaults:
-  #     run:
-  #       shell: bash
-  #       working-directory: server
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #     - name: Setup Node Environment
-  #       uses: actions/setup-node@v1
-  #       with:
-  #         node-version: 16
-  #     - name: Clean Install Packages
-  #       run: npm ci
-  #     - name: Test
-  #       run: npm test
-  #     - name: Build
-  #       run: npm run build
+  build:
+    needs: [lint]
+    runs-on: ubuntu-20.04
+    defaults:
+      run:
+        shell: bash
+        working-directory: server
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup Node Environment
+        uses: actions/setup-node@v1
+        with:
+          node-version: 16
+      - name: Clean Install Packages
+        run: npm ci
+      - name: Test
+        run: npm test
+      - name: Build
+        run: npm run build
 
   deploy:
-    # needs: [build]
+    needs: [build]
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout
@@ -69,7 +50,7 @@ jobs:
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
-        with: 
+        with:
           image: tonistiigi/binfmt:latest
           platforms: linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64/v8,linux/ppc64le,linux/s390x
 
