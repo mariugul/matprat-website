@@ -1,0 +1,14 @@
+[
+  {
+    "id": "pratmat-docker-pull",
+    "execute-command": "pull-docker-hub.sh",
+    "command-working-directory": "."
+  },
+
+  {
+    "id": "pratmat-git-pull",
+    "execute-command": "pull-repository.sh",
+    "command-working-directory": ".",
+    "response-message": "I got the git push notification!"
+  }
+]
