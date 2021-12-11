@@ -21,5 +21,5 @@ services:
       - NO=Europe/Oslo #optional
     volumes:
       - /home/ubuntu/repos/matprat-website/production/webhooks:/config:ro
-    # ports:
-    #   - 9000:9000
+    ports:
+      - 9000:9000
