@@ -26,4 +26,4 @@ docker-compose up -d
 ```
 
 ## .env
-There is an environment file `.env` that is a template in the repo. Edit the file to contain the relay authentication and buckets.
+There should be an environment file `.env` in the /production folder. Edit the file to contain the relay authentication and buckets.
