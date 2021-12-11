@@ -4,7 +4,7 @@ services:
   server:
     image: mariugul/pratmat:alpha-latest
     restart: unless-stopped
-    container_name: "pratmat"
+    container_name: "pratmat-website"
     # Uncomment the next line to use a non-root user for all processes.
     user: node
     environment:
