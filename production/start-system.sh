@@ -5,4 +5,4 @@
 docker-compose -f docker-compose.yml -f webhooks/docker-compose.yml up --remove-orphan -d
 
 # Start webhooks
-# webhook -hooks webhooks/hooks.json -verbose -hotreload
+webhook -hooks webhooks/hooks.json -verbose -hotreload

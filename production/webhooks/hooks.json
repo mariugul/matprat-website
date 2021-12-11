@@ -1,8 +1,8 @@
 [
   {
     "id": "pratmat-docker-pull",
-    "execute-command": "/home/ubuntu/repos/matprat-website/production/webhooks/pull-docker-hub.sh",
-    "command-working-directory": "/home/ubuntu/repos/matprat-website/production/webhooks",
+    "execute-command": "/home/ubuntu/repos/matprat-website/production/pull-docker-hub.sh",
+    "command-working-directory": "/home/ubuntu/repos/matprat-website/production",
     "response-message": "I got the docker pull notification!"
   }
 ]

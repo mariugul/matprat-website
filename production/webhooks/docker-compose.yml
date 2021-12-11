@@ -12,14 +12,16 @@ services:
       # buckets list to subscribe
       - BUCKETS=${BUCKETS}
 
-  webhook:
-    container_name: pratmat-webhook
-    image: thecatlady/webhook:2.8.0
-    restart: unless-stopped
-    command: -verbose -hooks=hooks.json -hotreload
-    environment:
-      - NO=Europe/Oslo #optional
-    volumes:
-      - /home/ubuntu/repos/matprat-website/production/webhooks:/config:ro
-    ports:
-      - 9000:9000
+  # This is actually a pretty awesome container, but it's difficult to run scripts outside of the container.
+  # Therefore this is run from the host instead.
+  # webhook:
+  #   container_name: pratmat-webhook
+  #   image: thecatlady/webhook:2.8.0
+  #   restart: unless-stopped
+  #   command: -verbose -hooks=hooks.json -hotreload
+  #   environment:
+  #     - NO=Europe/Oslo #optional
+  #   volumes:
+  #     - /home/ubuntu/repos/matprat-website/production/webhooks:/config:ro
+  #   ports:
+  #     - 9000:9000
