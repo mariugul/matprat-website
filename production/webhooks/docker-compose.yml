@@ -23,5 +23,3 @@ services:
       - /home/ubuntu/repos/matprat-website/production/webhooks:/config:ro
     # ports:
     #   - 9000:9000
-    
-      
