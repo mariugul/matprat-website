@@ -6,4 +6,5 @@
 curl -sSL https://get.docker.com | sh
 
 # Allow docker as a regular user
+sudo groupadd docker
 sudo usermod -aG docker ubuntu
