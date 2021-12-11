@@ -6,4 +6,4 @@
 curl -sSL https://get.docker.com | sh
 
 # Allow docker as a regular user
-sudo usermod -aG docker pi
+sudo usermod -aG docker ubuntu

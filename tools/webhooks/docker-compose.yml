@@ -1,0 +1,13 @@
+version: '3.2'
+services:
+ relay:
+   container_name: pratmat-webhooks
+   image: webhookrelay/webhookrelayd-aarch64:1.26.5
+   network_mode: host # required if you want to access other services running on localhost (otherwise localhost would be inside this container)
+   restart: always
+   environment:
+     # Authentication
+     - RELAY_KEY=${RELAY_KEY}
+     - RELAY_SECRET=${RELAY_SECRET}
+     # buckets list to subscribe
+     - BUCKETS=${BUCKETS}
