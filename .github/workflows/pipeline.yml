@@ -34,7 +34,7 @@ jobs:
       - name: Clean Install Packages
         run: npm ci
       - name: Run ESLint
-        run: eslint /server --ext .js,.jsx,.ts,.tsx
+        run: npm install eslint && eslint /server --ext .js,.jsx,.ts,.tsx
       - name: Test
         run: npm test
       - name: Build
