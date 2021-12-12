@@ -8,9 +8,6 @@ on:
 jobs:
   lint:
     runs-on: ubuntu-20.04
-    defaults:
-      run:
-        working-directory: server
     steps:
       - uses: "actions/checkout@v2"
       - uses: "actions/setup-python@v2"
@@ -20,11 +17,11 @@ jobs:
         run: "pip install sqlfluff==0.8.2"
       - name: Lint SQL Files
         run: "./database/lint.sh"
-      
       - name: Setup Node Environment
         uses: actions/setup-node@v1
         with:
           node-version: 16
+          working-directory: server
       - name: Install Modules
         run: yarn
       - name: Run ESLint
