@@ -23,7 +23,7 @@ jobs:
           node-version: 16
           working-directory: server
       - name: Install Modules
-        run: yarn
+        run: npm ci
       - name: Run ESLint
         run: eslint . --ext .js,.jsx,.ts,.tsx
 
