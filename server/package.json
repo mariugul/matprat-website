@@ -5,6 +5,9 @@
   "description": "A website with all of my recipes.",
   "main": "app.js",
   "scripts": {
+    "lint": "npm run lint:js && npm run lint:ejs",
+    "lint:js": "npx eslint .",
+    "lint:ejs": "npx ejslint $(find ./ -type f -iname '*.ejs')",
     "test": "echo \"Error: no test specified\" && exit 0",
     "start": "node app.js",
     "build": "echo \"Error: no build specified\" && exit 0"
@@ -21,6 +24,7 @@
     "pg": "^8.7.1"
   },
   "devDependencies": {
+    "ejs-lint": "^1.2.1",
     "eslint": "^8.4.1",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.25.3"
