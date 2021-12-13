@@ -34,7 +34,7 @@ jobs:
       - name: Clean Install Packages
         run: npm ci
       - name: Lint with ESLint and EJS-Lint
-        run: npm install eslint && npm install ejs-lint && npm run lint"
+        run: npm install eslint && npm install ejs-lint && npm run lint
       - name: Test
         run: npm test
       - name: Build
