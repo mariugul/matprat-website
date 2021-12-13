@@ -33,8 +33,8 @@ jobs:
           node-version: 16
       - name: Clean Install Packages
         run: npm ci
-      - name: Run ESLint
-        run: npm install eslint && npx eslint "**/*.js"
+      - name: Lint with ESLint and EJS-Lint
+        run: npm install eslint && npm install ejs-lint && npm run lint
       - name: Test
         run: npm test
       - name: Build
