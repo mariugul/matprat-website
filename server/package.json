@@ -27,6 +27,7 @@
     "ejs-lint": "^1.2.1",
     "eslint": "^8.4.1",
     "eslint-config-airbnb-base": "^15.0.0",
-    "eslint-plugin-import": "^2.25.3"
+    "eslint-plugin-import": "^2.25.3",
+    "git-conventional-commits": "^1.1.0"
   }
 }
