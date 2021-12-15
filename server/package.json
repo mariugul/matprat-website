@@ -8,7 +8,7 @@
     "lint": "npm run lint:js && npm run lint:ejs",
     "lint:js": "npx eslint .",
     "lint:ejs": "npx ejslint $(find ./ -type f -iname '*.ejs')",
-    "test": "echo \"Error: no test specified\" && exit 0",
+    "test": "exit 0",
     "start": "node app.js",
     "build": "echo \"Error: no build specified\" && exit 0"
   },
@@ -28,6 +28,7 @@
     "eslint": "^8.4.1",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.25.3",
-    "git-conventional-commits": "^1.1.0"
+    "git-conventional-commits": "^1.1.0",
+    "mocha": "^9.1.3"
   }
 }
