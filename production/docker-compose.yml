@@ -31,9 +31,9 @@ services:
       POSTGRES_DB: postgres
       PGDATA: /var/lib/postgresql/data
 
-    db_backups:
+  db_backups:
     image: prodrigestivill/postgres-backup-local:14-alpine
-    restart: always
+    restart: unless-stopped
     container_name: "pratmat-db-backup"
     user: postgres:postgres # Optional: see below
     volumes:
