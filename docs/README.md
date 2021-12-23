@@ -47,3 +47,6 @@ This is basic implementation of the content for the recipes page. A recipe is id
 ### Domains and Enums
 
 ### Trigger Functions
+
+### Database Backup
+The database is backed up daily to the local file system. This is done using a docker image that has a mounted volume to /var/opt/ and runs cronjobs internally. The docker image is taken from [prodrigestivill/postgres-backup-local](https://hub.docker.com/r/prodrigestivill/postgres-backup-local). In the future a cloud based backup would probably be a good additional and perhaps an additional usb-drive backup.
