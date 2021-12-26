@@ -4,9 +4,28 @@
 <head>
   <!-- Partial Head Data -->
   <%- include('partials/head.ejs') %>
-  
-  <script src="http_requests.js"></script>
-  <script src="recipes.js"></script>
+    <link rel="stylesheet" href="/footer.css">
+    <script src="http_requests.js"></script>
+    <script src="recipes.js"></script>
+    <style>
+      input[type=text] {
+        width: 250px;
+        box-sizing: border-box;
+        border: 2px solid #ccc;
+        border-radius: 4px;
+        font-size: 16px;
+        background-color: white;
+        background-image: url('searchicon.png');
+        background-position: 10px 10px;
+        background-repeat: no-repeat;
+        padding: 12px 20px 12px 40px;
+        transition: width 0.4s ease-in-out;
+      }
+
+      input[type=text]:focus {
+        width: 100%;
+      }
+    </style>
 </head>
 
 <body>
@@ -14,37 +33,92 @@
   <%- include('partials/nav.ejs') %>
 
     <!-- CENTER ENTIRE PAGE CONTENT -->
-    <div class="w3-content" style="max-width:80%;">
-      <!-- <input type="text" id="recipeName" placeholder="Recipe Name"> -->
-      <!-- <button class="w3-button w3-round-large w3-green w3-ripple" onclick="loadRecipeInfo(document.getElementById('recipeName').value)">Load Info</button> -->
-      <!-- <button class="w3-button w3-round-large w3-green w3-ripple" onclick="loadAllRecipeNames()">Load All Recipes</button> -->
-      <!-- <div id="demo">Waffles content in database will show up here</div> -->
-    </div>
-    <!-- END OF CENTER PAGE -->
+    <div class="w3-content" style="max-width:95%;background-color: white;">
 
-    <div class="w3-content" style="max-width: 60%">
-      <img class="mySlides w3-ripple" src="/images/pancake.jpg" style="width:100%;display:none; cursor: pointer"
-        onclick="openRecipe('Pancakes')">
-      <img class="mySlides w3-ripple" src="/images/waffles.jpg" style="width:100%; cursor: pointer;"
-        onclick="openRecipe('Waffles')">
-      <img class="mySlides w3-ripple" src="/images/beef.jpg" style="width:100%;display:none;  cursor: pointer"
-        onclick="openRecipe('Beef')">
+      <header>
+        <h1 class="w3-center w3-xxxlarge">Recipes</h1>
+      </header>
+      <hr>
 
-      <div class="w3-row-padding w3-section">
-        <div class="w3-col s4">
-          <img class="demo w3-opacity w3-hover-opacity-off" src="/images/pancake.jpg" style="width:100%;cursor:pointer"
-            onclick="currentDiv(1)">
+      <!-- Search Bar  -->
+      <form class="w3-center">
+        <input type="text" name="search" placeholder="Search for recipes...">
+      </form>
+
+
+
+      <!-- Filter Tags -->
+      <div class="w3-bar" style="margin-top: 16px; margin-left: 16px; width: 95%;">
+        <div class="w3-bar-item w3-hover-light-gray w3-ripple" style="cursor: pointer">All</div>
+        <div class="w3-bar-item w3-hover-light-gray w3-ripple" style="cursor: pointer">A-Z</div>
+        <div class="w3-bar-item w3-hover-light-gray w3-ripple" style="cursor: pointer">New</div>
+      </div>
+
+      <!-- Recipe Row -->
+      <div class="w3-row-padding w3-center">
+        <!-- Left Hand Recipe -->
+        <div class="w3-half w3-padding-16">
+          <div class="w3-card w3-round-large" style="padding-bottom: 4px;">
+            <!-- Recipe Image -->
+            <img src="/images/pancake.jpg" style="width:100%; height: auto; cursor: pointer;"
+              onclick="openRecipe('Pancakes')">
+            <!-- Recipe Name -->
+            <h4 style="margin: 4px;">Pancakes</h4>
+            <!-- Recipe Tags -->
+            <span>
+              <!-- Difficulty Tag -->
+              <img src="/chef-hat.png" alt="difficulty" style="width: 16px;"></img>
+              <!-- Difficulty -->
+              <span style="font-size: small;">&nbsp;Easy&nbsp;&nbsp;</span>
+              <!-- Time Tag -->
+              <img src="/clock2.png" alt="time" style="width: 16px; opacity: 80%;"></img>
+              <!-- Time -->
+              <span style="font-size: small;">&nbsp;20-40 min</span>
+            </span>
+          </div>
         </div>
-        <div class="w3-col s4">
-          <img class="demo w3-opacity w3-hover-opacity-off" src="/images/waffles.jpg" style="width:100%;cursor:pointer"
-            onclick="currentDiv(2)">
-        </div>
-        <div class="w3-col s4">
-          <img class="demo w3-opacity w3-hover-opacity-off" src="/images/beef.jpg" style="width:100%;cursor:pointer"
-            onclick="currentDiv(3)">
+
+        <!-- Right Hand Recipe -->
+        <div class="w3-half w3-padding-16">
+          <div class="w3-card w3-round-large" style="padding-bottom: 4px;">
+            <!-- Recipe Image -->
+            <img src="/images/waffles.jpg" style="width:100%; cursor: pointer;" onclick="openRecipe('Waffles')">
+            <!-- Recipe Name -->
+            <h4 style="margin: 4px;">Waffles</h4>
+
+            <!-- Recipe Tags -->
+            <span>
+              <!-- Difficulty Tag -->
+              <img src="/chef-hat.png" alt="difficulty" style="width: 16px;"></img>
+              <!-- Difficulty -->
+              <span style="font-size: small;">&nbsp;Easy&nbsp;&nbsp;</span>
+              <!-- Time Tag -->
+              <img src="/clock2.png" alt="time" style="width: 16px; opacity: 80%;"></img>
+              <!-- Time -->
+              <span style="font-size: small;">&nbsp;20-40 min</span>
+            </span>
+          </div>
         </div>
       </div>
+
+      <!-- Pagination -->
+      <hr>
+      <div class="w3-bar w3-round-large"
+        style="background-color: rgb(247, 247, 247); max-width: fit-content; margin: auto;">
+        <a href="#" class="w3-button">&laquo;</a>
+        <a href="#" class="w3-button w3-green w3-round-large">1</a>
+        <a href="#" class="w3-button w3-round-large">2</a>
+        <a href="#" class="w3-button w3-round-large">3</a>
+        <a href="#" class="w3-button w3-round-large">4</a>
+        <a href="#" class="w3-button">&raquo;</a>
+      </div>
+      <hr>
+
+      <!-- END OF CENTER PAGE -->
     </div>
+
+    <!-- Footer -->
+    <%- include('partials/footer.ejs') %>
 </body>
 
 </html>
