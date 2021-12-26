@@ -12,7 +12,7 @@
         width: 250px;
         box-sizing: border-box;
         border: 2px solid #ccc;
-        border-radius: 4px;
+        border-radius: 8px;
         font-size: 16px;
         background-color: white;
         background-image: url('/images/search.png');
@@ -23,9 +23,46 @@
       }
 
       input[type=text]:focus {
-        width: 100%;
+        width: 90%;
+      }
+
+      li:category-list {
+        list-style-image: url("/images/search.png");
       }
     </style>
+
+    <script>
+      function toggleCategories() {
+        let category_list = document.getElementById("category-list");
+        let toggleButton = document.getElementById("toggle-categories-btn");
+        let light_color = "w3-pale-green";
+        let dark_color = "w3-green";
+
+        if (toggleButton.innerHTML == "Show Categories") {
+          // Change button text
+          toggleButton.innerHTML = "Hide Categories";
+
+          // Change button to darker color
+          toggleButton.classList.remove(light_color);
+          toggleButton.classList.add(dark_color);
+
+          // Show categories
+          category_list.style.display = "block";
+        }
+        else {
+          // Change button text
+          toggleButton.innerHTML = "Show Categories";
+
+          // Change button to lighter color
+          toggleButton.classList.remove(dark_color);
+          toggleButton.classList.add(light_color);
+
+          // Hide categories
+          category_list.style.display = "none";
+        }
+      }
+    </script>
+
 </head>
 
 <body>
@@ -45,13 +82,31 @@
         <input type="text" name="search" placeholder="Search for recipes...">
       </form>
 
+      <!-- Categories -->
+      <ul id="category-list" class="w3-ul w3-padding-16" style="width: 60%; margin: auto; display: none;">
+        <li><hr>Breakfast <span onclick="" class="w3-button w3-right w3-ripple"><i
+              class="fa fa-angle-right w3-bold w3-right"></i></span></li>
+        <li>Lunch <span onclick="" class="w3-button w3-right w3-ripple"><i
+              class="fa fa-angle-right w3-right"></i></span>
+        </li>
+        <li>Dinner <span onclick="" class="w3-button w3-right w3-ripple"><i
+              class="fa fa-angle-right w3-right"></i></span></li>
+        <li>Tradition <span onclick="" class="w3-button w3-right w3-ripple"><i
+              class="fa fa-angle-right w3-right"></i></span></li>
+        <li>Christmas <span onclick="" class="w3-button w3-right w3-ripple"><i
+              class="fa fa-angle-right w3-right"></i></span></li>
+        <li>Easter <span onclick="" class="w3-button w3-right w3-ripple"><i
+              class="fa fa-angle-right w3-right"></i></span></li>
+      </ul>
 
 
-      <!-- Filter Tags -->
+      <!-- Filter Tags Bar -->
       <div class="w3-bar w3-input" style="margin-top: 16px; margin-left: 16px; width: 95%;">
-        <div class="w3-bar-item w3-hover-light-gray w3-ripple w3-green" style="cursor: pointer">All</div>
-        <div class="w3-bar-item w3-hover-light-gray w3-ripple" style="cursor: pointer">A-Z</div>
-        <div class="w3-bar-item w3-hover-light-gray w3-ripple" style="cursor: pointer">New</div>
+        <div class="w3-bar-item w3-ripple w3-green w3-round" style="cursor: pointer">All</div>
+        <div class="w3-bar-item w3-hover-pale-green w3-ripple w3-round" style="cursor: pointer">A-Z</div>
+        <div class="w3-bar-item w3-hover-pale-green w3-ripple w3-round" style="cursor: pointer">New</div>
+        <div class="w3-bar-item w3-hover-green w3-ripple w3-round w3-pale-green w3-right" style="cursor: pointer"
+          id="toggle-categories-btn" onclick="toggleCategories()">Show Categories</div>
       </div>
 
       <!-- Recipe Row -->
@@ -63,7 +118,7 @@
             <img src="/images/pancake.jpg" style="width:100%; height: auto; cursor: pointer;"
               onclick="openRecipe('Pancakes')">
             <!-- Recipe Name -->
-            <h4 style="margin: 4px;">Pancakes</h4>
+            <h4 class="w3-pale-green" style="margin: 4px;;">Pancakes</h4>
             <!-- Recipe Tags -->
             <span>
               <!-- Difficulty Tag -->
@@ -80,7 +135,7 @@
 
         <!-- Right Hand Recipe -->
         <div class="w3-half w3-padding-16">
-          <div class="w3-card w3-round-large" style="padding-bottom: 4px;">
+          <div class="w3-pale-green w3-card w3-round-large" style="padding-bottom: 4px;">
             <!-- Recipe Image -->
             <img src="/images/waffles.jpg" style="width:100%; cursor: pointer;" onclick="openRecipe('Waffles')">
             <!-- Recipe Name -->
