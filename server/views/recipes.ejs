@@ -26,16 +26,19 @@
         width: 90%;
       }
 
-      li:category-list {
-        list-style-image: url("/images/search.png");
+      .recipe-cards {
+        /* background-color: rgb(185, 255, 185); */
+        padding-bottom: 4px;
+        /* color:white; */
       }
     </style>
 
     <script>
+      // Shows or hides the categories-tree and changes the button color/text.
       function toggleCategories() {
         let category_list = document.getElementById("category-list");
         let toggleButton = document.getElementById("toggle-categories-btn");
-        let light_color = "w3-pale-green";
+        let light_color = "white";
         let dark_color = "w3-green";
 
         if (toggleButton.innerHTML == "Show Categories") {
@@ -79,13 +82,16 @@
 
       <!-- Search Bar  -->
       <form class="w3-center">
-        <input type="text" name="search" placeholder="Search for recipes...">
+        <input type="text" name="search" placeholder="Search for recipes..." style="margin-bottom: 16px;">
       </form>
 
       <!-- Categories -->
-      <ul id="category-list" class="w3-ul w3-padding-16" style="width: 60%; margin: auto; display: none;">
-        <li><hr>Breakfast <span onclick="" class="w3-button w3-right w3-ripple"><i
-              class="fa fa-angle-right w3-bold w3-right"></i></span></li>
+      <ul id="category-list" class="w3-ul w3-padding-16 w3-animate-zoom"
+        style="width: 60%; margin: auto; display: none;">
+        <li>
+          Breakfast <span onclick="" class="w3-button w3-right w3-ripple"><i
+              class="fa fa-angle-right w3-bold w3-right"></i></span>
+        </li>
         <li>Lunch <span onclick="" class="w3-button w3-right w3-ripple"><i
               class="fa fa-angle-right w3-right"></i></span>
         </li>
@@ -104,56 +110,40 @@
       <div class="w3-bar w3-input" style="margin-top: 16px; margin-left: 16px; width: 95%;">
         <div class="w3-bar-item w3-ripple w3-green w3-round" style="cursor: pointer">All</div>
         <div class="w3-bar-item w3-hover-pale-green w3-ripple w3-round" style="cursor: pointer">A-Z</div>
-        <div class="w3-bar-item w3-hover-pale-green w3-ripple w3-round" style="cursor: pointer">New</div>
-        <div class="w3-bar-item w3-hover-green w3-ripple w3-round w3-pale-green w3-right" style="cursor: pointer"
+        <div class="w3-bar-item w3-hover-pale-green w3-ripple w3-round" style="cursor: pointer">Date</div>
+        <div class="w3-bar-item w3-hover-pale-green w3-ripple w3-round w3-right" style="cursor: pointer"
           id="toggle-categories-btn" onclick="toggleCategories()">Show Categories</div>
       </div>
 
       <!-- Recipe Row -->
       <div class="w3-row-padding w3-center">
-        <!-- Left Hand Recipe -->
-        <div class="w3-half w3-padding-16">
-          <div class="w3-card w3-round-large" style="padding-bottom: 4px;">
-            <!-- Recipe Image -->
-            <img src="/images/pancake.jpg" style="width:100%; height: auto; cursor: pointer;"
-              onclick="openRecipe('Pancakes')">
-            <!-- Recipe Name -->
-            <h4 class="w3-pale-green" style="margin: 4px;;">Pancakes</h4>
-            <!-- Recipe Tags -->
-            <span>
-              <!-- Difficulty Tag -->
-              <img src="/chef-hat.png" alt="difficulty" style="width: 16px;"></img>
-              <!-- Difficulty -->
-              <span style="font-size: small;">&nbsp;Easy&nbsp;&nbsp;</span>
-              <!-- Time Tag -->
-              <img src="/clock2.png" alt="time" style="width: 16px; opacity: 80%;"></img>
-              <!-- Time -->
-              <span style="font-size: small;">&nbsp;20-40 min</span>
-            </span>
+        <% for( let recipe=0; recipe < recipesInfo.length; recipe++ ) { %>
+          <!-- Recipe taking half of a horizontal split -->
+          <div class="w3-half w3-padding-16">
+            <!-- Recipe Card -->
+            <div class="recipe-cards w3-card w3-round-large">
+              <!-- Recipe Image -->
+              <img src="/images<%= recipesInfo[recipe].link %>" style="width:100%; height: auto; cursor: pointer;"
+                onclick="openRecipe('<%= recipesInfo[recipe].name %>')">
+              <!-- Recipe Name -->
+              <h4 style="margin: 4px;">
+                <%= recipesInfo[recipe].name %>
+              </h4>
+              <!-- Recipe Tags -->
+              <span>
+                <!-- Difficulty Tag -->
+                <img src="/chef-hat.png" alt="difficulty" style="width: 16px;"></img>
+                <!-- Difficulty -->
+                <span style="font-size: small;">&nbsp;<%= recipesInfo[recipe].difficulty.charAt(0).toUpperCase() +
+                    recipesInfo[recipe].difficulty.slice(1); %>&nbsp;&nbsp;</span>
+                <!-- Time Tag -->
+                <img src="/clock2.png" alt="time" style="width: 16px; opacity: 80%;"></img>
+                <!-- Time -->
+                <span style="font-size: small;">&nbsp;<%= recipesInfo[recipe].cook_time %> min</span>
+              </span>
+            </div>
           </div>
-        </div>
-
-        <!-- Right Hand Recipe -->
-        <div class="w3-half w3-padding-16">
-          <div class="w3-pale-green w3-card w3-round-large" style="padding-bottom: 4px;">
-            <!-- Recipe Image -->
-            <img src="/images/waffles.jpg" style="width:100%; cursor: pointer;" onclick="openRecipe('Waffles')">
-            <!-- Recipe Name -->
-            <h4 style="margin: 4px;">Waffles</h4>
-
-            <!-- Recipe Tags -->
-            <span>
-              <!-- Difficulty Tag -->
-              <img src="/chef-hat.png" alt="difficulty" style="width: 16px;"></img>
-              <!-- Difficulty -->
-              <span style="font-size: small;">&nbsp;Easy&nbsp;&nbsp;</span>
-              <!-- Time Tag -->
-              <img src="/clock2.png" alt="time" style="width: 16px; opacity: 80%;"></img>
-              <!-- Time -->
-              <span style="font-size: small;">&nbsp;20-40 min</span>
-            </span>
-          </div>
-        </div>
+          <% } %>
       </div>
 
       <!-- Pagination -->
@@ -162,10 +152,14 @@
         style="background-color: rgb(247, 247, 247); max-width: fit-content; margin: auto;">
         <a href="#" class="w3-button">&laquo;</a>
         <a href="#" class="w3-button w3-green w3-round-large">1</a>
-        <a href="#" class="w3-button w3-round-large">2</a>
-        <a href="#" class="w3-button w3-round-large">3</a>
-        <a href="#" class="w3-button w3-round-large">4</a>
-        <a href="#" class="w3-button">&raquo;</a>
+        <% if (recipesInfo.length> 10) { %>
+          <a href="#" class="w3-button w3-round-large">2</a>
+          <% } if (recipesInfo.length> 20) { %>
+            <a href="#" class="w3-button w3-round-large">3</a>
+            <% } if (recipesInfo.length> 30) { %>
+              <a href="#" class="w3-button w3-round-large">4</a>
+              <% } %>
+                <a href="#" class="w3-button">&raquo;</a>
       </div>
       <hr>
 

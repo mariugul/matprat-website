@@ -11,6 +11,21 @@ CREATE TYPE measurement_units AS ENUM (
     'large'
 );
 
+CREATE TYPE category AS ENUM (
+    'breakfast',
+    'lunch',
+    'dinner',
+    'tradition',
+    'christmas',
+    'easter'
+);
+
+CREATE TYPE difficulty AS ENUM (
+    'easy',
+    'intermediate',
+    'advanced'
+);
+
 -- Domains --
 -------------------------
 CREATE DOMAIN recipe_name AS varchar(50);
@@ -33,7 +48,20 @@ CREATE DOMAIN note_description AS varchar(100);
 CREATE TABLE IF NOT EXISTS recipes (
     name recipe_name PRIMARY KEY,
     description recipe_description,
-    default_portions int NOT NULL DEFAULT 2 CHECK (default_portions > 0)
+    default_portions int NOT NULL DEFAULT 2 CHECK (default_portions > 0),
+    difficulty difficulty NOT NULL DEFAULT 'easy',
+    cook_time int NOT NULL DEFAULT 30 CHECK (cook_time > 0)
+);
+
+-- Contains which categories a recipe belongs to.
+-- This can be one, several or all of them.
+CREATE TABLE IF NOT EXISTS categories (
+    recipe_name recipe_name,
+    category category,
+    PRIMARY KEY (recipe_name, category),
+    CONSTRAINT fk_category FOREIGN KEY (
+        recipe_name
+    ) REFERENCES recipes (name) ON DELETE CASCADE
 );
 
 -- Contains the ingredients for all recipes, the amounts
@@ -82,11 +110,14 @@ CREATE TABLE IF NOT EXISTS images (
 
 -- Functions --
 -------------------------
--- Gets all existing recipes
+-- Gets all existing recipes and the relevant info to show on 'recipes' page
 CREATE OR REPLACE FUNCTION recipes() RETURNS TABLE (
-    name recipe_name
+    name recipe_name,
+    description recipe_description,
+    difficulty difficulty,
+    cook_time int
 ) AS $$
-    SELECT name FROM recipes;
+    SELECT name, description, difficulty, cook_time FROM recipes;
 $$ LANGUAGE SQL;
 
 -- Gets information about a specific recipe
@@ -126,6 +157,13 @@ CREATE OR REPLACE FUNCTION images(
     SELECT image_nr, link, description FROM images WHERE recipe_name=$1;
 $$ LANGUAGE SQL;
 
+-- Gets all the categories for all recipes
+CREATE OR REPLACE FUNCTION categories(
+) RETURNS TABLE (
+    recipe_name recipe_name, category category
+) AS $$
+    SELECT recipe_name, category FROM categories;
+$$ LANGUAGE SQL;
 
 -- TRIGGERS --
 -------------------------
@@ -145,5 +183,5 @@ COMMENT ON COLUMN recipes.name IS 'The name of the recipe.';
 
 -- GRANTS -- 
 --------------------------
-GRANT INSERT, DELETE, UPDATE, SELECT ON images, ingredients, recipes, steps
+GRANT INSERT, DELETE, UPDATE, SELECT ON images, ingredients, recipes, steps, categories
 TO nodejs;
