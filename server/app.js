@@ -59,9 +59,100 @@ app.get('/', (req, res) => {
   res.render('index');
 });
 
-// Recipes
+// The recipes that exist
 app.get('/recipes', (req, res) => {
-  res.render('recipes');
+  // eslint-disable-next-line no-undef
+  queries = (async function queryDatabase() {
+    let recipeExists = false;
+    let recipesInfo;
+
+    // Get info of all recipes
+    await sqlQuery('SELECT * FROM recipes() LEFT JOIN images ON name = recipe_name WHERE image_nr=1')
+      .then((result) => {
+        if (result === undefined || result.length === 0) {
+          res.render('error', {
+            errorMessage:
+              `The recipe "${
+                req.params.name
+              }" does not exist in the database.`,
+          });
+          recipeExists = false;
+        } else {
+          recipeExists = true;
+          recipesInfo = result;
+        }
+      })
+      .catch((err) => res.render('error', {
+        errorMessage: err,
+      }));
+
+    // If no recipe was returned from the previous query, exit this function
+    if (!recipeExists) {
+      return 0;
+    }
+
+    // Define vars for query results
+    let images;
+    let categories;
+
+    // Get recipe images (links)
+    await sqlQuery('SELECT recipe_name, link, description FROM images WHERE image_nr=1')
+      .then((result) => (images = result))
+      .catch((err) => console.log(err));
+
+    // Get recipe categories
+    await sqlQuery('SELECT * FROM categories()')
+      .then((result) => (categories = result))
+      .catch((err) => console.log(err));
+
+    // Generate the webpage from template and send back
+    res.render('recipes', {
+      recipesInfo,
+      categories,
+      images,
+    });
+
+    return 0;
+  }());
+});
+
+// POSTGRES ----------------------------------------
+// Get recipe information by name
+app.get('/api/db/select/recipe/:name', (req, res) => {
+  // Get recipe information by name
+  pool.query(
+    'SELECT * FROM recipes WHERE name=$1',
+    [req.params.name],
+    (err, resDb) => {
+      if (err) {
+        // console.log(err.stack);
+        return res
+          .status(404)
+          .send('There was an error getting the recipes from the database.');
+      }
+      // console.table(res_db.rows[0]);
+      return res.status(200).send(resDb.rows[0]);
+    },
+  );
+});
+
+// Get all recipe names
+app.get('/api/db/select/recipes', (req, res) => {
+  const query = {
+    text: 'SELECT name FROM recipes',
+    rowMode: 'array',
+  };
+
+  pool.query(query, (err, resDb) => {
+    if (err) {
+      // console.log(err.stack);
+      return res
+        .status(404)
+        .send('There was an error getting the recipe names from the database.');
+    }
+    // console.table(res_db.rows);
+    return res.status(200).send(resDb.rows);
+  });
 });
 
 // Display a specific recipe
