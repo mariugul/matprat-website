@@ -2,6 +2,7 @@
 /* eslint-disable no-return-assign */
 const express = require('express');
 const process = require('process');
+const bodyParser = require('body-parser');
 // var cors = require('cors') // CORS for local development
 
 const app = express();
@@ -11,6 +12,11 @@ app.use(express.static('public'));
 app.use(express.static('public/css'));
 app.use(express.static('public/js'));
 app.use(express.static('public/images'));
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({
+  extended: true,
+}));
 // app.use(express.json(), cors()); // Allow CORS
 
 //
@@ -29,6 +35,7 @@ app.shutdown = () => {
 
 // Set up postgres parameters
 const { Pool } = require('pg');
+const { render } = require('ejs');
 
 const pool = new Pool({
   user: process.env.DB_USER || 'nodejs',
@@ -57,6 +64,12 @@ async function sqlQuery(query, queryArgs) {
 // Home page
 app.get('/', (req, res) => {
   res.render('index');
+});
+
+// Login and return create recipe page
+app.get('/login', (req, res) => {
+  // res.json(req.body);
+  res.render('create_recipe');
 });
 
 // The recipes that exist

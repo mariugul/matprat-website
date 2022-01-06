@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- Partial Head Data -->
+  <%- include('partials/head.ejs') %>
+    <link rel="stylesheet" href="/footer.css">
+
+    <!-- CSS  -->
+    <style>
+      .input_section {
+        margin-top: 20px;
+        margin-bottom: 20px;
+      }
+
+      .add_button {
+        /* margin-top: 20px;
+        margin-bottom: 20px; */
+        margin-right: 15px;
+      }
+
+      .remove_button {
+        margin-right: 5px;
+      }
+    </style>
+</head>
+
+<body>
+  <!-- Navigation Menu -->
+  <%- include('partials/nav.ejs') %>
+
+    <!-- CENTER ENTIRE PAGE CONTENT -->
+    <div class="w3-content" style="max-width:95%;background-color: white;">
+      <header class="w3-center">
+        <h1>Create Recipe</h1>
+      </header>
+
+      <form class="w3-container" action="/" method="post" enctype="multipart/form-data">
+        <div class="w3-section">
+          <!-- Recipe Name -->
+          <div class="input_section">
+            <label><b>Name</b></label><br>
+            <label>Keep the name descriptive and short.</label>
+            <input class="w3-input w3-border w3-margin-bottom" type="text" maxlength="50"
+              placeholder="Enter recipe name" name="name" required>
+          </div>
+
+          <!-- Description -->
+          <div class="input_section">
+            <label><b>Description</b></label><br>
+            <label>A short introduction to what this recipe is.</label>
+            <textarea class="w3-input w3-border" rows="3" maxlength="200" placeholder="Enter short description"
+              name="description" required></textarea>
+          </div>
+
+          <!-- Cook Time -->
+          <div class="input_section">
+            <label><b>Cook Time</b></label>
+            <select class="w3-select" id="cook_time" name="cook_time" required>
+              <option value="" disabled selected>Choose your option</option>
+              <option value="10-20 min">10-20 min</option>
+              <option value="20-40 min">20-40 min</option>
+              <option value="40-60 min">40-60 min</option>
+              <option value=">60 min">>60 min</option>
+            </select>
+          </div>
+
+          <!-- Difficulty -->
+          <div class="input_section">
+            <label><b>Difficulty</b></label><br>
+            <label>Required experience level to able to cook this recipe</label>
+            <br>
+            <input class="w3-radio" type="radio" name="difficulty" value="easy" checked>
+            <label>Easy</label>
+            <br>
+            <input class="w3-radio" type="radio" name="difficulty" value="intermediate" checked>
+            <label>Intermediate</label>
+            <br>
+            <input class="w3-radio" type="radio" name="difficulty" value="advanced" checked>
+            <label>Advanced</label>
+          </div>
+
+
+          <!-- Default Portions -->
+          <div class="input_section">
+            <label><b>Default Portions</b></label><br>
+            <label>The default amount that the recipe is portioned for</label>
+            <input class="w3-input w3-border" type="number" min="1" max="99" placeholder="Enter default portions"
+              name="default_portions" required>
+          </div>
+
+          <!-- Category -->
+          <div class="input_section">
+            <label><b>Categories</b></label>
+            <br>
+            <label>Select one or several categories the recipe belongs to</label>
+            <br>
+            <input class="w3-check" type="checkbox" checked="checked">
+            <label>Other</label>
+            <br>
+            <input class="w3-check" type="checkbox">
+            <label>Breakfast</label>
+            <br>
+            <input class="w3-check" type="checkbox">
+            <label>Lunch</label>
+            <br>
+            <input class="w3-check" type="checkbox">
+            <label>Dinner</label>
+          </div>
+
+          <!-- Ingredients -->
+          <div class="input_section">
+            <label><b>Ingredients</b></label><br>
+            <label>Enter the ingredients required for the recipe</label>
+            <div id="ingredient">
+              <div class="w3-row-padding">
+                <div class="w3-quarter">
+                  <input class="w3-input w3-border" type="text" placeholder="Enter ingredient" name="ingredient"
+                    required>
+                </div>
+                <div class="w3-quarter">
+                  <input class="w3-input w3-border" type="number" min="0" step="0.5" placeholder="Enter amount"
+                    name="amount" required>
+                </div>
+                <div class="w3-quarter">
+                  <select class="w3-input w3-border" id="category" name="category" required>
+                    <option value="" selected disabled hidden>Choose Unit</option>
+                    <option value="Kg">Kg</option>
+                    <option value="g">g</option>
+                    <option value="dl">dl</option>
+                    <option value="l">l</option>
+                    <option value="small">small</option>
+                    <option value="medium">medium</option>
+                    <option value="large">large</option>
+                  </select>
+                </div>
+                <div class="w3-quarter">
+                  <input class="w3-input w3-border" type="text" placeholder="Enter note (optional)" name="note"
+                    maxlength="100">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Add and remove Ingredient buttons -->
+          <div id="add_ingredient" class="add_button w3-button w3-right w3-green" onclick="addIngredient()">+</div>
+          <div id="remove_ingredient" class="remove_button w3-button w3-right w3-red" style="display: none;"
+            onclick="removeIngredient()">-</div>
+
+          <!-- Steps -->
+          <div class="input_section" style="margin-top: 50px;">
+            <label><b>Steps</b></label><br>
+            <label>Write the instructions for cooking the recipe</label>
+            <div id="step">
+              <div class="w3-row-padding">
+                <div class="w3-twothird">
+                  <input class="w3-input w3-border" type="text" placeholder="Enter instruction" name="step" required>
+                </div>
+                <div class="w3-third">
+                  <input class="w3-input w3-border" type="text" placeholder="Enter note (optional)" name="step"
+                    maxlength="100">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Add and remove Step buttons -->
+          <div id="add_step" class="add_button w3-button w3-right w3-green" onclick="addStep()">+</div>
+          <div id="remove_step" class="remove_button w3-button w3-right w3-red" style="display: none;"
+            onclick="removeStep()">-</div>
+
+          <!-- Images -->
+          <div class="input_section" style="margin-top: 50px;">
+            <label><b>Image</b></label><br>
+            <label for="uploadImage">Upload recipe photo</label>
+            <input class="w3-input" type="file" id="uploadImage" name="uploadImage" accept=".png, .jpg, .jpeg" required>
+            <!-- Add this section back in if description and link is desired -->
+            <!-- <div class="w3-row-padding">
+              <div class="w3-half">
+                <input class="w3-input w3-border" type="text" placeholder="Enter link (images/recipe.png)" name="link"
+                  required>
+              </div>
+              <div class="w3-half">
+                <input class="w3-input w3-border" type="text" placeholder="Enter description" name="link" required>
+              </div>
+            </div> -->
+          </div>
+
+          <!-- Create Button -->
+          <!-- <hr> -->
+          <button class="w3-button w3-block w3-green w3-section w3-padding" type="submit">Create Recipe</button>
+        </div>
+      </form>
+    </div>
+    <!-- Footer -->
+    <%- include('partials/footer.ejs') %>
+
+      <!-- JavaScript -->
+      <!-- Move javascript to seperate file later -->
+      <script>
+        // TODO:
+        // MAKE THESE CLASSES MORE GENERIC AND COMBINE
+
+        // Add an ingredient on button click
+        // ---------------------------------
+        let ingredient_id = 1;
+        let ingredient_row = document.getElementById('ingredient');
+        let remove_ingredient_btn = document.getElementById('remove_ingredient');
+
+        function addIngredient() {
+          // Clone entire ingredient row
+          let clone = ingredient_row.cloneNode(true);
+          // Set the cloned ingredient row ID to ingredient(i)
+          clone.id = "ingredient" + ++ingredient_id;
+          // Add ingredient row
+          ingredient_row.parentNode.appendChild(clone);
+
+          // Clear the values of the cloned row
+          let ingredient_field = clone.childNodes[1].childNodes[1].childNodes[1];
+          let amount_field = clone.childNodes[1].childNodes[3].childNodes[1];
+          let unit_field = clone.childNodes[1].childNodes[5].childNodes[1];
+          let note_field = clone.childNodes[1].childNodes[7].childNodes[1];
+          ingredient_field.value = "";
+          amount_field.value = "";
+          unit_field.value = "";
+          note_field.value = "";
+
+          // Display remove button
+          if (ingredient_id > 1) {
+            remove_ingredient_btn.style.display = "block";
+          }
+        }
+
+        function removeIngredient() {
+          // Get the last ingredient row by id
+          let ingredient = document.getElementById('ingredient' + ingredient_id);
+          // Remove the last ingredient
+          ingredient.remove();
+          // Decrement ingredients
+          ingredient_id--;
+
+          // Hide remove button
+          if (ingredient_id <= 1) {
+            remove_ingredient_btn.style.display = "none";
+          }
+        }
+
+        // Add a step on button click
+        // ---------------------------------
+        let step_id = 1;
+        let step_row = document.getElementById('step');
+        let remove_step_btn = document.getElementById('remove_step');
+
+        function addStep() {
+          // Clone entire step row
+          let clone = step_row.cloneNode(true);
+          // Set the cloned step row ID to step(i)
+          clone.id = "step" + ++step_id;
+          // Add step row
+          step_row.parentNode.appendChild(clone);
+
+          // Clear the values of the cloned row
+          let instruction_field = clone.childNodes[1].childNodes[1].childNodes[1];
+          let note_field = clone.childNodes[1].childNodes[3].childNodes[1];
+          instruction_field.value = "";
+          note_field.value = "";
+
+          // Display remove button
+          if (step_id > 1) {
+            remove_step_btn.style.display = "block";
+          }
+        }
+
+        function removeStep() {
+          // Get the last step row by id
+          let step = document.getElementById('step' + step_id);
+          // Remove the last step
+          step.remove();
+          // Decrement steps
+          step_id--;
+
+          // Hide remove button
+          if (step_id <= 1) {
+            remove_step_btn.style.display = "none";
+          }
+        }
+      </script>
+</body>
+
+</html>
