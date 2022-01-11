@@ -68,8 +68,49 @@ app.get('/', (req, res) => {
 
 // Login and return create recipe page
 app.get('/login', (req, res) => {
-  // res.json(req.body);
-  res.render('create_recipe');
+  // eslint-disable-next-line no-undef
+  queries = (async function queryDatabase() {
+    // Define vars for query results
+    const recipes = [];
+    let categories = [];
+    let difficulties = [];
+    let measurementUnits = [];
+
+    // Get recipe names
+    await sqlQuery('SELECT name FROM recipes')
+      .then((result) => (result.forEach((recipe) => {
+        recipes.push(recipe.name);
+      })))
+      .catch((err) => console.log(err));
+
+    // Get categories
+    await sqlQuery('SELECT enum_range(NULL::category)')
+      // Split result into an array and filter out empty values
+      .then((result) => (categories = result[0].enum_range.split(/{|,|}/).filter(Boolean)))
+      .catch((err) => console.log(err));
+
+    // Get difficulties
+    await sqlQuery('SELECT enum_range(NULL::difficulty)')
+      // Split result into an array and filter out empty values
+      .then((result) => (difficulties = result[0].enum_range.split(/{|,|}/).filter(Boolean)))
+      .catch((err) => console.log(err));
+
+    // Get measurement units
+    await sqlQuery('SELECT enum_range(NULL::measurement_units)')
+      .then((result) => (measurementUnits = result[0].enum_range.split(/{|,|}/).filter(Boolean)))
+      .catch((err) => console.log(err));
+
+    // Generate the webpage from template and send back
+    // res.json(req.body); // Read the received data
+    res.render('create_recipe', {
+      recipes,
+      categories,
+      difficulties,
+      measurementUnits,
+    });
+
+    return 0;
+  }());
 });
 
 // The recipes that exist
