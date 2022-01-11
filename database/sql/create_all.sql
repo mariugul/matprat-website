@@ -48,9 +48,12 @@ CREATE DOMAIN note_description AS varchar(100);
 CREATE TABLE IF NOT EXISTS recipes (
     name recipe_name PRIMARY KEY,
     description recipe_description,
-    default_portions int NOT NULL DEFAULT 2 CHECK (default_portions > 0),
-    difficulty difficulty NOT NULL DEFAULT 'easy',
-    cook_time int NOT NULL DEFAULT 30 CHECK (cook_time > 0)
+    default_portions int NOT NULL CHECK (default_portions > 0),
+    difficulty difficulty NOT NULL,
+    -- Regex checks for (nr-nr), (<nr), (>nr) and (nr)
+    -- This gives the options of interval, lessthan, morethan and specific time
+    cook_time varchar(10) NOT NULL CHECK (cook_time ~
+      $$(^[0-9]+[-][0-9]+$)|(^[<][0-9]+$)|(^[>][0-9]+$)|(^[0-9]+$)$$)
 );
 
 -- Contains which categories a recipe belongs to.
