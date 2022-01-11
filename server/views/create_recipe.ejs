@@ -35,147 +35,164 @@
         <h1>Create Recipe</h1>
       </header>
 
+      <!-- Create Recipe Form -->
       <form class="w3-container" action="/" method="post" enctype="multipart/form-data">
         <div class="w3-section">
+
           <!-- Recipe Name -->
           <div class="input_section">
             <label><b>Name</b></label><br>
             <label>Keep the name descriptive and short.</label>
-            <input class="w3-input w3-border w3-margin-bottom" type="text" maxlength="50"
-              placeholder="Enter recipe name" name="name" required>
+            <span class="w3-right w3-small">50</span>
+            <span class="w3-right w3-small">/</span>
+            <span id="recipe_name_length" class="w3-right w3-small">0</span>
+            <input id="recipe_name" class="w3-input w3-border" type="text" maxlength="50"
+              placeholder="Enter recipe name" name="name"
+              onkeyup="isNameValid(); calcTextLength(this.id, 'recipe_name_length')" required>
+            <div id="recipe_name_feedback" style="color: red; display: none;">The recipe name already exists.</div>
           </div>
 
           <!-- Description -->
           <div class="input_section">
             <label><b>Description</b></label><br>
             <label>A short introduction to what this recipe is.</label>
-            <textarea class="w3-input w3-border" rows="3" maxlength="200" placeholder="Enter short description"
-              name="description" required></textarea>
+            <span class="w3-right w3-small">200</span>
+            <span class="w3-right w3-small">/</span>
+            <span id="description_length" class="w3-right w3-small">0</span>
+            <textarea id="description" class="w3-input w3-border" rows="3" maxlength="200"
+              placeholder="Enter short description" name="description"
+              onkeyup="calcTextLength(this.id, 'description_length')" required></textarea>
           </div>
 
           <!-- Cook Time -->
           <div class="input_section">
             <label><b>Cook Time</b></label>
-            <select class="w3-select" id="cook_time" name="cook_time" required>
+            <select class="w3-select" id="cook_time_selector" name="cook_time_selector" onchange="cookTimeSelector()"
+              required>
               <option value="" disabled selected>Choose your option</option>
-              <option value="10-20 min">10-20 min</option>
-              <option value="20-40 min">20-40 min</option>
-              <option value="40-60 min">40-60 min</option>
-              <option value=">60 min">>60 min</option>
+              <option value="interval">Interval (prefered)</option>
+              <option value="more_than">More than</option>
+              <option value="less_than">Less than</option>
+              <option value="specific">Specific</option>
             </select>
-          </div>
+            <!-- Cook time enter value -->
+            <div id="cook_time_fields" class="w3-row">
+            </div>
 
-          <!-- Difficulty -->
-          <div class="input_section">
-            <label><b>Difficulty</b></label><br>
-            <label>Required experience level to able to cook this recipe</label>
-            <br>
-            <input class="w3-radio" type="radio" name="difficulty" value="easy" checked>
-            <label>Easy</label>
-            <br>
-            <input class="w3-radio" type="radio" name="difficulty" value="intermediate" checked>
-            <label>Intermediate</label>
-            <br>
-            <input class="w3-radio" type="radio" name="difficulty" value="advanced" checked>
-            <label>Advanced</label>
-          </div>
+            <!-- Difficulty -->
+            <div class="input_section">
+              <label><b>Difficulty</b></label><br>
+              <label>Required experience level to able to cook this recipe</label>
 
+              <% for( let i=0; i < difficulties.length; i++ ) { %>
+                <br>
+                <input class="w3-radio" type="radio" name="difficulty" value="<%= difficulties[i] %>" checked>
+                <label>
+                  <%= difficulties[i].charAt(0).toUpperCase() + difficulties[i].slice(1) %>
+                </label>
+                <% } %>
+            </div>
 
-          <!-- Default Portions -->
-          <div class="input_section">
-            <label><b>Default Portions</b></label><br>
-            <label>The default amount that the recipe is portioned for</label>
-            <input class="w3-input w3-border" type="number" min="1" max="99" placeholder="Enter default portions"
-              name="default_portions" required>
-          </div>
+            <!-- Default Portions -->
+            <div class="input_section">
+              <label><b>Default Portions</b></label><br>
+              <label>The default amount that the recipe is portioned for</label>
+              <input class="w3-input w3-border" type="number" min="1" max="99" placeholder="Enter default portions"
+                name="default_portions" required>
+            </div>
 
-          <!-- Category -->
-          <div class="input_section">
-            <label><b>Categories</b></label>
-            <br>
-            <label>Select one or several categories the recipe belongs to</label>
-            <br>
-            <input class="w3-check" type="checkbox" checked="checked">
-            <label>Other</label>
-            <br>
-            <input class="w3-check" type="checkbox">
-            <label>Breakfast</label>
-            <br>
-            <input class="w3-check" type="checkbox">
-            <label>Lunch</label>
-            <br>
-            <input class="w3-check" type="checkbox">
-            <label>Dinner</label>
-          </div>
+            <!-- Category -->
+            <div class="input_section">
+              <label><b>Categories</b></label>
+              <br>
+              <label>Select one or several categories the recipe belongs to</label>
 
-          <!-- Ingredients -->
-          <div class="input_section">
-            <label><b>Ingredients</b></label><br>
-            <label>Enter the ingredients required for the recipe</label>
-            <div id="ingredient">
-              <div class="w3-row-padding">
-                <div class="w3-quarter">
-                  <input class="w3-input w3-border" type="text" placeholder="Enter ingredient" name="ingredient"
-                    required>
-                </div>
-                <div class="w3-quarter">
-                  <input class="w3-input w3-border" type="number" min="0" step="0.5" placeholder="Enter amount"
-                    name="amount" required>
-                </div>
-                <div class="w3-quarter">
-                  <select class="w3-input w3-border" id="category" name="category" required>
-                    <option value="" selected disabled hidden>Choose Unit</option>
-                    <option value="Kg">Kg</option>
-                    <option value="g">g</option>
-                    <option value="dl">dl</option>
-                    <option value="l">l</option>
-                    <option value="small">small</option>
-                    <option value="medium">medium</option>
-                    <option value="large">large</option>
-                  </select>
-                </div>
-                <div class="w3-quarter">
-                  <input class="w3-input w3-border" type="text" placeholder="Enter note (optional)" name="note"
-                    maxlength="100">
+              <br>
+              <input class="w3-check" type="checkbox" checked="checked">
+              <label>Other</label>
+
+              <% for( let i=0; i < categories.length; i++ ) { %>
+                <br>
+                <input class="w3-check" type="checkbox" value="<%= categories[i] %>">
+                <%# Displays the categories with the first letter upper case %>
+                  <label>
+                    <%= categories[i].charAt(0).toUpperCase() + categories[i].slice(1) %>
+                  </label>
+                  <% } %>
+            </div>
+
+            <!-- Ingredients -->
+            <div class="input_section">
+              <label><b>Ingredients</b></label><br>
+              <label>Enter the ingredients required for the recipe</label>
+              <div id="ingredient">
+                <div class="w3-row-padding">
+                  <!-- Ingredient -->
+                  <div class="w3-quarter">
+                    <input class="w3-input w3-border" type="text" placeholder="Enter ingredient" name="ingredient"
+                      onkeyup="isIngredientDuplicate(this.value, parentNode.parentNode.parentNode.id)" required>
+                  </div>
+                  <!-- Amount -->
+                  <div class="w3-quarter">
+                    <input class="w3-input w3-border" type="number" min="0" step="0.5" placeholder="Enter amount"
+                      name="amount" required>
+                  </div>
+                  <!-- Measurement Unit -->
+                  <div class="w3-quarter">
+                    <select class="w3-input w3-border" id="ingredient_unit" name="ingredient" required>
+                      <option value="" selected disabled hidden>Choose Unit</option>
+                      <%# Fill in measurement unit options from database %>
+                        <% for( let i=0; i < measurementUnits.length; i++ ) { %>
+                          <option value="<%= measurementUnits[i] %>">
+                            <%= measurementUnits[i] %>
+                          </option>
+                          <% } %>
+                    </select>
+                  </div>
+                  <!-- Note -->
+                  <div class="w3-quarter">
+                    <input class="w3-input w3-border" type="text" placeholder="Enter note (optional)" name="note"
+                      maxlength="100">
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          <!-- Add and remove Ingredient buttons -->
-          <div id="add_ingredient" class="add_button w3-button w3-right w3-green" onclick="addIngredient()">+</div>
-          <div id="remove_ingredient" class="remove_button w3-button w3-right w3-red" style="display: none;"
-            onclick="removeIngredient()">-</div>
+            <!-- Add and remove Ingredient buttons -->
+            <div id="add_ingredient" class="add_button w3-button w3-right w3-green" onclick="addIngredient()">+</div>
+            <div id="remove_ingredient" class="remove_button w3-button w3-right w3-red" style="display: none;"
+              onclick="removeIngredient()">-</div>
 
-          <!-- Steps -->
-          <div class="input_section" style="margin-top: 50px;">
-            <label><b>Steps</b></label><br>
-            <label>Write the instructions for cooking the recipe</label>
-            <div id="step">
-              <div class="w3-row-padding">
-                <div class="w3-twothird">
-                  <input class="w3-input w3-border" type="text" placeholder="Enter instruction" name="step" required>
-                </div>
-                <div class="w3-third">
-                  <input class="w3-input w3-border" type="text" placeholder="Enter note (optional)" name="step"
-                    maxlength="100">
+            <!-- Steps -->
+            <div class="input_section" style="margin-top: 50px;">
+              <label><b>Steps</b></label><br>
+              <label>Write the instructions for cooking the recipe</label>
+              <div id="step">
+                <div class="w3-row-padding">
+                  <div class="w3-twothird">
+                    <input class="w3-input w3-border" type="text" placeholder="Enter instruction" name="step" required>
+                  </div>
+                  <div class="w3-third">
+                    <input class="w3-input w3-border" type="text" placeholder="Enter note (optional)" name="step"
+                      maxlength="100">
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          <!-- Add and remove Step buttons -->
-          <div id="add_step" class="add_button w3-button w3-right w3-green" onclick="addStep()">+</div>
-          <div id="remove_step" class="remove_button w3-button w3-right w3-red" style="display: none;"
-            onclick="removeStep()">-</div>
+            <!-- Add and remove Step buttons -->
+            <div id="add_step" class="add_button w3-button w3-right w3-green" onclick="addStep()">+</div>
+            <div id="remove_step" class="remove_button w3-button w3-right w3-red" style="display: none;"
+              onclick="removeStep()">-</div>
 
-          <!-- Images -->
-          <div class="input_section" style="margin-top: 50px;">
-            <label><b>Image</b></label><br>
-            <label for="uploadImage">Upload recipe photo</label>
-            <input class="w3-input" type="file" id="uploadImage" name="uploadImage" accept=".png, .jpg, .jpeg" required>
-            <!-- Add this section back in if description and link is desired -->
-            <!-- <div class="w3-row-padding">
+            <!-- Images -->
+            <div class="input_section" style="margin-top: 50px;">
+              <label><b>Image</b></label><br>
+              <label for="uploadImage">Upload recipe photo</label>
+              <input class="w3-input" type="file" id="uploadImage" name="uploadImage" accept=".png, .jpg, .jpeg"
+                required>
+              <!-- Add this section back in if description and link is desired -->
+              <!-- <div class="w3-row-padding">
               <div class="w3-half">
                 <input class="w3-input w3-border" type="text" placeholder="Enter link (images/recipe.png)" name="link"
                   required>
@@ -184,12 +201,12 @@
                 <input class="w3-input w3-border" type="text" placeholder="Enter description" name="link" required>
               </div>
             </div> -->
-          </div>
+            </div>
 
-          <!-- Create Button -->
-          <!-- <hr> -->
-          <button class="w3-button w3-block w3-green w3-section w3-padding" type="submit">Create Recipe</button>
-        </div>
+            <!-- Create Button -->
+            <!-- <hr> -->
+            <button class="w3-button w3-block w3-green w3-section w3-padding" type="submit">Create Recipe</button>
+          </div>
       </form>
     </div>
     <!-- Footer -->
@@ -216,10 +233,11 @@
           ingredient_row.parentNode.appendChild(clone);
 
           // Clear the values of the cloned row
-          let ingredient_field = clone.childNodes[1].childNodes[1].childNodes[1];
-          let amount_field = clone.childNodes[1].childNodes[3].childNodes[1];
-          let unit_field = clone.childNodes[1].childNodes[5].childNodes[1];
-          let note_field = clone.childNodes[1].childNodes[7].childNodes[1];
+          let ingredient_field = clone.childNodes[1].childNodes[3].childNodes[1];
+          let amount_field = clone.childNodes[1].childNodes[7].childNodes[1];
+          let unit_field = clone.childNodes[1].childNodes[11].childNodes[1];
+          let note_field = clone.childNodes[1].childNodes[15].childNodes[1];
+
           ingredient_field.value = "";
           amount_field.value = "";
           unit_field.value = "";
@@ -283,6 +301,135 @@
           if (step_id <= 1) {
             remove_step_btn.style.display = "none";
           }
+        }
+
+        // Validate recipe name on typing
+        // ------------------------------
+        // Existing recipes are sent with the page
+        // Save recipe names as a string because EJS vars can't be put into JS before the page has loaded
+        recipesString = "<%= recipes %>".toUpperCase();
+
+        // Split the string into an array
+        existing_recipes = recipesString.split(",");
+
+        // Doesn't allow duplicate recipes name in any capitalization
+        function isNameValid() {
+          // Get text from input field
+          let input = document.getElementById("recipe_name");
+          let input_value = input.value.toUpperCase();
+
+          // Get recipe feedback message id
+          let feedback_message = document.getElementById("recipe_name_feedback");
+
+          // Check if recipe name is valid
+          if (existing_recipes.indexOf(input_value) > -1) {
+            input.style.color = "red";
+            feedback_message.style.display = "block";
+          } else {
+            input.style.color = "black";
+            feedback_message.style.display = "none";
+          }
+        }
+
+        // Takes input field and tag for displaying length to calculate and display
+        // the length of the input field text.
+        function calcTextLength(input_field_id, display_tag_id) {
+          // Colors
+          const error_color = "red";
+          const color = "black";
+
+          // Get recipe name and length tag
+          let input_text = document.getElementById(input_field_id);
+          let input_length_tag = document.getElementById(display_tag_id);
+
+          // Set length tag according to length of recipe name
+          input_length_tag.innerHTML = input_text.value.length;
+
+          // Set colors
+          if (input_text.value.length === input_text.maxLength) {
+            input_length_tag.style.color = error_color;
+            input_text.style.caretColor = error_color;
+          } else {
+            input_length_tag.style.color = color;
+            input_text.style.caretColor = color;
+          }
+        }
+
+        function cookTimeSelector() {
+          let selection = document.getElementById('cook_time_selector');
+          let time_input_fields = document.getElementById('cook_time_fields');
+
+          if (selection.value === 'interval') {
+            time_input_fields.innerHTML =
+              '<span>' +
+              '<label>Enter the time interval for cooking this recipe</label><br>' +
+              '<input id="cook_time_interval_first" name="cook_time_interval_first" type="number" min="0" max="1000"' +
+              'maxlength="1000" placeholder="From" required>' +
+              '&nbsp; - &nbsp;' +
+              '<input id="cook_time_interval_second" name="cook_time_interval_second" type="number" min="0" max="1000"' +
+              'maxlength="1000" placeholder="To" required>' +
+              '&nbsp; min' +
+              '</span>';
+          } else {
+            time_input_fields.innerHTML =
+              '<input id="cook_time" name="cook_time" class="w3-input w3-border" type="number"' +
+              'placeholder="Enter the time for cooking this recipe" max="1000" maxlength="1000" min="1" required>';
+          }
+
+          let cook_time = document.getElementById('cook_time');
+          if (selection.value === 'more_than') {
+            cook_time.placeholder = 'The recipe takes more than (minutes) to cook';
+          } else if (selection.value === 'less_than') {
+            cook_time.placeholder = 'The recipe takes less than (minutes) to cook';
+          } else if (selection.value === 'specific') {
+            cook_time.placeholder = 'The recipe takes (minutes) to cook';
+          }
+        }
+
+        function isIngredientDuplicate(ingredient, id) {
+          let existingIngredients = [];
+          let nrOfIngredients = ingredient_id; // From 'add ingredient on button click'
+          let incomingIngredientNr = 0;
+
+          // Assign the correct id nr for ingredients
+          if (id === 'ingredient') {
+            incomingIngredientNr = 1;
+          } else {
+            incomingIngredientNr = parseInt(id.replace('ingredient', '')); // Split off id name to get the id nr
+          }
+
+          // Assign existing ingredients to array
+          for (let i = 1; i <= nrOfIngredients; i++) {
+            // Don't put the incoming ingredient into existingIngredients
+            if (i !== incomingIngredientNr) {
+              // The first id is just called 'ingredient' and has no nr
+              if (i === 1) {
+                existingIngredients.push(document.getElementById("ingredient")
+                  .childNodes[1].childNodes[3].childNodes[1].value.toLowerCase());
+              } else {
+                // Proceeding id's start at 'ingredient2' etc.
+                existingIngredients.push(document.getElementById("ingredient" + i)
+                  .childNodes[1].childNodes[3].childNodes[1].value.toLowerCase());
+              }
+            }
+          }
+
+          // Return the function if only one ingredient exists
+          // if (nrOfIngredients <= 1) return;
+          console.log()
+          // Current ingredient input field
+          let input_field = document.getElementById(id).childNodes[1].childNodes[3].childNodes[1];
+          console.log(id);
+          // Check for duplicate ingredient
+          if (existingIngredients.length >= 1 && existingIngredients.indexOf(ingredient.toLowerCase()) > -1) {
+            // Duplicate ingredient found
+            input_field.style.color = 'red';
+          } else {
+            input_field.style.color = 'black';
+          }
+
+          // DEBUG
+          console.log(existingIngredients);
         }
       </script>
 </body>
