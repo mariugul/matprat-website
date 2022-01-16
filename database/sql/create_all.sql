@@ -14,6 +14,8 @@ CREATE DOMAIN ingredient_name AS varchar(30);
 
 CREATE DOMAIN note_description AS varchar(100);
 
+CREATE DOMAIN cook_time AS varchar(10);
+
 -- 'Valid value' tables
 ------------------------
 CREATE TABLE IF NOT EXISTS valid_categories (
@@ -35,10 +37,10 @@ CREATE TABLE IF NOT EXISTS recipes (
     name recipe_name PRIMARY KEY,
     description recipe_description,
     default_portions int NOT NULL CHECK (default_portions > 0),
-    difficulty text NOT NULL REFERENCES valid_difficulties(difficulty),
+    difficulty text REFERENCES valid_difficulties(difficulty),
     -- Regex checks for (nr-nr), (<nr), (>nr) and (nr)
     -- This gives the options of interval, lessthan, morethan and specific time
-    cook_time varchar(10) NOT NULL CHECK (cook_time ~
+    cook_time cook_time NOT NULL CHECK (cook_time ~
       $$(^[0-9]+[-][0-9]+$)|(^[<][0-9]+$)|(^[>][0-9]+$)|(^[0-9]+$)$$)
 );
 
@@ -104,8 +106,8 @@ CREATE TABLE IF NOT EXISTS images (
 CREATE OR REPLACE FUNCTION recipes() RETURNS TABLE (
     name recipe_name,
     description recipe_description,
-    difficulty text NOT NULL REFERENCES valid_difficulties(difficulty),
-    cook_time int
+    difficulty text,
+    cook_time cook_time
 ) AS $$
     SELECT name, description, difficulty, cook_time FROM recipes;
 $$ LANGUAGE SQL;
@@ -124,7 +126,7 @@ CREATE OR REPLACE FUNCTION ingredients(
     ingredient ingredient_name,
     note note_description,
     amount float,
-    unit text NOT NULL REFERENCES valid_measurement_units(unit)
+    unit text
 ) AS $$
     SELECT  ingredient, note, amount, unit FROM ingredients WHERE recipe_name=$1;
 $$ LANGUAGE SQL;
@@ -173,5 +175,7 @@ COMMENT ON COLUMN recipes.name IS 'The name of the recipe.';
 
 -- GRANTS -- 
 --------------------------
-GRANT INSERT, DELETE, UPDATE, SELECT ON images, ingredients, recipes, steps, categories
+GRANT INSERT, DELETE, UPDATE, SELECT ON
+images, ingredients, recipes, steps, categories,
+valid_categories, valid_difficulties, valid_measurement_units
 TO nodejs;
