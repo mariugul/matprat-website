@@ -72,9 +72,9 @@ app.get('/login', (req, res) => {
   queries = (async function queryDatabase() {
     // Define vars for query results
     const recipes = [];
-    let categories = [];
-    let difficulties = [];
-    let measurementUnits = [];
+    const categories = [];
+    const difficulties = [];
+    const measurementUnits = [];
 
     // Get recipe names
     await sqlQuery('SELECT name FROM recipes')
@@ -84,20 +84,26 @@ app.get('/login', (req, res) => {
       .catch((err) => console.log(err));
 
     // Get categories
-    await sqlQuery('SELECT enum_range(NULL::category)')
+    await sqlQuery('SELECT category FROM valid_categories')
       // Split result into an array and filter out empty values
-      .then((result) => (categories = result[0].enum_range.split(/{|,|}/).filter(Boolean)))
+      .then((result) => (result.forEach((category) => {
+        categories.push(category.category);
+      })))
       .catch((err) => console.log(err));
 
     // Get difficulties
-    await sqlQuery('SELECT enum_range(NULL::difficulty)')
+    await sqlQuery('SELECT difficulty FROM valid_difficulties')
       // Split result into an array and filter out empty values
-      .then((result) => (difficulties = result[0].enum_range.split(/{|,|}/).filter(Boolean)))
+      .then((result) => (result.forEach((difficulty) => {
+        difficulties.push(difficulty.difficulty);
+      })))
       .catch((err) => console.log(err));
 
     // Get measurement units
-    await sqlQuery('SELECT enum_range(NULL::measurement_units)')
-      .then((result) => (measurementUnits = result[0].enum_range.split(/{|,|}/).filter(Boolean)))
+    await sqlQuery('SELECT unit FROM valid_measurement_units')
+      .then((result) => (result.forEach((unit) => {
+        measurementUnits.push(unit.unit);
+      })))
       .catch((err) => console.log(err));
 
     // Generate the webpage from template and send back

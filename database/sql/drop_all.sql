@@ -10,7 +10,11 @@ DROP TABLE IF EXISTS recipes CASCADE;
 DROP TABLE IF EXISTS ingredients CASCADE;
 DROP TABLE IF EXISTS steps CASCADE;
 DROP TABLE IF EXISTS images CASCADE;
-DROP TABLE IF EXISTS category CASCADE;
+DROP TABLE IF EXISTS categories CASCADE;
+DROP TABLE IF EXISTS valid_categories CASCADE;
+DROP TABLE IF EXISTS valid_difficulties CASCADE;
+DROP TABLE IF EXISTS valid_measurement_units CASCADE;
+
 
 -- Drop Domains and Types
 DROP DOMAIN IF EXISTS image_link;
@@ -21,11 +25,8 @@ DROP DOMAIN IF EXISTS step_description;
 DROP DOMAIN IF EXISTS image_description;
 DROP DOMAIN IF EXISTS recipe_description;
 
-DROP TYPE IF EXISTS measurement_units;
-DROP TYPE IF EXISTS category;
-DROP TYPE IF EXISTS difficulty;
 
--- Conenct to postgres database
+-- Connect to postgres database
 \c postgres
 
 -- Drop database and role

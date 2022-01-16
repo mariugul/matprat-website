@@ -1,31 +1,3 @@
--- Enums --
-------------------------
-CREATE TYPE measurement_units AS ENUM (
-    'gram',
-    'litre',
-    'dl',
-    'ts',
-    'ss',
-    'small',
-    'medium',
-    'large'
-);
-
-CREATE TYPE category AS ENUM (
-    'breakfast',
-    'lunch',
-    'dinner',
-    'tradition',
-    'christmas',
-    'easter'
-);
-
-CREATE TYPE difficulty AS ENUM (
-    'easy',
-    'intermediate',
-    'advanced'
-);
-
 -- Domains --
 -------------------------
 CREATE DOMAIN recipe_name AS varchar(50);
@@ -42,6 +14,20 @@ CREATE DOMAIN ingredient_name AS varchar(30);
 
 CREATE DOMAIN note_description AS varchar(100);
 
+-- 'Valid value' tables
+------------------------
+CREATE TABLE IF NOT EXISTS valid_categories (
+    category text PRIMARY KEY
+);
+
+CREATE TABLE IF NOT EXISTS valid_difficulties (
+    difficulty text PRIMARY KEY
+);
+
+CREATE TABLE IF NOT EXISTS valid_measurement_units (
+    unit text PRIMARY KEY
+);
+
 -- Tables for recipe page
 -------------------------
 -- Holds the actual recipe names and descriptions
@@ -49,7 +35,7 @@ CREATE TABLE IF NOT EXISTS recipes (
     name recipe_name PRIMARY KEY,
     description recipe_description,
     default_portions int NOT NULL CHECK (default_portions > 0),
-    difficulty difficulty NOT NULL,
+    difficulty text NOT NULL REFERENCES valid_difficulties(difficulty),
     -- Regex checks for (nr-nr), (<nr), (>nr) and (nr)
     -- This gives the options of interval, lessthan, morethan and specific time
     cook_time varchar(10) NOT NULL CHECK (cook_time ~
@@ -60,12 +46,13 @@ CREATE TABLE IF NOT EXISTS recipes (
 -- This can be one, several or all of them.
 CREATE TABLE IF NOT EXISTS categories (
     recipe_name recipe_name,
-    category category,
+    category text REFERENCES valid_categories(category),
     PRIMARY KEY (recipe_name, category),
     CONSTRAINT fk_category FOREIGN KEY (
         recipe_name
     ) REFERENCES recipes (name) ON DELETE CASCADE
 );
+
 
 -- Contains the ingredients for all recipes, the amounts
 -- and also the units. The recipe_id column references the id
@@ -76,7 +63,7 @@ CREATE TABLE IF NOT EXISTS ingredients (
     ingredient ingredient_name NOT NULL,
     note note_description,
     amount float NOT NULL CHECK (amount > 0),
-    unit measurement_units NOT NULL,
+    unit text NOT NULL REFERENCES valid_measurement_units(unit),
     PRIMARY KEY (recipe_name, ingredient),
     CONSTRAINT fk_ingredients FOREIGN KEY (
         recipe_name
@@ -117,7 +104,7 @@ CREATE TABLE IF NOT EXISTS images (
 CREATE OR REPLACE FUNCTION recipes() RETURNS TABLE (
     name recipe_name,
     description recipe_description,
-    difficulty difficulty,
+    difficulty text NOT NULL REFERENCES valid_difficulties(difficulty),
     cook_time int
 ) AS $$
     SELECT name, description, difficulty, cook_time FROM recipes;
@@ -137,7 +124,7 @@ CREATE OR REPLACE FUNCTION ingredients(
     ingredient ingredient_name,
     note note_description,
     amount float,
-    unit measurement_units
+    unit text NOT NULL REFERENCES valid_measurement_units(unit)
 ) AS $$
     SELECT  ingredient, note, amount, unit FROM ingredients WHERE recipe_name=$1;
 $$ LANGUAGE SQL;
@@ -163,7 +150,7 @@ $$ LANGUAGE SQL;
 -- Gets all the categories for all recipes
 CREATE OR REPLACE FUNCTION categories(
 ) RETURNS TABLE (
-    recipe_name recipe_name, category category
+    recipe_name recipe_name, category text
 ) AS $$
     SELECT recipe_name, category FROM categories;
 $$ LANGUAGE SQL;
