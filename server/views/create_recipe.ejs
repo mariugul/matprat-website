@@ -36,7 +36,7 @@
       </header>
 
       <!-- Create Recipe Form -->
-      <form class="w3-container" action="/" method="post" enctype="multipart/form-data">
+      <form class="w3-container" action="/create-recipe" method="post" enctype="multipart/form-data">
         <div class="w3-section">
 
           <!-- Recipe Name -->
@@ -86,8 +86,8 @@
 
               <% for( let i=0; i < difficulties.length; i++ ) { %>
                 <br>
-                <input class="w3-radio" type="radio" name="difficulty" value="<%= difficulties[i] %>" checked>
-                <label>
+                <input id="difficulty-<%= difficulties[i] %>" class="w3-radio" type="radio" name="difficulty" value="<%= difficulties[i] %>" checked>
+                <label for="difficulty-<%= difficulties[i] %>">
                   <%= difficulties[i].charAt(0).toUpperCase() + difficulties[i].slice(1) %>
                 </label>
                 <% } %>
@@ -108,14 +108,14 @@
               <label>Select one or several categories the recipe belongs to</label>
 
               <br>
-              <input class="w3-check" type="checkbox" checked="checked">
-              <label>Other</label>
+              <input id="category-other" name="category-other" class="w3-check" type="checkbox" checked="checked">
+              <label for="category-other">Other</label>
 
               <% for( let i=0; i < categories.length; i++ ) { %>
                 <br>
-                <input class="w3-check" type="checkbox" value="<%= categories[i] %>">
+                <input id="category-<%= categories[i] %>" name="category-<%= categories[i] %>" class="w3-check" type="checkbox" value="<%= categories[i] %>">
                 <%# Displays the categories with the first letter upper case %>
-                  <label>
+                  <label for="category-<%= categories[i] %>">
                     <%= categories[i].charAt(0).toUpperCase() + categories[i].slice(1) %>
                   </label>
                   <% } %>
