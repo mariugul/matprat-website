@@ -86,7 +86,8 @@
 
               <% for( let i=0; i < difficulties.length; i++ ) { %>
                 <br>
-                <input id="difficulty-<%= difficulties[i] %>" class="w3-radio" type="radio" name="difficulty" value="<%= difficulties[i] %>" checked>
+                <input id="difficulty-<%= difficulties[i] %>" class="w3-radio" type="radio" name="difficulty"
+                  value="<%= difficulties[i] %>" checked>
                 <label for="difficulty-<%= difficulties[i] %>">
                   <%= difficulties[i].charAt(0).toUpperCase() + difficulties[i].slice(1) %>
                 </label>
@@ -113,7 +114,8 @@
 
               <% for( let i=0; i < categories.length; i++ ) { %>
                 <br>
-                <input id="category-<%= categories[i] %>" name="category-<%= categories[i] %>" class="w3-check" type="checkbox" value="<%= categories[i] %>">
+                <input id="category-<%= categories[i] %>" name="category-<%= categories[i] %>" class="w3-check"
+                  type="checkbox" value="<%= categories[i] %>">
                 <%# Displays the categories with the first letter upper case %>
                   <label for="category-<%= categories[i] %>">
                     <%= categories[i].charAt(0).toUpperCase() + categories[i].slice(1) %>
@@ -129,8 +131,9 @@
                 <div class="w3-row-padding">
                   <!-- Ingredient -->
                   <div class="w3-quarter">
-                    <input class="w3-input w3-border" type="text" placeholder="Enter ingredient" name="ingredient"
-                      onkeyup="isIngredientDuplicate(this.value, parentNode.parentNode.parentNode.id)" required>
+                    <input name="ingredient" class="w3-input w3-border" type="text" placeholder="Enter ingredient"
+                      name="ingredient" onkeyup="isIngredientDuplicate(this.value, parentNode.parentNode.parentNode.id)"
+                      required>
                   </div>
                   <!-- Amount -->
                   <div class="w3-quarter">
@@ -139,7 +142,7 @@
                   </div>
                   <!-- Measurement Unit -->
                   <div class="w3-quarter">
-                    <select class="w3-input w3-border" id="ingredient_unit" name="ingredient" required>
+                    <select class="w3-input w3-border" id="ingredient_unit" name="ingredient_unit" required>
                       <option value="" selected disabled hidden>Choose Unit</option>
                       <%# Fill in measurement unit options from database %>
                         <% for( let i=0; i < measurementUnits.length; i++ ) { %>
@@ -151,8 +154,8 @@
                   </div>
                   <!-- Note -->
                   <div class="w3-quarter">
-                    <input class="w3-input w3-border" type="text" placeholder="Enter note (optional)" name="note"
-                      maxlength="100">
+                    <input class="w3-input w3-border" type="text" placeholder="Enter note (optional)"
+                      name="ingredient_note" maxlength="100">
                   </div>
                 </div>
               </div>
@@ -173,7 +176,7 @@
                     <input class="w3-input w3-border" type="text" placeholder="Enter instruction" name="step" required>
                   </div>
                   <div class="w3-third">
-                    <input class="w3-input w3-border" type="text" placeholder="Enter note (optional)" name="step"
+                    <input class="w3-input w3-border" type="text" placeholder="Enter note (optional)" name="step_note"
                       maxlength="100">
                   </div>
                 </div>
@@ -189,7 +192,7 @@
             <div class="input_section" style="margin-top: 50px;">
               <label><b>Image</b></label><br>
               <label for="uploadImage">Upload recipe photo</label>
-              <input class="w3-input" type="file" id="uploadImage" name="uploadImage" accept=".png, .jpg, .jpeg"
+              <input id="uploadImage" name="uploadImage" class="w3-input" type="file" accept=".png, .jpg, .jpeg"
                 required>
               <!-- Add this section back in if description and link is desired -->
               <!-- <div class="w3-row-padding">
@@ -227,8 +230,9 @@
         function addIngredient() {
           // Clone entire ingredient row
           let clone = ingredient_row.cloneNode(true);
-          // Set the cloned ingredient row ID to ingredient(i)
+          // Set the cloned ingredient row ID and name to ingredient(i)
           clone.id = "ingredient" + ++ingredient_id;
+          clone.name = "ingredient" + ++ingredient_id;
           // Add ingredient row
           ingredient_row.parentNode.appendChild(clone);
 
@@ -272,8 +276,9 @@
         function addStep() {
           // Clone entire step row
           let clone = step_row.cloneNode(true);
-          // Set the cloned step row ID to step(i)
+          // Set the cloned step row ID and name to step(i)
           clone.id = "step" + ++step_id;
+          clone.name = "step" + ++step_id;
           // Add step row
           step_row.parentNode.appendChild(clone);
 
