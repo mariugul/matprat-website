@@ -189,25 +189,81 @@
               onclick="removeStep()">-</div>
 
             <!-- Images -->
+            <!-- Recipe Image for the actual recipe -->
             <div class="input_section" style="margin-top: 50px;">
-              <label><b>Image</b></label><br>
-              <label for="uploadImage">Upload recipe photo</label>
-              <input id="uploadImage" name="uploadImage" class="w3-input" type="file" accept=".png, .jpg, .jpeg"
-                required>
-              <!-- Add this section back in if description and link is desired -->
-              <!-- <div class="w3-row-padding">
-              <div class="w3-half">
-                <input class="w3-input w3-border" type="text" placeholder="Enter link (images/recipe.png)" name="link"
-                  required>
+              <label><b>Recipe Image</b></label><br>
+              <label for="recipe_image">Upload image for the recipe page (16:9)</label>
+              <input id="recipe_image" name="recipe_image" class="w3-input" type="file" accept=".png, .jpg, .jpeg"
+                onchange="setImageInfo(this.id, 'recipe_image_link', 'recipe_image_description', '16:9')" required>
+              <!-- Link and description -->
+              <br>
+              <div class="w3-row-padding">
+                <div class="w3-half">
+                  <label for="recpe_image_link">Link</label>
+                  <input id="recipe_image_link" name="recipe_image_link" class="w3-input w3-border" disabled
+                    placeholder="No image selected" type="text" readonly required>
+                </div>
+                <div class="w3-half">
+                  <label for="recipe_image_description">Description</label>
+                  <input id="recipe_image_description" name="recipe_image_description" placeholder="No image selected"
+                    class="w3-input w3-border" type="text" required>
+                </div>
               </div>
-              <div class="w3-half">
-                <input class="w3-input w3-border" type="text" placeholder="Enter description" name="link" required>
+              <!-- Display Image -->
+              <div id="recipe_image_preview_container" class="w3-margin" style="min-width: 300px; min-height: 100px; 
+                  border: 1px solid lightgray; display: flex; align-items: center; justify-content: center; 
+                  font-weight: bold; color: lightgray;">
+                <img id="recipe_image_preview" src="" alt="Image Preview" style="display: none; width: 100%;"
+                  onload="setImageSize(this, 'recipe_image_size', '16:9', 'recipe_image_size_checkmark')"></img>
+                <span id="recipe_image_preview_text">Image Preview</span>
               </div>
-            </div> -->
+              <!-- Display Image Size -->
+              <div class="w3-margin w3-center">
+                <span id="recipe_image_size"
+                  style="border: 1px solid lightgray; color: lightgray; font-weight: bold; padding: 5px;">
+                  Image Size
+                </span>
+                <span id="recipe_image_size_checkmark" style="font-size: 16px; display: none;"></span>
+              </div>
+            </div>
+            <!-- Card Image for the recipes page -->
+            <div class="input_section" style="margin-top: 50px;">
+              <label><b>Card Image</b></label><br>
+              <label for="card_image">Upload image for the recipes page (4:3)</label>
+              <input id="card_image" name="card_image" class="w3-input" type="file" accept=".png, .jpg, .jpeg"
+                onchange="setImageInfo(this.id, 'card_image_link', 'card_image_description', '4:3')" required>
+              <!-- Link and description -->
+              <br>
+              <div class="w3-row-padding">
+                <div class="w3-half">
+                  <label for="card_image_link">Link</label>
+                  <input id="card_image_link" name="card_image_link" class="w3-input w3-border" disabled
+                    placeholder="No image selected" type="text" readonly required>
+                </div>
+                <div class="w3-half">
+                  <label for="card_image_description">Description</label>
+                  <input id="card_image_description" name="card_image_description" placeholder="No image selected"
+                    class="w3-input w3-border" type="text" required>
+                </div>
+              </div>
+              <!-- Display Image -->
+              <div class="w3-margin w3-card" style="min-width: 300px; min-height: 100px; border: 1px solid lightgray; display: flex; 
+                  align-items: center; justify-content: center; font-weight: bold; color: lightgray;">
+                <img id="card_image_preview" src="" alt="Image Preview" style="display: none; width:100%;"
+                  onload="setImageSize(this, 'card_image_size', '4:3', 'card_image_size_checkmark')"></img>
+                <span id="card_image_preview_text">Image Preview</span>
+              </div>
+              <!-- Display Image Size -->
+              <div class="w3-margin w3-center">
+                <span id="card_image_size"
+                  style="border: 1px solid lightgray; color: lightgray; font-weight: bold; padding: 5px;">
+                  Image Size
+                </span>
+                <span id="card_image_size_checkmark" style="font-size: 16px; display: none;"></span>
+              </div>
             </div>
 
             <!-- Create Button -->
-            <!-- <hr> -->
             <button class="w3-button w3-block w3-green w3-section w3-padding" type="submit">Create Recipe</button>
           </div>
       </form>
@@ -432,10 +488,144 @@
           } else {
             input_field.style.color = 'black';
           }
-
-          // DEBUG
-          console.log(existingIngredients);
         }
+
+        function setImageInfo(imageId, imageLinkId, imageDescId, ratio) {
+          // Get HTML input fields
+          let image = document.getElementById(imageId);
+          let imageLink = document.getElementById(imageLinkId);
+          let imageDescription = document.getElementById(imageDescId);
+
+          // When there is no image selected
+          if (image.value === "") {
+            // Reset values to display the placeholders
+            imageLink.value = "";
+            imageDescription.value = "";
+
+            // Hide image
+            // imageDisplay.style.display = "none";
+          } else {
+            // Get the name of the uploaded image by stripping off fake path
+            const imageName = image.value.replace("C:\\fakepath\\", "");
+
+            // Set image link from image name
+            if (ratio === "16:9") {
+              imageLink.value = "path/" + "16:9-" + imageName;
+            }
+            else if (ratio === "4:3") {
+              imageLink.value = "path/" + "4:3-" + imageName;
+            }
+
+            // Set image description to image name
+            imageDescription.value = imageName;
+          }
+        }
+
+        // Display uploaded images
+        // -----------------------
+        const recipeImageInput = document.getElementById("recipe_image");
+        const recipeImagePreview = document.getElementById("recipe_image_preview");
+        const recipeImagePreviewText = document.getElementById("recipe_image_preview_text");
+
+        recipeImageInput.addEventListener("change", function () {
+          const file = this.files[0];
+
+          if (file) {
+            const reader = new FileReader();
+
+            // Hide text and show image
+            recipeImagePreviewText.style.display = "none";
+            recipeImagePreview.style.display = "block";
+
+            reader.addEventListener("load", function () {
+              recipeImagePreview.setAttribute("src", this.result);
+            });
+
+            reader.readAsDataURL(file);
+          } else {
+            // Reset image and text
+            recipeImagePreviewText.style.display = null;
+            recipeImagePreview.style.display = "none";
+            recipeImagePreview.setAttribute("src", "");
+            let checkmark = document.getElementById("recipe_image_size_checkmark");
+            let imageSizeField = document.getElementById("recipe_image_size");
+            imageSizeField.style.color = "lightgray";
+            imageSizeField.innerHTML = "Image Size";
+            checkmark.style.display = "none";
+          }
+        })
+
+        const cardImageInput = document.getElementById("card_image");
+        const cardImagePreview = document.getElementById("card_image_preview");
+        const cardImagePreviewText = document.getElementById("card_image_preview_text");
+
+        cardImageInput.addEventListener("change", function () {
+          const file = this.files[0];
+
+          if (file) {
+            const reader = new FileReader();
+
+            // Hide text and show image
+            cardImagePreviewText.style.display = "none";
+            cardImagePreview.style.display = "block";
+
+            reader.addEventListener("load", function () {
+              cardImagePreview.setAttribute("src", this.result);
+            });
+
+            reader.readAsDataURL(file);
+          } else {
+            // Reset image and text
+            cardImagePreviewText.style.display = null;
+            cardImagePreview.style.display = "none";
+            cardImagePreview.setAttribute("src", "");
+            let checkmark = document.getElementById("card_image_size_checkmark");
+            let imageSizeField = document.getElementById("card_image_size");
+            imageSizeField.style.color = "lightgray";
+            imageSizeField.innerHTML = "Image Size";
+            checkmark.style.display = "none";
+          }
+        })
+
+        // Set image size fields for verification that image is correct size
+        function setImageSize(previewImage, sizeFieldId, dimensions, checkmarkId) {
+          // Get image size
+          let imageWidth = previewImage.naturalWidth;
+          let imageHeight = previewImage.naturalHeight;
+          let checkmark = document.getElementById(checkmarkId);
+
+          // Ratios
+          const RATIO_16_9 = 16 / 9;
+          const RATIO_4_3 = 4 / 3;
+
+          // Get size field
+          imageSizeField = document.getElementById(sizeFieldId);
+
+          // Set size field values
+          imageSizeField.innerHTML = imageWidth + "x" + imageHeight;
+
+          // Calculate image dimensions
+          let imageDimensions = imageWidth / imageHeight;
+
+          // Check if the dimensions are correct
+          if (dimensions === '16:9' && imageDimensions === RATIO_16_9) {
+            imageSizeField.style.color = "black";
+            checkmark.style.display = "inline";
+            checkmark.innerHTML = "✔️";
+          }
+          else if (dimensions === '4:3' && imageDimensions === RATIO_4_3) {
+            imageSizeField.style.color = "black";
+            checkmark.style.display = "inline";
+            checkmark.innerHTML = "✔️";
+          }
+          else {
+            // Set image size field color to red for invalid aspect ratio
+            imageSizeField.style.color = "red";
+            checkmark.style.display = "inline";
+            checkmark.innerHTML = "❌";
+          }
+        }
+
       </script>
 </body>
 
