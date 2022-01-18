@@ -48,7 +48,8 @@
             <span id="recipe_name_length" class="w3-right w3-small">0</span>
             <input id="recipe_name" class="w3-input w3-border" type="text" maxlength="50"
               placeholder="Enter recipe name" name="name"
-              onkeyup="isNameValid(); calcTextLength(this.id, 'recipe_name_length')" required>
+              onkeyup="isNameValid(); calcTextLength(this.id, 'recipe_name_length'); setCardImageRecipeName(this)"
+              required>
             <div id="recipe_name_feedback" style="color: red; display: none;">The recipe name already exists.</div>
           </div>
 
@@ -61,7 +62,8 @@
             <span id="description_length" class="w3-right w3-small">0</span>
             <textarea id="description" class="w3-input w3-border" rows="3" maxlength="200"
               placeholder="Enter short description" name="description"
-              onkeyup="calcTextLength(this.id, 'description_length')" required></textarea>
+              onkeyup="calcTextLength(this.id, 'description_length'); setCardImageRecipeDescription(this)"
+              required></textarea>
           </div>
 
           <!-- Cook Time -->
@@ -247,11 +249,19 @@
                 </div>
               </div>
               <!-- Display Image -->
-              <div class="w3-margin w3-card" style="min-width: 300px; min-height: 100px; border: 1px solid lightgray; display: flex; 
+              <div class="w3-card w3-round-large w3-margin" style="padding: none;">
+
+                <div style="min-width: 300px; min-height: 100px; border: 1px solid lightgray; display: flex; 
                   align-items: center; justify-content: center; font-weight: bold; color: lightgray;">
-                <img id="card_image_preview" src="" alt="Image Preview" style="display: none; width:100%;"
-                  onload="setImageSize(this, 'card_image_size', '4:3', 'card_image_size_checkmark')"></img>
-                <span id="card_image_preview_text">Image Preview</span>
+                  <img id="card_image_preview" src="" alt="Image Preview" style="display: none; width:100%;"
+                    onload="setImageSize(this, 'card_image_size', '4:3', 'card_image_size_checkmark')"></img>
+                  <span id="card_image_preview_text">Image Preview</span>
+                </div>
+
+                <div class="w3-container w3-center">
+                  <h4 id="card_image_recipe_name"><b>Recipe</b></h4>
+                  <p id="card_image_recipe_description">Description</p>
+                </div>
               </div>
               <!-- Display Image Size -->
               <div class="w3-margin w3-center">
@@ -626,6 +636,19 @@
           }
         }
 
+        // Updates the title under the "card image" for a preview
+        function setCardImageRecipeName(nameObject) {
+          let recipeName = nameObject.value;
+          let cardImageRecipeName = document.getElementById("card_image_recipe_name");
+          cardImageRecipeName.innerHTML = recipeName.bold();
+        }
+
+        // Updates the description under the "card image" for a preview
+        function setCardImageRecipeDescription(descriptionObject) {
+          let recipeDescription = descriptionObject.value;
+          let cardImageRecipeDescription = document.getElementById("card_image_recipe_description");
+          cardImageRecipeDescription.innerHTML = recipeDescription;
+        }
       </script>
 </body>
 
