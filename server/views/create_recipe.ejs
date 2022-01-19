@@ -627,12 +627,8 @@
           // The function allows for a small diff and returns a boolean
           function ratioIsAllowed(allowedRatio) {
             if (calculatedRatio <= (allowedRatio + ALLOWED_DIFF) && calculatedRatio >= (allowedRatio - ALLOWED_DIFF)) {
-              console.log("return true!");
-              console.log("calculatedRatio = " + calculatedRatio);
               temp = allowedRatio + ALLOWED_DIFF;
               temp2 = allowedRatio - ALLOWED_DIFF;
-              console.log("Allowed ratio: " + temp2 + " to " + temp);
-              return true;
             }
             console.log("return false!");
             return false;
