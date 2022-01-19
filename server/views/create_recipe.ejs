@@ -133,7 +133,7 @@
                 <div class="w3-row-padding">
                   <!-- Ingredient -->
                   <div class="w3-quarter">
-                    <input name="ingredient" class="w3-input w3-border" type="text" placeholder="Enter ingredient"
+                    <input class="w3-input w3-border" type="text" placeholder="Enter ingredient"
                       name="ingredient" onkeyup="isIngredientDuplicate(this.value, parentNode.parentNode.parentNode.id)"
                       required>
                   </div>
@@ -297,8 +297,9 @@
           // Clone entire ingredient row
           let clone = ingredient_row.cloneNode(true);
           // Set the cloned ingredient row ID and name to ingredient(i)
-          clone.id = "ingredient" + ++ingredient_id;
-          clone.name = "ingredient" + ++ingredient_id;
+          ingredient_id++;
+          clone.id = "ingredient" + ingredient_id;
+          clone.name = "ingredient" + ingredient_id;
           // Add ingredient row
           ingredient_row.parentNode.appendChild(clone);
 
@@ -322,8 +323,11 @@
         function removeIngredient() {
           // Get the last ingredient row by id
           let ingredient = document.getElementById('ingredient' + ingredient_id);
+
+          console.log(ingredient_id);
           // Remove the last ingredient
           ingredient.remove();
+          
           // Decrement ingredients
           ingredient_id--;
 
@@ -343,8 +347,9 @@
           // Clone entire step row
           let clone = step_row.cloneNode(true);
           // Set the cloned step row ID and name to step(i)
-          clone.id = "step" + ++step_id;
-          clone.name = "step" + ++step_id;
+          step_id++;
+          clone.id = "step" + step_id;
+          clone.name = "step" + step_id;
           // Add step row
           step_row.parentNode.appendChild(clone);
 
@@ -607,6 +612,7 @@
           // Ratios
           const RATIO_16_9 = 16 / 9;
           const RATIO_4_3 = 4 / 3;
+          const ALLOWED_DIFF = 0.02;
 
           // Get size field
           imageSizeField = document.getElementById(sizeFieldId);
@@ -615,15 +621,30 @@
           imageSizeField.innerHTML = imageWidth + "x" + imageHeight;
 
           // Calculate image dimensions
-          let imageDimensions = imageWidth / imageHeight;
+          let calculatedRatio = imageWidth / imageHeight;
+
+          // Calculates if a ratio is allowed given an aspect ratio e.g. 16:9 or 4:3
+          // The function allows for a small diff and returns a boolean
+          function ratioIsAllowed(allowedRatio) {
+            if (calculatedRatio <= (allowedRatio + ALLOWED_DIFF) && calculatedRatio >= (allowedRatio - ALLOWED_DIFF)) {
+              console.log("return true!");
+              console.log("calculatedRatio = " + calculatedRatio);
+              temp = allowedRatio + ALLOWED_DIFF;
+              temp2 = allowedRatio - ALLOWED_DIFF;
+              console.log("Allowed ratio: " + temp2 + " to " + temp);
+              return true;
+            }
+            console.log("return false!");
+            return false;
+          }
 
           // Check if the dimensions are correct
-          if (dimensions === '16:9' && imageDimensions === RATIO_16_9) {
+          if (dimensions === "16:9" && ratioIsAllowed(RATIO_16_9)) {
             imageSizeField.style.color = "black";
             checkmark.style.display = "inline";
             checkmark.innerHTML = "✔️";
           }
-          else if (dimensions === '4:3' && imageDimensions === RATIO_4_3) {
+          else if (dimensions === "4:3" && ratioIsAllowed(RATIO_4_3)) {
             imageSizeField.style.color = "black";
             checkmark.style.display = "inline";
             checkmark.innerHTML = "✔️";
