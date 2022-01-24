@@ -3,8 +3,20 @@
 const express = require('express');
 const process = require('process');
 const bodyParser = require('body-parser');
-// var cors = require('cors') // CORS for local development
+const multer = require('multer');
 
+const fileStorageEngine = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, './uploaded_images');
+  },
+  filename: (req, file, cb) => {
+    cb(null, file.originalname);
+  },
+});
+
+const upload = multer({ storage: fileStorageEngine });
+
+// var cors = require('cors') // CORS for local development
 const app = express();
 
 app.set('view engine', 'ejs'); // use EJS as template engine
@@ -66,11 +78,44 @@ app.get('/', (req, res) => {
   res.render('index');
 });
 
-// Login and return create recipe page
-app.get('/login', (req, res) => {
+// Object that defines how to receive the multiform for create recipe
+const createRecipeMultiForm = [
+  { name: 'name' },
+  { name: 'description' },
+  { name: 'cook_time' },
+  { name: 'cook_time_selector' },
+  { name: 'cook_time_interval_first' },
+  { name: 'cook_time_interval_second' },
+  { name: 'difficulty' },
+  { name: 'default_portions' },
+  { name: 'category-other' },
+  { name: 'category' },
+  { name: 'ingredient' },
+  { name: 'ingredient_unit' },
+  { name: 'ingredient_note' },
+  { name: 'amount' },
+  { name: 'step' },
+  { name: 'step_note' },
+  { name: 'recipe_image' },
+  { name: 'recipe_image_link' },
+  { name: 'recipe_image_description' },
+  { name: 'card_image' },
+  { name: 'card_image_link' },
+  { name: 'card_image_description' },
+];
+
+app.post('/create-recipe', upload.fields(createRecipeMultiForm), (req, res) => {
+  // console.log(`Body. ${JSON.stringify(req.body)}`);
+  console.log(req.files);
+  console.log(req.body);
+  res.send('Successfully received info');
+});
+
+// Login and return create recipe pageindex
+app.get('/create-recipe', (req, res) => {
   // eslint-disable-next-line no-undef
   queries = (async function queryDatabase() {
-    // Define vars for query results
+    // Define arrays for query results
     const recipes = [];
     const categories = [];
     const difficulties = [];
