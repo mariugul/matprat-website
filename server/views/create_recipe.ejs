@@ -111,12 +111,12 @@
               <label>Select one or several categories the recipe belongs to</label>
 
               <br>
-              <input id="category-other" name="category-other" class="w3-check" type="checkbox" checked="checked">
+              <input id="category-other" name="category" value="other" class="w3-check" type="checkbox" checked="checked">
               <label for="category-other">Other</label>
 
               <% for( let i=0; i < categories.length; i++ ) { %>
                 <br>
-                <input id="category-<%= categories[i] %>" name="category-<%= categories[i] %>" class="w3-check"
+                <input id="category-<%= categories[i] %>" name="category" class="w3-check"
                   type="checkbox" value="<%= categories[i] %>">
                 <%# Displays the categories with the first letter upper case %>
                   <label for="category-<%= categories[i] %>">
@@ -202,7 +202,7 @@
               <div class="w3-row-padding">
                 <div class="w3-half">
                   <label for="recpe_image_link">Link</label>
-                  <input id="recipe_image_link" name="recipe_image_link" class="w3-input w3-border" disabled
+                  <input id="recipe_image_link" name="recipe_image_link" class="w3-input w3-border"
                     placeholder="No image selected" type="text" readonly required>
                 </div>
                 <div class="w3-half">
@@ -239,7 +239,7 @@
               <div class="w3-row-padding">
                 <div class="w3-half">
                   <label for="card_image_link">Link</label>
-                  <input id="card_image_link" name="card_image_link" class="w3-input w3-border" disabled
+                  <input id="card_image_link" name="card_image_link" class="w3-input w3-border"
                     placeholder="No image selected" type="text" readonly required>
                 </div>
                 <div class="w3-half">
@@ -439,10 +439,10 @@
             time_input_fields.innerHTML =
               '<span>' +
               '<label>Enter the time interval for cooking this recipe</label><br>' +
-              '<input id="cook_time_interval_first" name="cook_time_interval_first" type="number" min="0" max="1000"' +
+              '<input id="cook_time_interval_first" name="cook_time" type="number" min="0" max="1000"' +
               'maxlength="1000" placeholder="From" required>' +
               '&nbsp; - &nbsp;' +
-              '<input id="cook_time_interval_second" name="cook_time_interval_second" type="number" min="0" max="1000"' +
+              '<input id="cook_time_interval_second" name="cook_time" type="number" min="0" max="1000"' +
               'maxlength="1000" placeholder="To" required>' +
               '&nbsp; min' +
               '</span>';
@@ -627,10 +627,9 @@
           // The function allows for a small diff and returns a boolean
           function ratioIsAllowed(allowedRatio) {
             if (calculatedRatio <= (allowedRatio + ALLOWED_DIFF) && calculatedRatio >= (allowedRatio - ALLOWED_DIFF)) {
-              temp = allowedRatio + ALLOWED_DIFF;
-              temp2 = allowedRatio - ALLOWED_DIFF;
+              return true;
             }
-            console.log("return false!");
+            
             return false;
           }
 
