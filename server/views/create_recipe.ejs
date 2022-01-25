@@ -111,13 +111,14 @@
               <label>Select one or several categories the recipe belongs to</label>
 
               <br>
-              <input id="category-other" name="category" value="other" class="w3-check" type="checkbox" checked="checked">
+              <input id="category-other" name="category" value="other" class="w3-check" type="checkbox"
+                checked="checked">
               <label for="category-other">Other</label>
 
               <% for( let i=0; i < categories.length; i++ ) { %>
                 <br>
-                <input id="category-<%= categories[i] %>" name="category" class="w3-check"
-                  type="checkbox" value="<%= categories[i] %>">
+                <input id="category-<%= categories[i] %>" name="category" class="w3-check" type="checkbox"
+                  value="<%= categories[i] %>">
                 <%# Displays the categories with the first letter upper case %>
                   <label for="category-<%= categories[i] %>">
                     <%= categories[i].charAt(0).toUpperCase() + categories[i].slice(1) %>
@@ -133,9 +134,8 @@
                 <div class="w3-row-padding">
                   <!-- Ingredient -->
                   <div class="w3-quarter">
-                    <input class="w3-input w3-border" type="text" placeholder="Enter ingredient"
-                      name="ingredient" onkeyup="isIngredientDuplicate(this.value, parentNode.parentNode.parentNode.id)"
-                      required>
+                    <input class="w3-input w3-border" type="text" placeholder="Enter ingredient" name="ingredient"
+                      onkeyup="isIngredientDuplicate(this.value, parentNode.parentNode.parentNode.id)" required>
                   </div>
                   <!-- Amount -->
                   <div class="w3-quarter">
@@ -249,7 +249,7 @@
                 </div>
               </div>
               <!-- Display Image -->
-              <div class="w3-card w3-round-large w3-margin" style="padding: none;">
+              <div class="w3-card w3-round-large w3-margin" style="padding: none; padding-bottom: 5px;">
 
                 <div style="min-width: 300px; min-height: 100px; border: 1px solid lightgray; display: flex; 
                   align-items: center; justify-content: center; font-weight: bold; color: lightgray;">
@@ -261,6 +261,12 @@
                 <div class="w3-container w3-center">
                   <h4 id="card_image_recipe_name"><b>Recipe</b></h4>
                   <p id="card_image_recipe_description">Description</p>
+                  <!-- Recipe Tags -->
+                  <span>
+                    <img src="/chef-hat.png" alt="" style="width: 16px; opacity: 80%;">&nbsp;Easy&nbsp;&nbsp;</img>
+                    <img src="/clock2.png" alt="" style="width: 16px; opacity: 80%;">&nbsp;20-40 min</img>
+                  </span>
+
                 </div>
               </div>
               <!-- Display Image Size -->
@@ -327,7 +333,7 @@
           console.log(ingredient_id);
           // Remove the last ingredient
           ingredient.remove();
-          
+
           // Decrement ingredients
           ingredient_id--;
 
@@ -629,7 +635,7 @@
             if (calculatedRatio <= (allowedRatio + ALLOWED_DIFF) && calculatedRatio >= (allowedRatio - ALLOWED_DIFF)) {
               return true;
             }
-            
+
             return false;
           }
 
