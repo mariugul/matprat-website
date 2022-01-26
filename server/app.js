@@ -104,14 +104,48 @@ const createRecipeMultiForm = [
   { name: 'card_image_description' },
 ];
 
+// Adds recipes to the database from the information received from the "create recipe" page
 app.post('/create-recipe', upload.fields(createRecipeMultiForm), (req, res) => {
-  // console.log(`Body. ${JSON.stringify(req.body)}`);
-  console.log(req.files);
-  console.log(req.body);
+  // console.log(req.body);
+
+  // Parameters for the recipe table
+  const recipeParams = [
+    req.body.name,
+    req.body.description,
+    req.body.default_portions,
+    req.body.difficulty,
+  ];
+
+  // On "interval" the cook time comes as an array of two values e.g. [20, 40]
+  // Make that into "20-40" in the same variable
+  if (req.body.cook_time_selector === 'interval') {
+    recipeParams.push(`${req.body.cook_time[0]}-${req.body.cook_time[1]}`);
+  // Save value as just the specific time
+  } else if (req.body.cook_time_selector === 'specific') {
+    recipeParams.push(req.body.cook_time);
+  // Save value as a "more than" time
+  } else if (req.body.cook_time_selector === 'more_than') {
+    recipeParams.push(`>${req.body.cook_time}`);
+  // Save value as a "less than" time
+  } else if (req.body.cook_time_selector === 'less_than') {
+    recipeParams.push(`<${req.body.cook_time}`);
+  }
+
+  // eslint-disable-next-line no-undef
+  queries = (async function queryDatabase() {
+    // Insert a recipe into the database
+    await sqlQuery(`INSERT INTO recipes (name, description, default_portions, difficulty, cook_time)
+      VALUES ($1, $2, $3, $4, $5)`, recipeParams)
+      .then((result) => console.log(result))
+      .catch((err) => console.log(err));
+
+    return 0;
+  }());
+
   res.send('Successfully received info');
 });
 
-// Login and return create recipe pageindex
+// Shows the "create a recipe" page
 app.get('/create-recipe', (req, res) => {
   // eslint-disable-next-line no-undef
   queries = (async function queryDatabase() {
