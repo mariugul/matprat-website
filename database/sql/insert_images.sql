@@ -1,5 +1,9 @@
-INSERT INTO images (recipe_name, image_nr, link, description)
+INSERT INTO images (recipe_name, link, description)
 VALUES
-('Waffles', 1, '/waffles.jpg', 'Waffles cover'),
-('Pancakes', 1, '/pancake.jpg', 'Pancakes cover'),
-('Creamy Scrambled Eggs', 1, '/creamy-scrambled-eggs.jpg', 'Creamy Eggs cover');
+('Waffles', '/waffles.jpg', '4.3-waffles.jpg'),
+('Pancakes', '/pancakes.jpg', '4.3-pancakes.jpg'),
+(
+    'Creamy Scrambled Eggs',
+    '/creamy scrambled eggs.jpg',
+    '4.3-creamy scrambled eggs.jpg'
+);

@@ -15,7 +15,8 @@
   <%- include('partials/nav.ejs') %>
 
     <!-- Cover image of the recipe -->
-    <img class="cover-image" src="<%= images[0].link %> " alt="<%= images[0].description %> "></a>
+    <img class="cover-image" src="/images/<%= recipeInfo[0].name.toLowerCase() %>.jpg"
+      alt="/images/<%= recipeInfo[0].name.toLowerCase() %>.jpg"></a>
 
     <!-- CENTER ENITRE PAGE CONTENT -->
     <!-- -------------------------- -->

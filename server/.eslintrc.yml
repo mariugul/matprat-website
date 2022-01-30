@@ -7,4 +7,7 @@ extends:
   - airbnb-base
 parserOptions:
   ecmaVersion: 13
-rules: {}
+rules: {
+  no-plusplus: off,
+  no-shadow: off
+}

@@ -1,5 +1,5 @@
 INSERT INTO valid_categories (category)
-VALUES ('breakfast'), ('lunch'), ('dinner'), ('vegetarian'), ('vegan'), ('pescetarian');
+VALUES ('other'), ('breakfast'), ('lunch'), ('dinner'), ('vegetarian'), ('vegan'), ('pescetarian');
 
 INSERT INTO valid_difficulties (difficulty)
 VALUES ('easy'), ('intermediate'), ('advanced');

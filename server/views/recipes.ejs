@@ -123,7 +123,7 @@
             <!-- Recipe Card -->
             <div class="recipe-cards w3-card w3-round-large">
               <!-- Recipe Image -->
-              <img src="/images<%= recipesInfo[recipe].link %>" style="width:100%; height: auto; cursor: pointer;"
+              <img src="/images/<%= recipesInfo[recipe].name.toLowerCase() %>.jpg" style="width:100%; height: auto; cursor: pointer;"
                 onclick="openRecipe('<%= recipesInfo[recipe].name %>')">
               <!-- Recipe Name -->
               <h4 style="margin: 4px;">

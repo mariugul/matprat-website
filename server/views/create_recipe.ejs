@@ -68,7 +68,8 @@
 
           <!-- Cook Time -->
           <div class="input_section">
-            <label><b>Cook Time</b></label>
+            <label><b>Cook Time</b></label><br>
+            <label>The time it takes to cook the recipe measured in minutes</label>
             <select class="w3-select" id="cook_time_selector" name="cook_time_selector" onchange="cookTimeSelector()"
               required>
               <option value="" disabled selected>Choose your option</option>
@@ -109,12 +110,7 @@
               <label><b>Categories</b></label>
               <br>
               <label>Select one or several categories the recipe belongs to</label>
-
               <br>
-              <input id="category-other" name="category" value="other" class="w3-check" type="checkbox"
-                checked="checked">
-              <label for="category-other">Other</label>
-
               <% for( let i=0; i < categories.length; i++ ) { %>
                 <br>
                 <input id="category-<%= categories[i] %>" name="category" class="w3-check" type="checkbox"
@@ -195,20 +191,20 @@
             <div class="input_section" style="margin-top: 50px;">
               <label><b>Recipe Image</b></label><br>
               <label for="recipe_image">Upload image for the recipe page (16:9)</label>
-              <input id="recipe_image" name="recipe_image" class="w3-input" type="file" accept=".png, .jpg, .jpeg"
+              <input id="recipe_image" name="image" class="w3-input" type="file" accept=".jpg"
                 onchange="setImageInfo(this.id, 'recipe_image_link', 'recipe_image_description', '16:9')" required>
               <!-- Link and description -->
               <br>
               <div class="w3-row-padding">
                 <div class="w3-half">
                   <label for="recpe_image_link">Link</label>
-                  <input id="recipe_image_link" name="recipe_image_link" class="w3-input w3-border"
+                  <input id="recipe_image_link" name="image_link" class="w3-input w3-border"
                     placeholder="No image selected" type="text" readonly required>
                 </div>
                 <div class="w3-half">
                   <label for="recipe_image_description">Description</label>
-                  <input id="recipe_image_description" name="recipe_image_description" placeholder="No image selected"
-                    class="w3-input w3-border" type="text" required>
+                  <input id="recipe_image_description" name="image_description" placeholder="No image selected"
+                    class="w3-input w3-border" type="text" readonly required>
                 </div>
               </div>
               <!-- Display Image -->
@@ -232,20 +228,20 @@
             <div class="input_section" style="margin-top: 50px;">
               <label><b>Card Image</b></label><br>
               <label for="card_image">Upload image for the recipes page (4:3)</label>
-              <input id="card_image" name="card_image" class="w3-input" type="file" accept=".png, .jpg, .jpeg"
+              <input id="card_image" name="image" class="w3-input" type="file" accept=".jpg"
                 onchange="setImageInfo(this.id, 'card_image_link', 'card_image_description', '4:3')" required>
               <!-- Link and description -->
               <br>
               <div class="w3-row-padding">
                 <div class="w3-half">
                   <label for="card_image_link">Link</label>
-                  <input id="card_image_link" name="card_image_link" class="w3-input w3-border"
+                  <input id="card_image_link" name="image_link" class="w3-input w3-border"
                     placeholder="No image selected" type="text" readonly required>
                 </div>
                 <div class="w3-half">
                   <label for="card_image_description">Description</label>
-                  <input id="card_image_description" name="card_image_description" placeholder="No image selected"
-                    class="w3-input w3-border" type="text" required>
+                  <input id="card_image_description" name="image_description" placeholder="No image selected"
+                    class="w3-input w3-border" type="text" readonly required>
                 </div>
               </div>
               <!-- Display Image -->
@@ -523,22 +519,25 @@
             imageLink.value = "";
             imageDescription.value = "";
 
-            // Hide image
-            // imageDisplay.style.display = "none";
+          // Image selected
           } else {
             // Get the name of the uploaded image by stripping off fake path
             const imageName = image.value.replace("C:\\fakepath\\", "");
-
+            
             // Set image link from image name
             if (ratio === "16:9") {
-              imageLink.value = "path/" + "16:9-" + imageName;
+              imageLink.value = `/${imageName}`;
             }
             else if (ratio === "4:3") {
-              imageLink.value = "path/" + "4:3-" + imageName;
+              imageLink.value = `/${imageName}`;
             }
 
+            // Trim of the file extension
+            const imageNameNoExt = imageName.replace(/\.(png|jpg|jpeg)$/, '');
+
             // Set image description to image name
-            imageDescription.value = imageName;
+            imageDescription.value = imageNameNoExt;
+
           }
         }
 

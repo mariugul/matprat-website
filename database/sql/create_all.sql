@@ -8,9 +8,9 @@ CREATE DOMAIN step_description AS varchar(500);
 
 CREATE DOMAIN image_link AS varchar(100);
 
-CREATE DOMAIN image_description AS varchar(20);
+CREATE DOMAIN image_description AS varchar(50);
 
-CREATE DOMAIN ingredient_name AS varchar(30);
+CREATE DOMAIN ingredient_name AS varchar(50);
 
 CREATE DOMAIN note_description AS varchar(100);
 
@@ -19,15 +19,15 @@ CREATE DOMAIN cook_time AS varchar(10);
 -- 'Valid value' tables
 ------------------------
 CREATE TABLE IF NOT EXISTS valid_categories (
-    category text PRIMARY KEY
+    category TEXT PRIMARY KEY
 );
 
 CREATE TABLE IF NOT EXISTS valid_difficulties (
-    difficulty text PRIMARY KEY
+    difficulty TEXT PRIMARY KEY
 );
 
 CREATE TABLE IF NOT EXISTS valid_measurement_units (
-    unit text PRIMARY KEY
+    unit TEXT PRIMARY KEY
 );
 
 -- Tables for recipe page
@@ -47,8 +47,8 @@ CREATE TABLE IF NOT EXISTS recipes (
 -- Contains which categories a recipe belongs to.
 -- This can be one, several or all of them.
 CREATE TABLE IF NOT EXISTS categories (
-    recipe_name recipe_name,
-    category text REFERENCES valid_categories(category),
+    recipe_name RECIPE_NAME,
+    category TEXT REFERENCES valid_categories(category),
     PRIMARY KEY (recipe_name, category),
     CONSTRAINT fk_category FOREIGN KEY (
         recipe_name
@@ -61,11 +61,11 @@ CREATE TABLE IF NOT EXISTS categories (
 -- of the recipes table so you can't have ingredients that are not
 -- connected to a specific recipe.
 CREATE TABLE IF NOT EXISTS ingredients (
-    recipe_name recipe_name,
-    ingredient ingredient_name NOT NULL,
-    note note_description,
-    amount float NOT NULL CHECK (amount > 0),
-    unit text NOT NULL REFERENCES valid_measurement_units(unit),
+    recipe_name RECIPE_NAME,
+    ingredient INGREDIENT_NAME NOT NULL,
+    note NOTE_DESCRIPTION,
+    amount FLOAT NOT NULL CHECK (amount > 0),
+    unit TEXT NOT NULL REFERENCES valid_measurement_units(unit),
     PRIMARY KEY (recipe_name, ingredient),
     CONSTRAINT fk_ingredients FOREIGN KEY (
         recipe_name
@@ -74,10 +74,10 @@ CREATE TABLE IF NOT EXISTS ingredients (
 
 -- Contains the individual steps to take to make the recipe
 CREATE TABLE IF NOT EXISTS steps (
-    recipe_name recipe_name,
-    step_nr int NOT NULL CHECK (step_nr > 0),
-    description step_description NOT NULL,
-    note note_description,
+    recipe_name RECIPE_NAME,
+    step_nr INT NOT NULL CHECK (step_nr > 0),
+    description STEP_DESCRIPTION NOT NULL,
+    note NOTE_DESCRIPTION,
     PRIMARY KEY (recipe_name, step_nr),
     CONSTRAINT fk_ingredients FOREIGN KEY (
         recipe_name
@@ -85,16 +85,14 @@ CREATE TABLE IF NOT EXISTS steps (
 );
 
 -- Holds the links to the images for the recipes.
--- Every image holds the recipe_id combined with an image_nr.
--- This makes it possible to have as many images as you want 
--- displayed on a recipe page and you are able to sort them 
--- in order based on image_nr in the same way as the steps-table.
+-- Every image holds the recipe_id combined with the link.
+-- Step nr can be used to connect a image to a specific step in the recipe.
 CREATE TABLE IF NOT EXISTS images (
-    recipe_name recipe_name,
-    image_nr int NOT NULL CHECK (image_nr > 0),
-    link image_link,
-    description image_description NOT NULL,
-    PRIMARY KEY (recipe_name, image_nr),
+    recipe_name RECIPE_NAME,
+    link IMAGE_LINK,
+    step_nr INT CHECK (step_nr > 0),
+    description IMAGE_DESCRIPTION NOT NULL,
+    PRIMARY KEY (recipe_name, link),
     CONSTRAINT fk_ingredients FOREIGN KEY (
         recipe_name
     ) REFERENCES recipes (name) ON DELETE CASCADE
@@ -114,14 +112,14 @@ $$ LANGUAGE SQL;
 
 -- Gets information about a specific recipe
 CREATE OR REPLACE FUNCTION recipeinfo(
-    recipe_name
+    RECIPE_NAME
 ) RETURNS TABLE (LIKE recipes) AS $$
     SELECT * FROM recipes WHERE name=$1;
 $$ LANGUAGE SQL;
 
 -- Gets all the ingredients for a specific recipe
 CREATE OR REPLACE FUNCTION ingredients(
-    recipe_name
+    RECIPE_NAME
 ) RETURNS TABLE (
     ingredient ingredient_name,
     note note_description,
@@ -133,7 +131,7 @@ $$ LANGUAGE SQL;
 
 -- Gets all the steps (instructions) for a specific recipe
 CREATE OR REPLACE FUNCTION steps(
-    recipe_name
+    RECIPE_NAME
 ) RETURNS TABLE (
     step_nr int, description step_description, note note_description
 ) AS $$
@@ -142,11 +140,11 @@ $$ LANGUAGE SQL;
 
 -- Gets all the image-links for a specific recipe
 CREATE OR REPLACE FUNCTION images(
-    recipe_name
+    RECIPE_NAME
 ) RETURNS TABLE (
-    image_nr int, link image_link, description image_description
+    step_nr int, link image_link, description image_description
 ) AS $$
-    SELECT image_nr, link, description FROM images WHERE recipe_name=$1;
+    SELECT step_nr, link, description FROM images WHERE recipe_name=$1;
 $$ LANGUAGE SQL;
 
 -- Gets all the categories for all recipes
