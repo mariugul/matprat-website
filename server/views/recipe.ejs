@@ -15,7 +15,7 @@
   <%- include('partials/nav.ejs') %>
 
     <!-- Cover image of the recipe -->
-    <img class="cover-image" src="/images/<%= recipeInfo[0].name.toLowerCase() %>.jpg"
+    <img class="cover-image" src="/images/16.9-<%= recipeInfo[0].name.toLowerCase().replaceAll(" ", "-") %>.jpg"
       alt="/images/<%= recipeInfo[0].name.toLowerCase() %>.jpg"></a>
 
     <!-- CENTER ENITRE PAGE CONTENT -->
