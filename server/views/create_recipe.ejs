@@ -22,6 +22,10 @@
       .remove_button {
         margin-right: 5px;
       }
+
+      input:invalid {
+        box-shadow: 0 0 5px 1px red;
+      }
     </style>
 </head>
 
@@ -42,12 +46,12 @@
           <!-- Recipe Name -->
           <div class="input_section">
             <label><b>Name</b></label><br>
-            <label>Keep the name descriptive and short.</label>
+            <label>Keep the name descriptive.</label>
             <span class="w3-right w3-small">50</span>
             <span class="w3-right w3-small">/</span>
             <span id="recipe_name_length" class="w3-right w3-small">0</span>
-            <input id="recipe_name" class="w3-input w3-border" type="text" maxlength="50"
-              placeholder="Enter recipe name" name="name"
+            <input id="recipe_name" class="w3-input w3-border" type="text" maxlength="50" minlength="3"
+              placeholder="Enter Recipe Name" name="name" pattern="^[A-Z][\w\.\-\s]*[^\n\f\r\t\s\.]$"
               onkeyup="isNameValid(); calcTextLength(this.id, 'recipe_name_length'); setCardImageRecipeName(this)"
               required>
             <div id="recipe_name_feedback" style="color: red; display: none;">The recipe name already exists.</div>
@@ -61,7 +65,8 @@
             <span class="w3-right w3-small">/</span>
             <span id="description_length" class="w3-right w3-small">0</span>
             <textarea id="description" class="w3-input w3-border" rows="3" maxlength="200"
-              placeholder="Enter short description" name="description"
+              placeholder="Enter short description that ends in period." name="description"
+              pattern="^[A-Z][\w\.\-\s]*[\.]$"
               onkeyup="calcTextLength(this.id, 'description_length'); setCardImageRecipeDescription(this)"
               required></textarea>
           </div>
@@ -519,11 +524,11 @@
             imageLink.value = "";
             imageDescription.value = "";
 
-          // Image selected
+            // Image selected
           } else {
             // Get the name of the uploaded image by stripping off fake path
             const imageName = image.value.replace("C:\\fakepath\\", "");
-            
+
             // Set image link from image name
             if (ratio === "16:9") {
               imageLink.value = `/${imageName}`;
