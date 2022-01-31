@@ -400,8 +400,8 @@ app.post('/create-recipe', upload.fields(createRecipeMultiForm), (req, res) => {
   const ingredientNotes = sortParams(req.body.ingredient_note);
   const steps = sortParams(req.body.step);
   const stepNotes = sortParams(req.body.step_note);
-  const imageLink = sortParams(req.body.image_link);
-  const imageDescription = sortParams(req.body.image_description);
+  // const imageLink = sortParams(req.body.image_link);
+  // const imageDescription = sortParams(req.body.image_description);
 
   // Save step numbers depending on the amount of steps
   // It's useful to have them as an array because it makes the query building simpler to automate.
@@ -437,13 +437,6 @@ app.post('/create-recipe', upload.fields(createRecipeMultiForm), (req, res) => {
     stepNotes,
   );
 
-  const queryRecipe = buildInsertQuery(
-    req.body.name,
-    'recipes',
-    ['name', 'description', 'default_portions', 'difficulty', 'cook_time'],
-    recipe,
-  );
-
   // const queryImages = buildInsertQuery(
   //   req.body.name,
   //   'images',
@@ -455,7 +448,7 @@ app.post('/create-recipe', upload.fields(createRecipeMultiForm), (req, res) => {
   // eslint-disable-next-line no-undef
   queries = (async function queryDatabase() {
     // Insert a recipe into the database
-    await sqlQuery(queryRecipe)
+    await sqlQuery('INSERT INTO recipes (name, description, default_portions, difficulty, cook_time) VALUES ($1, $2, $3, $4, $5)', recipe)
       .then((result) => queryResult.push(result))
       .catch((err) => queryError.push(err));
 
@@ -481,6 +474,7 @@ app.post('/create-recipe', upload.fields(createRecipeMultiForm), (req, res) => {
   if (queryError.length > 0) {
     res.send(`Error with database queries to create a recipe.\n${queryError}`);
   }
+  console.log(`queryResult length: ${queryResult.length}`); // DEBUG
   res.send(`Successfully created recipe in database!\n${queryResult}`);
 });
 
