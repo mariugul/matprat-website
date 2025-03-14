@@ -20,7 +20,7 @@
     "ejs": "^3.1.6",
     "express": "^4.17.1",
     "joi": "^17.7.1",
-    "nodemon": "^3.0.0",
+    "nodemon": "^3.1.9",
     "pg": "^8.7.1"
   },
   "devDependencies": {
