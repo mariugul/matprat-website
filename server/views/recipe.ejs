@@ -109,11 +109,11 @@
                           onclick="stepDownPortions()">
                     <i class="bi bi-dash-lg"></i>
                   </button>
-                  <input type="number" 
+                  <input type="text" 
                          class="form-control text-center fw-bold" 
                          id="nr-of-portions" 
-                         min="1" 
-                         max="99" 
+                         inputmode="numeric"
+                         pattern="[0-9]*"
                          value="<%= parseInt(recipeInfo[0].default_portions) %>"
                          onchange="updateIngredientValues(value)">
                   <button class="btn btn-outline-primary" 
