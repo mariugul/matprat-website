@@ -3,50 +3,200 @@
 [![Pipeline](https://github.com/mariugul/matprat-website/actions/workflows/pipeline.yml/badge.svg)](https://github.com/mariugul/matprat-website/actions/workflows/pipeline.yml)
 [![CodeFactor](https://www.codefactor.io/repository/github/mariugul/matprat-website/badge)](https://www.codefactor.io/repository/github/mariugul/matprat-website)
 
+A recipe website for managing and displaying cooking recipes with ingredients, step-by-step instructions, and images. Built with Node.js, Express, and PostgreSQL, fully containerized with Docker.
 
-## Setup
+## 🚀 Quick Start
 
-Install NodeJS 17
+### Local Development
 
-```bash
-# Using Ubuntu
-curl -fsSL https://deb.nodesource.com/setup_17.x | sudo -E bash -
-sudo apt-get install -y nodejs
+1. **Prerequisites**: Docker and Docker Compose installed
+
+2. **Start the application**:
+   ```bash
+   docker compose -f docker-compose.local.yml up --build -d
+   ```
+
+3. **Access the services**:
+   - **Website**: http://localhost:3001
+   - **pgAdmin**: http://localhost:5050 (user: `user@domain.com`, password: `SuperSecret`)
+   - **Database**: localhost:5433
+
+4. **Stop the application**:
+   ```bash
+   docker compose -f docker-compose.local.yml down
+   ```
+
+For detailed setup instructions, see [`LOCAL_SETUP.md`](../LOCAL_SETUP.md).
+
+## 🏗️ Architecture
+
+### Technology Stack
+
+- **Frontend**: HTML, CSS (w3.css), JavaScript
+- **Backend**: Node.js 16 with Express.js
+- **Database**: PostgreSQL 14.1
+- **Container Orchestration**: Docker & Docker Compose
+- **Database Management**: pgAdmin 4
+
+### Application Structure
+
+```
+matprat-website/
+├── server/              # Node.js Express application
+│   ├── app.js          # Main application entry point
+│   ├── Dockerfile      # Server container definition
+│   └── package.json    # Node dependencies
+├── database/           # Database scripts and configuration
+│   └── sql/           # SQL initialization scripts
+│       ├── 00-init.sql    # Schema, types, and functions
+│       └── 01-data.sql    # Sample recipe data
+├── production/         # Production deployment configuration
+│   ├── docker-compose.yml     # Production setup
+│   └── webhooks/              # Webhook configuration
+└── docs/              # Documentation
 ```
 
-Connect to PostgreSQL container.
+## 📊 Database Schema
 
+The database uses PostgreSQL and consists of five main tables centered around recipes. Each recipe is uniquely identified by its name.
+
+<img src="images/recipes-page-db.png" alt="Database schema diagram" width=80% >
+
+### Core Tables
+
+#### **recipes**
+Main table containing recipe metadata:
+- `name` (Primary Key): Unique recipe identifier
+- `description`: Short recipe description (max 200 chars)
+- `default_portions`: Number of servings (default: 2)
+- `difficulty`: Enum ('easy', 'intermediate', 'advanced')
+- `cook_time`: Cooking time in minutes
+
+#### **ingredients**
+Recipe ingredients with measurements:
+- `recipe_name` + `ingredient` (Composite Primary Key)
+- `amount`: Quantity as a decimal value
+- `unit`: Measurement unit (gram, litre, dl, ts, ss, small, medium, large)
+- `note`: Optional ingredient note
+
+#### **steps**
+Step-by-step cooking instructions:
+- `recipe_name` + `step_nr` (Composite Primary Key)
+- `description`: What to do in this step (max 500 chars)
+- `note`: Optional step note or tip
+
+#### **images**
+Recipe images and their metadata:
+- `recipe_name` + `image_nr` (Composite Primary Key)
+- `link`: Image file path or URL
+- `description`: Image description for alt text
+
+#### **categories**
+Recipe categorization (many-to-many):
+- `recipe_name` + `category` (Composite Primary Key)
+- `category`: Enum ('breakfast', 'lunch', 'dinner', 'tradition', 'christmas', 'easter')
+
+### Data Types
+
+**Custom Domains:**
+- `recipe_name`: varchar(50)
+- `recipe_description`: varchar(200)
+- `step_description`: varchar(500)
+- `ingredient_name`: varchar(30)
+- `image_link`: varchar(100)
+- `image_description`: varchar(20)
+- `note_description`: varchar(100)
+
+**Enums:**
+- `measurement_units`: gram, litre, dl, ts, ss, small, medium, large
+- `category`: breakfast, lunch, dinner, tradition, christmas, easter
+- `difficulty`: easy, intermediate, advanced
+
+### Database Functions
+
+The database includes stored functions for common queries:
+- `recipes()`: Get all recipes with metadata
+- `recipeinfo(recipe_name)`: Get specific recipe details
+- `ingredients(recipe_name)`: Get recipe ingredients
+- `steps(recipe_name)`: Get cooking steps
+- `images(recipe_name)`: Get recipe images
+- `categories()`: Get all recipe categories
+
+## 🔧 Development
+
+### Database Management
+
+**Connect to database directly:**
 ```bash
-sudo psql -h website-db -U postgres
+docker exec -it pratmat-db-local psql -U postgres -d matprat
 ```
 
-## Website
+**View database logs:**
+```bash
+docker compose -f docker-compose.local.yml logs db -f
+```
 
-The website is constructed with the w3.css framework and JavaScript for dynamically loading in information from the database.
+**Reset database:**
+```bash
+docker compose -f docker-compose.local.yml down -v
+docker compose -f docker-compose.local.yml up -d
+```
 
-## Server
+### Server Development
 
-The server runs on node.js with express.js to handle the API's. The server communicates with the database using the 'pg' package to connect to postgres.
+**View server logs:**
+```bash
+docker compose -f docker-compose.local.yml logs server -f
+```
 
-## Database
+**Restart server after code changes:**
+```bash
+docker compose -f docker-compose.local.yml restart server
+```
 
-The website information will be hosted in a PostgreSQL database. That means a good database design is crucial. The implementation of the database is found in the folder `sql`.
+**Full rebuild:**
+```bash
+docker compose -f docker-compose.local.yml up --build -d
+```
 
-### Recipes Page
+## 🚀 Production Deployment
 
-This is basic implementation of the content for the recipes page. A recipe is identified by a unique id and a unique name. Therefore, duplicate recipes are not possible. Due to this fact, all the other tables reference the recipes-table's `id` and `name`. This is how the website will identify which content belongs on the recipe site.
+Production uses Docker Compose with pre-built images from Docker Hub:
+```bash
+cd production
+docker compose up -d
+```
 
-<img src="images/recipes-page-db.png" alt="finished-img" width=80% >
+**Production services:**
+- Web server (port 3000)
+- PostgreSQL database
+- pgAdmin for database management
+- Automated daily backups using [prodrigestivill/postgres-backup-local](https://hub.docker.com/r/prodrigestivill/postgres-backup-local)
 
-- **Ingredients** contains the ingredients, amount and unit to use in a recipe. The recipe-id combined with the name are unique identifiers meaning you can only list a certain ingredient-name once for a specific recipe. The amount can be any decimal number and the meaning of that number is specified in the _unit_ column.
+**Backups:** Database is backed up daily to `/var/opt/db_backups` with retention:
+- Daily backups: 7 days
+- Weekly backups: 4 weeks
+- Monthly backups: 6 months
 
-- **Steps** are the steps to take to complete a recipe. The recipe-id combined with the step-nr makes up a unique identifier so you can only have unique step numbers for each recipe. The description is what to do for this step and the note is an optional value that displays a small "note box" with information.
+For webhook configuration and automatic deployments, see [`production/webhooks/README.md`](../production/webhooks/README.md).
 
-- **Images** are the image(s) that will be displayed on the bottom (or the top?) of the page. This table contains merely the links to where those images are. Like the other tables this also has a unique combination of recipe_id and image_nr. A description is added for information about the image and can typically be used in an "alt" tag.
+## 📝 API Endpoints
 
-### Domains and Enums
+The server exposes RESTful endpoints (documented in `server/app.js`):
+- Recipes listing and details
+- Ingredients by recipe
+- Cooking steps by recipe
+- Recipe images
+- Category filtering
 
-### Trigger Functions
+## 🤝 Contributing
 
-### Database Backup
-The database is backed up daily to the local file system. This is done using a docker image that has a mounted volume to /var/opt/ and runs cronjobs internally. The docker image is taken from [prodrigestivill/postgres-backup-local](https://hub.docker.com/r/prodrigestivill/postgres-backup-local). In the future a cloud based backup would probably be a good additional and perhaps an additional usb-drive backup.
+1. Create a new branch: `git checkout -b feature-name`
+2. Make your changes
+3. Test locally with `docker compose -f docker-compose.local.yml up`
+4. Commit and push: `git push origin feature-name`
+5. Create a Pull Request (main branch is protected)
+
+## 📄 License
+
+This is a personal project.
