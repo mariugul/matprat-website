@@ -32,7 +32,7 @@ For detailed setup instructions, see [`LOCAL_SETUP.md`](../LOCAL_SETUP.md).
 
 ### Technology Stack
 
-- **Frontend**: HTML, CSS (w3.css), JavaScript
+- **Frontend**: HTML, CSS, Bootstrap 5, JavaScript
 - **Backend**: Node.js 16 with Express.js
 - **Database**: PostgreSQL 14.1
 - **Container Orchestration**: Docker & Docker Compose
