@@ -16,12 +16,16 @@
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav ms-auto">
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="/">
+          <a class="nav-link <%= typeof activePage !== 'undefined' && activePage === 'home' ? 'active' : '' %>" 
+             <%= typeof activePage !== 'undefined' && activePage === 'home' ? 'aria-current="page"' : '' %>
+             href="/">
             <i class="bi bi-house-door"></i> Home
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="/recipes">
+          <a class="nav-link <%= typeof activePage !== 'undefined' && activePage === 'recipes' ? 'active' : '' %>" 
+             <%= typeof activePage !== 'undefined' && activePage === 'recipes' ? 'aria-current="page"' : '' %>
+             href="/recipes">
             <i class="bi bi-book"></i> Recipes
           </a>
         </li>

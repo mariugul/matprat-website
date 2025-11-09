@@ -4,170 +4,192 @@
 <head>
   <!-- Partial Head Data -->
   <%- include('partials/head.ejs') %>
-    <link rel="stylesheet" href="/footer.css">
-    <script src="http_requests.js"></script>
-    <script src="recipes.js"></script>
-    <style>
-      input[type=text] {
-        width: 250px;
-        box-sizing: border-box;
-        border: 2px solid #ccc;
-        border-radius: 8px;
-        font-size: 16px;
-        background-color: white;
-        background-image: url('/images/search.png');
-        background-position: 12px 12px;
-        background-repeat: no-repeat;
-        padding: 12px 20px 12px 40px;
-        transition: width 0.6s ease-in-out;
-      }
-
-      input[type=text]:focus {
-        width: 90%;
-      }
-
-      .recipe-cards {
-        /* background-color: rgb(185, 255, 185); */
-        padding-bottom: 4px;
-        /* color:white; */
-      }
-    </style>
-
-    <script>
-      // Shows or hides the categories-tree and changes the button color/text.
-      function toggleCategories() {
-        let category_list = document.getElementById("category-list");
-        let toggleButton = document.getElementById("toggle-categories-btn");
-        let light_color = "white";
-        let dark_color = "w3-green";
-
-        if (toggleButton.innerHTML == "Show Categories") {
-          // Change button text
-          toggleButton.innerHTML = "Hide Categories";
-
-          // Change button to darker color
-          toggleButton.classList.remove(light_color);
-          toggleButton.classList.add(dark_color);
-
-          // Show categories
-          category_list.style.display = "block";
-        }
-        else {
-          // Change button text
-          toggleButton.innerHTML = "Show Categories";
-
-          // Change button to lighter color
-          toggleButton.classList.remove(dark_color);
-          toggleButton.classList.add(light_color);
-
-          // Hide categories
-          category_list.style.display = "none";
-        }
-      }
-    </script>
-
+  <link rel="stylesheet" href="/footer.css">
+  <script src="/recipes.js" defer></script>
 </head>
 
-<body>
+<body class="d-flex flex-column min-vh-100">
   <!-- Header Navigation Menu -->
   <%- include('partials/nav.ejs') %>
 
-    <!-- CENTER ENTIRE PAGE CONTENT -->
-    <div class="w3-content" style="max-width:95%;background-color: white;">
-
-      <header>
-        <h1 class="w3-center w3-xxxlarge">Recipes</h1>
-      </header>
-      <hr>
-
-      <!-- Search Bar  -->
-      <form class="w3-center">
-        <input type="text" name="search" placeholder="Search for recipes..." style="margin-bottom: 16px;">
-      </form>
-
-      <!-- Categories -->
-      <ul id="category-list" class="w3-ul w3-padding-16 w3-animate-zoom"
-        style="width: 60%; margin: auto; display: none;">
-        <li>
-          Breakfast <span onclick="" class="w3-button w3-right w3-ripple"><i
-              class="fa fa-angle-right w3-bold w3-right"></i></span>
-        </li>
-        <li>Lunch <span onclick="" class="w3-button w3-right w3-ripple"><i
-              class="fa fa-angle-right w3-right"></i></span>
-        </li>
-        <li>Dinner <span onclick="" class="w3-button w3-right w3-ripple"><i
-              class="fa fa-angle-right w3-right"></i></span></li>
-        <li>Tradition <span onclick="" class="w3-button w3-right w3-ripple"><i
-              class="fa fa-angle-right w3-right"></i></span></li>
-        <li>Christmas <span onclick="" class="w3-button w3-right w3-ripple"><i
-              class="fa fa-angle-right w3-right"></i></span></li>
-        <li>Easter <span onclick="" class="w3-button w3-right w3-ripple"><i
-              class="fa fa-angle-right w3-right"></i></span></li>
-      </ul>
-
-
-      <!-- Filter Tags Bar -->
-      <div class="w3-bar w3-input" style="margin-top: 16px; margin-left: 16px; width: 95%;">
-        <div class="w3-bar-item w3-ripple w3-green w3-round" style="cursor: pointer">All</div>
-        <div class="w3-bar-item w3-hover-pale-green w3-ripple w3-round" style="cursor: pointer">A-Z</div>
-        <div class="w3-bar-item w3-hover-pale-green w3-ripple w3-round" style="cursor: pointer">Date</div>
-        <div class="w3-bar-item w3-hover-pale-green w3-ripple w3-round w3-right" style="cursor: pointer"
-          id="toggle-categories-btn" onclick="toggleCategories()">Show Categories</div>
-      </div>
-
-      <!-- Recipe Row -->
-      <div class="w3-row-padding w3-center">
-        <% for( let recipe=0; recipe < recipesInfo.length; recipe++ ) { %>
-          <!-- Recipe taking half of a horizontal split -->
-          <div class="w3-half w3-padding-16">
-            <!-- Recipe Card -->
-            <div class="recipe-cards w3-card w3-round-large">
-              <!-- Recipe Image -->
-              <img src="/images<%= recipesInfo[recipe].link %>" style="width:100%; height: auto; cursor: pointer;"
-                onclick="openRecipe('<%= recipesInfo[recipe].name %>')">
-              <!-- Recipe Name -->
-              <h4 style="margin: 4px;">
-                <%= recipesInfo[recipe].name %>
-              </h4>
-              <!-- Recipe Tags -->
-              <span>
-                <!-- Difficulty Tag -->
-                <img src="/chef-hat.png" alt="difficulty" style="width: 16px;"></img>
-                <!-- Difficulty -->
-                <span style="font-size: small;">&nbsp;<%= recipesInfo[recipe].difficulty.charAt(0).toUpperCase() +
-                    recipesInfo[recipe].difficulty.slice(1); %>&nbsp;&nbsp;</span>
-                <!-- Time Tag -->
-                <img src="/clock2.png" alt="time" style="width: 16px; opacity: 80%;"></img>
-                <!-- Time -->
-                <span style="font-size: small;">&nbsp;<%= recipesInfo[recipe].cook_time %> min</span>
+  <!-- Main Content -->
+  <main class="flex-grow-1">
+    
+    <!-- Page Header -->
+    <section class="page-header bg-light py-5">
+      <div class="container">
+        <div class="row align-items-center">
+          <div class="col-lg-8 mx-auto text-center">
+            <h1 class="display-4 fw-bold mb-3">
+              <i class="bi bi-book text-primary"></i> All Recipes
+            </h1>
+            <p class="lead text-muted mb-4">
+              Browse through <%= recipesInfo.length %> delicious recipes
+            </p>
+            
+            <!-- Search Bar -->
+            <div class="input-group input-group-lg shadow-sm">
+              <span class="input-group-text bg-white border-end-0">
+                <i class="bi bi-search text-muted"></i>
               </span>
+              <input type="text" 
+                     class="form-control border-start-0 ps-0" 
+                     id="searchInput"
+                     placeholder="Search recipes by name..."
+                     onkeyup="filterRecipes()">
             </div>
           </div>
-          <% } %>
+        </div>
       </div>
+    </section>
 
-      <!-- Pagination -->
-      <hr>
-      <div class="w3-bar w3-round-large"
-        style="background-color: rgb(247, 247, 247); max-width: fit-content; margin: auto;">
-        <a href="#" class="w3-button">&laquo;</a>
-        <a href="#" class="w3-button w3-green w3-round-large">1</a>
-        <% if (recipesInfo.length> 10) { %>
-          <a href="#" class="w3-button w3-round-large">2</a>
-          <% } if (recipesInfo.length> 20) { %>
-            <a href="#" class="w3-button w3-round-large">3</a>
-            <% } if (recipesInfo.length> 30) { %>
-              <a href="#" class="w3-button w3-round-large">4</a>
+    <!-- Filters Section -->
+    <section class="filters-section py-4 bg-white border-bottom">
+      <div class="container">
+        <div class="row align-items-center">
+          <!-- Category Filters -->
+          <div class="col-lg-8 mb-3 mb-lg-0">
+            <div class="d-flex flex-wrap gap-2" id="categoryFilters">
+              <button class="btn btn-sm btn-primary active" onclick="filterByCategory('all')">
+                <i class="bi bi-grid-3x3"></i> All Recipes
+              </button>
+              <button class="btn btn-sm btn-outline-primary" onclick="filterByCategory('breakfast')">
+                <i class="bi bi-sunrise"></i> Breakfast
+              </button>
+              <button class="btn btn-sm btn-outline-primary" onclick="filterByCategory('lunch')">
+                <i class="bi bi-sun"></i> Lunch
+              </button>
+              <button class="btn btn-sm btn-outline-primary" onclick="filterByCategory('dinner')">
+                <i class="bi bi-moon-stars"></i> Dinner
+              </button>
+              <button class="btn btn-sm btn-outline-primary" onclick="filterByCategory('tradition')">
+                <i class="bi bi-award"></i> Tradition
+              </button>
+            </div>
+          </div>
+          
+          <!-- Sort Options -->
+          <div class="col-lg-4 text-lg-end">
+            <div class="btn-group" role="group">
+              <button type="button" class="btn btn-sm btn-outline-secondary active" onclick="sortRecipes('default')">
+                <i class="bi bi-grid"></i> Default
+              </button>
+              <button type="button" class="btn btn-sm btn-outline-secondary" onclick="sortRecipes('name')">
+                <i class="bi bi-sort-alpha-down"></i> A-Z
+              </button>
+              <button type="button" class="btn btn-sm btn-outline-secondary" onclick="sortRecipes('time')">
+                <i class="bi bi-clock"></i> Time
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Recipes Grid -->
+    <section class="recipes-grid py-5">
+      <div class="container">
+        <% if (recipesInfo && recipesInfo.length > 0) { %>
+          <div class="row g-4" id="recipesContainer">
+            <% recipesInfo.forEach(recipe => { %>
+              <div class="col-sm-6 col-md-4 col-lg-3 recipe-item" 
+                   data-category="<%= recipe.category || 'all' %>"
+                   data-name="<%= recipe.name.toLowerCase() %>"
+                   data-time="<%= recipe.cook_time %>">
+                <div class="card h-100 border-0 shadow-sm recipe-card" 
+                     onclick="openRecipe('<%= recipe.name %>')"
+                     style="cursor: pointer;">
+                  <!-- Recipe Image -->
+                  <% if (recipe.link) { %>
+                    <div class="position-relative overflow-hidden">
+                      <img src="/images<%= recipe.link %>" 
+                           class="card-img-top" 
+                           alt="<%= recipe.name %>"
+                           style="height: 200px; object-fit: cover;">
+                      <!-- Difficulty Badge Overlay -->
+                      <span class="position-absolute top-0 end-0 m-2 badge bg-<%= recipe.difficulty === 'easy' ? 'success' : recipe.difficulty === 'intermediate' ? 'warning' : 'danger' %> shadow">
+                        <i class="bi bi-mortarboard"></i> <%= recipe.difficulty.charAt(0).toUpperCase() + recipe.difficulty.slice(1) %>
+                      </span>
+                    </div>
+                  <% } else { %>
+                    <div class="card-img-top bg-secondary d-flex align-items-center justify-content-center" 
+                         style="height: 200px;">
+                      <i class="bi bi-image text-white display-4"></i>
+                    </div>
+                  <% } %>
+                  
+                  <!-- Recipe Content -->
+                  <div class="card-body">
+                    <h5 class="card-title fw-bold mb-2"><%= recipe.name %></h5>
+                    <p class="card-text text-muted small mb-3">
+                      <%= recipe.description ? (recipe.description.length > 60 ? recipe.description.substring(0, 60) + '...' : recipe.description) : 'Delicious recipe' %>
+                    </p>
+                    
+                    <!-- Recipe Meta -->
+                    <div class="d-flex justify-content-between align-items-center">
+                      <span class="badge bg-info-subtle text-info border border-info">
+                        <i class="bi bi-clock"></i> <%= recipe.cook_time %> min
+                      </span>
+                      <span class="text-primary small">
+                        View Recipe <i class="bi bi-arrow-right"></i>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            <% }) %>
+          </div>
+
+          <!-- No Results Message (hidden by default) -->
+          <div id="noResults" class="text-center py-5" style="display: none;">
+            <i class="bi bi-search display-1 text-muted"></i>
+            <h3 class="mt-3">No recipes found</h3>
+            <p class="text-muted">Try adjusting your search or filters</p>
+          </div>
+
+          <!-- Pagination (for future use) -->
+          <nav aria-label="Recipe pagination" class="mt-5">
+            <ul class="pagination justify-content-center">
+              <li class="page-item disabled">
+                <a class="page-link" href="#" tabindex="-1">
+                  <i class="bi bi-chevron-left"></i> Previous
+                </a>
+              </li>
+              <li class="page-item active"><a class="page-link" href="#">1</a></li>
+              <% if (recipesInfo.length > 12) { %>
+                <li class="page-item"><a class="page-link" href="#">2</a></li>
               <% } %>
-                <a href="#" class="w3-button">&raquo;</a>
+              <% if (recipesInfo.length > 24) { %>
+                <li class="page-item"><a class="page-link" href="#">3</a></li>
+              <% } %>
+              <li class="page-item <% if (recipesInfo.length <= 12) { %>disabled<% } %>">
+                <a class="page-link" href="#">
+                  Next <i class="bi bi-chevron-right"></i>
+                </a>
+              </li>
+            </ul>
+          </nav>
+
+        <% } else { %>
+          <!-- Empty State -->
+          <div class="text-center py-5">
+            <i class="bi bi-inbox display-1 text-muted"></i>
+            <h3 class="mt-3">No recipes yet</h3>
+            <p class="text-muted">Check back soon for delicious recipes!</p>
+          </div>
+        <% } %>
       </div>
-      <hr>
+    </section>
 
-      <!-- END OF CENTER PAGE -->
-    </div>
+  </main>
 
-    <!-- Footer -->
-    <%- include('partials/footer.ejs') %>
+  <!-- Footer -->
+  <%- include('partials/footer.ejs') %>
+
+  <!-- Bootstrap JS Bundle (includes Popper) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" 
+          integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" 
+          crossorigin="anonymous"></script>
 </body>
 
 </html>
