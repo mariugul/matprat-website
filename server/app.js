@@ -64,7 +64,7 @@ app.get('/', async (req, res) => {
 
     // Get total recipe count for stats
     const recipeCount = await sqlQuery('SELECT COUNT(*) as count FROM recipes');
-    
+
     // Get average cook time for stats
     const avgCookTime = await sqlQuery('SELECT ROUND(AVG(cook_time)) as avg FROM recipes');
 
