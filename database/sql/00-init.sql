@@ -130,14 +130,14 @@ CREATE OR REPLACE FUNCTION recipes() RETURNS TABLE (
     cook_time int
 ) AS $$
     SELECT name, description, difficulty, cook_time FROM recipes;
-$$ LANGUAGE SQL;
+$$ LANGUAGE sql;
 
 -- Gets information about a specific recipe
 CREATE OR REPLACE FUNCTION recipeinfo(
     recipe_name
 ) RETURNS TABLE (LIKE recipes) AS $$
     SELECT * FROM recipes WHERE name=$1;
-$$ LANGUAGE SQL;
+$$ LANGUAGE sql;
 
 -- Gets all the ingredients for a specific recipe
 CREATE OR REPLACE FUNCTION ingredients(
@@ -148,8 +148,9 @@ CREATE OR REPLACE FUNCTION ingredients(
     amount float,
     unit measurement_units
 ) AS $$
-    SELECT  ingredient, note, amount, unit FROM ingredients WHERE recipe_name=$1;
-$$ LANGUAGE SQL;
+    SELECT  ingredient, note, amount, unit
+    FROM ingredients WHERE recipe_name=$1;
+$$ LANGUAGE sql;
 
 -- Gets all the steps (instructions) for a specific recipe
 CREATE OR REPLACE FUNCTION steps(
@@ -158,7 +159,7 @@ CREATE OR REPLACE FUNCTION steps(
     step_nr int, description step_description, note note_description
 ) AS $$
     SELECT step_nr, description, note FROM steps WHERE recipe_name=$1;
-$$ LANGUAGE SQL;
+$$ LANGUAGE sql;
 
 -- Gets all the image-links for a specific recipe
 CREATE OR REPLACE FUNCTION images(
@@ -167,7 +168,7 @@ CREATE OR REPLACE FUNCTION images(
     image_nr int, link image_link, description image_description
 ) AS $$
     SELECT image_nr, link, description FROM images WHERE recipe_name=$1;
-$$ LANGUAGE SQL;
+$$ LANGUAGE sql;
 
 -- Gets all the categories for all recipes
 CREATE OR REPLACE FUNCTION categories(
@@ -175,7 +176,7 @@ CREATE OR REPLACE FUNCTION categories(
     recipe_name recipe_name, category category
 ) AS $$
     SELECT recipe_name, category FROM categories;
-$$ LANGUAGE SQL;
+$$ LANGUAGE sql;
 
 -- COMMENTS --
 --------------------------
@@ -186,5 +187,6 @@ COMMENT ON COLUMN recipes.name IS 'The name of the recipe.';
 
 -- GRANTS -- 
 --------------------------
-GRANT INSERT, DELETE, UPDATE, SELECT ON images, ingredients, recipes, steps, categories
+GRANT INSERT, DELETE, UPDATE, SELECT
+ON images, ingredients, recipes, steps, categories
 TO nodejs;
