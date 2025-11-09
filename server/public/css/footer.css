@@ -1,10 +1,28 @@
+/* Footer customizations for Bootstrap 5 */
+
 .footer {
-  left: 0;
-  bottom: 0;
-  margin-top: 100px;
-  margin-bottom: 50px;
-  width: 100%;
-  text-align: center;
-  font-size: small;
-  opacity: 0.7;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.footer h5 {
+  letter-spacing: 0.5px;
+}
+
+.footer .text-muted {
+  color: rgba(255, 255, 255, 0.6) !important;
+}
+
+.footer small {
+  font-size: 0.875rem;
+}
+
+/* Responsive footer adjustments */
+@media (max-width: 767.98px) {
+  .footer .col-md-6 {
+    margin-bottom: 1rem;
+  }
+  
+  .footer .col-md-6:last-child {
+    margin-bottom: 0;
+  }
 }
