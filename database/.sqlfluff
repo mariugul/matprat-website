@@ -5,7 +5,6 @@ dialect = postgres
 templater = jinja
 rules = None
 exclude_rules = None
-recurse = 0
 output_line_length = 80
 runaway_limit = 10
 ignore_templated_areas = True
