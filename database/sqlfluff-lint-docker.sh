@@ -11,6 +11,6 @@ docker run --rm \
   -v "$(pwd)/database:/workspace/database:ro" \
   -w /workspace/database \
   python:3.12-slim \
-  bash -c "pip install -q sqlfluff==3.2.5 && sqlfluff lint --ignore parsing -v"
+  bash -c "pip install -q sqlfluff==3.2.5 && sqlfluff lint --ignore parsing"
 
 echo "✅ Linting complete!"
