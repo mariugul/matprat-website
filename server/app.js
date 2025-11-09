@@ -68,12 +68,14 @@ app.get('/', async (req, res) => {
     res.render('index', {
       featuredRecipes: featuredRecipes || [],
       totalRecipes: recipeCount[0]?.count || 0,
+      activePage: 'home',
     });
   } catch (err) {
     console.error('Error loading home page:', err);
     res.render('index', {
       featuredRecipes: [],
       totalRecipes: 0,
+      activePage: 'home',
     });
   }
 });
@@ -129,6 +131,7 @@ app.get('/recipes', (req, res) => {
       recipesInfo,
       categories,
       images,
+      activePage: 'recipes',
     });
 
     return 0;
