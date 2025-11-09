@@ -50,19 +50,19 @@
           <!-- Category Filters -->
           <div class="col-lg-8 mb-3 mb-lg-0">
             <div class="d-flex flex-wrap gap-2" id="categoryFilters">
-              <button class="btn btn-sm btn-primary active" onclick="filterByCategory('all')">
+              <button class="btn btn-sm btn-primary active" onclick="filterByCategory('all', event)">
                 <i class="bi bi-grid-3x3"></i> All Recipes
               </button>
-              <button class="btn btn-sm btn-outline-primary" onclick="filterByCategory('breakfast')">
+              <button class="btn btn-sm btn-outline-primary" onclick="filterByCategory('breakfast', event)">
                 <i class="bi bi-sunrise"></i> Breakfast
               </button>
-              <button class="btn btn-sm btn-outline-primary" onclick="filterByCategory('lunch')">
+              <button class="btn btn-sm btn-outline-primary" onclick="filterByCategory('lunch', event)">
                 <i class="bi bi-sun"></i> Lunch
               </button>
-              <button class="btn btn-sm btn-outline-primary" onclick="filterByCategory('dinner')">
+              <button class="btn btn-sm btn-outline-primary" onclick="filterByCategory('dinner', event)">
                 <i class="bi bi-moon-stars"></i> Dinner
               </button>
-              <button class="btn btn-sm btn-outline-primary" onclick="filterByCategory('tradition')">
+              <button class="btn btn-sm btn-outline-primary" onclick="filterByCategory('tradition', event)">
                 <i class="bi bi-award"></i> Tradition
               </button>
             </div>
@@ -71,13 +71,13 @@
           <!-- Sort Options -->
           <div class="col-lg-4 text-lg-end">
             <div class="btn-group" role="group">
-              <button type="button" class="btn btn-sm btn-outline-secondary active" onclick="sortRecipes('default')">
+              <button type="button" class="btn btn-sm btn-outline-secondary active" onclick="sortRecipes('default', event)">
                 <i class="bi bi-grid"></i> Default
               </button>
-              <button type="button" class="btn btn-sm btn-outline-secondary" onclick="sortRecipes('name')">
+              <button type="button" class="btn btn-sm btn-outline-secondary" onclick="sortRecipes('name', event)">
                 <i class="bi bi-sort-alpha-down"></i> A-Z
               </button>
-              <button type="button" class="btn btn-sm btn-outline-secondary" onclick="sortRecipes('time')">
+              <button type="button" class="btn btn-sm btn-outline-secondary" onclick="sortRecipes('time', event)">
                 <i class="bi bi-clock"></i> Time
               </button>
             </div>

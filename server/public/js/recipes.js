@@ -16,11 +16,12 @@ function filterRecipes() {
 
   recipeItems.forEach((item) => {
     const recipeName = item.getAttribute('data-name');
+    const recipeItem = item;
     if (recipeName.includes(filter)) {
-      item.style.display = '';
+      recipeItem.style.display = '';
       visibleCount += 1;
     } else {
-      item.style.display = 'none';
+      recipeItem.style.display = 'none';
     }
   });
 
@@ -31,7 +32,7 @@ function filterRecipes() {
 }
 
 // Filter recipes by category
-function filterByCategory(category) {
+function filterByCategory(category, clickEvent) {
   const recipeItems = document.querySelectorAll('.recipe-item');
   const categoryButtons = document.querySelectorAll('#categoryFilters button');
   const noResults = document.getElementById('noResults');
@@ -42,17 +43,20 @@ function filterByCategory(category) {
     btn.classList.remove('active', 'btn-primary');
     btn.classList.add('btn-outline-primary');
   });
-  event.target.classList.remove('btn-outline-primary');
-  event.target.classList.add('active', 'btn-primary');
+  if (clickEvent && clickEvent.target) {
+    clickEvent.target.classList.remove('btn-outline-primary');
+    clickEvent.target.classList.add('active', 'btn-primary');
+  }
 
   // Filter recipes
   recipeItems.forEach((item) => {
     const itemCategory = item.getAttribute('data-category');
+    const recipeItem = item;
     if (category === 'all' || itemCategory === category) {
-      item.style.display = '';
+      recipeItem.style.display = '';
       visibleCount += 1;
     } else {
-      item.style.display = 'none';
+      recipeItem.style.display = 'none';
     }
   });
 
@@ -69,7 +73,7 @@ function filterByCategory(category) {
 }
 
 // Sort recipes
-function sortRecipes(sortType) {
+function sortRecipes(sortType, clickEvent) {
   const container = document.getElementById('recipesContainer');
   const recipeItems = Array.from(document.querySelectorAll('.recipe-item'));
   const sortButtons = document.querySelectorAll('.btn-group button');
@@ -78,10 +82,12 @@ function sortRecipes(sortType) {
   sortButtons.forEach((btn) => {
     btn.classList.remove('active');
   });
-  event.target.classList.add('active');
+  if (clickEvent && clickEvent.target) {
+    clickEvent.target.classList.add('active');
+  }
 
   // Sort logic
-  let sortedItems = [...recipeItems];
+  const sortedItems = [...recipeItems];
 
   if (sortType === 'name') {
     // Sort alphabetically by name

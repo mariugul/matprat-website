@@ -78,15 +78,26 @@ function stepDownPortions() {
   updateIngredientValues(parseInt(portions.value, 10));
 }
 
+// Check if all steps are complete and show completion message
+function checkAllStepsComplete() {
+  const allStepCards = document.querySelectorAll('.step-card');
+  const allCompleted = Array.from(allStepCards).every((card) => card.classList.contains('bg-success'));
+  const completionCard = document.getElementById('completionCard');
+
+  if (completionCard) {
+    completionCard.style.display = allCompleted && allStepCards.length > 0 ? 'block' : 'none';
+  }
+}
+
 // Toggle step completion by clicking anywhere on the card
 function toggleStepByCard(stepCard, textId) {
   const stepText = document.getElementById(textId);
   const completionIndicator = stepCard.querySelector('.completion-indicator');
   const stepNumber = stepCard.querySelector('.step-number');
-  
+
   // Check if currently completed
   const isCompleted = stepCard.classList.contains('bg-success');
-  
+
   if (isCompleted) {
     // Mark as incomplete
     stepText.style.textDecoration = 'none';
@@ -106,18 +117,7 @@ function toggleStepByCard(stepCard, textId) {
     stepNumber.classList.add('bg-success');
     completionIndicator.style.display = 'block';
   }
-  
+
   // Check if all steps are completed
   checkAllStepsComplete();
-}
-
-// Check if all steps are complete and show completion message
-function checkAllStepsComplete() {
-  const allStepCards = document.querySelectorAll('.step-card');
-  const allCompleted = Array.from(allStepCards).every((card) => card.classList.contains('bg-success'));
-  const completionCard = document.getElementById('completionCard');
-  
-  if (completionCard) {
-    completionCard.style.display = allCompleted && allStepCards.length > 0 ? 'block' : 'none';
-  }
 }
