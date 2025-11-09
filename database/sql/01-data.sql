@@ -17,7 +17,7 @@ VALUES
 ('Pancakes', 'These are homemade delicious pancakes, mhm.', 6, 'easy', 40),
 (
     'Creamy Scrambled Eggs',
-    'A french way of scrambling your eggs that is just so delicious and creamy.',
+    'A french way of scrambling eggs that is delicious and creamy.',
     4,
     'intermediate',
     15
@@ -87,7 +87,7 @@ VALUES
 ('Creamy Scrambled Eggs', 1, '/creamy-scrambled-eggs.jpg', 'Creamy Eggs cover');
 
 -- Insert categories
-INSERT INTO categories(recipe_name, category)
+INSERT INTO categories (recipe_name, category)
 VALUES
 ('Waffles', 'breakfast'),
 ('Pancakes', 'breakfast');

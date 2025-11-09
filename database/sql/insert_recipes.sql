@@ -10,7 +10,7 @@ VALUES
 ('Pancakes', 'These are homemade delicious pancakes, mhm.', 6, 'easy', 40),
 (
     'Creamy Scrambled Eggs',
-    'A french way of scrambling your eggs that is just so delicious and creamy.',
+    'A french way of scrambling eggs that is delicious and creamy.',
     4,
     'intermediate',
     15
