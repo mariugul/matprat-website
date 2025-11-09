@@ -4,6 +4,9 @@ const express = require('express');
 const process = require('process');
 const { Pool } = require('pg');
 
+// Import utilities
+const logger = require('./utils/logger');
+
 // Initialize Express app
 const app = express();
 
@@ -58,17 +61,17 @@ app.use(errorHandler);
 
 // Graceful shutdown handling
 process.on('SIGINT', () => {
-  console.log('Received SIGINT, shutting down gracefully...');
+  logger.info('Received SIGINT, shutting down gracefully...');
   pool.end(() => {
-    console.log('Database pool closed');
+    logger.info('Database pool closed');
     process.exit(0);
   });
 });
 
 process.on('SIGTERM', () => {
-  console.log('Received SIGTERM, shutting down gracefully...');
+  logger.info('Received SIGTERM, shutting down gracefully...');
   pool.end(() => {
-    console.log('Database pool closed');
+    logger.info('Database pool closed');
     process.exit(0);
   });
 });
@@ -77,4 +80,8 @@ process.on('SIGTERM', () => {
 // Read port from environment variable.
 // If it doesn't exist, use port 3000.
 const port = process.env.NODE_PORT || 3000;
-app.listen(port, () => console.log(`Listening on port ${port}...`));
+app.listen(port, () => {
+  logger.info(`Server started on port ${port}`);
+  logger.info(`Environment: ${process.env.NODE_ENV || 'development'}`);
+  logger.info(`Database: ${process.env.DB_HOST || 'localhost'}:${process.env.DB_PORT || 5432}`);
+});
