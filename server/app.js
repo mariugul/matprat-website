@@ -239,6 +239,7 @@ app.get('/recipes/:name', (req, res) => {
       ingredients,
       steps,
       images,
+      activePage: 'recipes',
     });
 
     return 0;
