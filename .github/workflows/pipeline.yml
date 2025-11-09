@@ -9,12 +9,13 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: "actions/checkout@v2"
-      - uses: "actions/setup-python@v2"
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
-          python-version: "3.9.2"
+          python-version: "3.12"
+          cache: 'pip'
       - name: Install SQLFluff
-        run: "pip install sqlfluff==0.8.2"
+        run: pip install sqlfluff==3.2.5
       - name: Lint SQL Files
         run: "./database/lint.sh"
 
@@ -26,15 +27,17 @@ jobs:
         shell: bash
         working-directory: server
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Setup Node Environment
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v4
         with:
-          node-version: 16
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: server/package-lock.json
       - name: Clean Install Packages
         run: npm ci
       - name: Lint with ESLint and EJS-Lint
-        run: npm install eslint && npm install ejs-lint && npm run lint
+        run: npm run lint
       - name: Test
         run: npm test
       - name: Build
