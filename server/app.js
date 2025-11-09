@@ -55,8 +55,27 @@ async function sqlQuery(query, queryArgs) {
 //-------------------------------------------
 
 // Home page
-app.get('/', (req, res) => {
-  res.render('index');
+app.get('/', async (req, res) => {
+  try {
+    // Get 3 featured recipes with their images
+    const featuredRecipes = await sqlQuery(
+      'SELECT * FROM recipes() LEFT JOIN images ON name = recipe_name WHERE image_nr=1 LIMIT 3',
+    );
+
+    // Get total recipe count for stats
+    const recipeCount = await sqlQuery('SELECT COUNT(*) as count FROM recipes');
+
+    res.render('index', {
+      featuredRecipes: featuredRecipes || [],
+      totalRecipes: recipeCount[0]?.count || 0,
+    });
+  } catch (err) {
+    console.error('Error loading home page:', err);
+    res.render('index', {
+      featuredRecipes: [],
+      totalRecipes: 0,
+    });
+  }
 });
 
 // The recipes that exist

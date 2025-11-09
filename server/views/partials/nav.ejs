@@ -1,29 +1,32 @@
- <!-- <nav class="w3-bar w3-border w3-light-grey w3-large">
-    <span class="w3-bar-item w3-mobile w3-left w3-border">Marius Foods</span>
-    <span class="w3-mobile">
-      <a href="/" class="w3-mobile w3-bar-item w3-button w3-green w3-border">Home</a>
-      <a href="/recipes" class="w3-mobile w3-bar-item w3-button w3-border" >Recipes</a>
-      <input type="text" class="search_bar w3-bar-item w3-input w3-right" placeholder="Search..">
-      <a href="#" class="search_bar w3-bar-item w3-button w3-green">Go</a> 
-    </span>
-  </nav>    -->
-
-<nav class="topnav" id="myTopnav">
-  <a href="/" class="topnav">Home</a>
-  <a href="/recipes" class="" >Recipes</a>
-  <a href="#" class="icon" onclick="navDropdown()">
-    <i class="fa fa-bars"></i>
-  </a>
+<!-- Bootstrap 5 Navigation Bar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+  <div class="container-fluid">
+    <!-- Brand -->
+    <a class="navbar-brand fw-bold" href="/">
+      <i class="bi bi-egg-fried"></i> Marius Foods
+    </a>
+    
+    <!-- Mobile Toggle Button -->
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" 
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    
+    <!-- Navigation Links -->
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="/">
+            <i class="bi bi-house-door"></i> Home
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/recipes">
+            <i class="bi bi-book"></i> Recipes
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
 </nav>
-
-<script>
-  function navDropdown() {
-    var x = document.getElementById("myTopnav");
-    if (x.className === "topnav") {
-      x.className += " responsive";
-    } else {
-      x.className = "topnav";
-    }
-  }
-</script>
 

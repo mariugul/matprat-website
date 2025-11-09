@@ -1,12 +1,104 @@
-body {
-  background-color: whitesmoke;
-  color: black;
-  font-family: Arial;
+/* Custom styles to complement Bootstrap 5 */
+
+:root {
+  --bs-body-bg: #ffffff;
 }
 
-.front-image {
-  display: block;
-  width: 40%;
-  margin: auto;
-  border-radius: 100%;
+body {
+  background-color: var(--bs-body-bg);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+/* Hero Section */
+.hero-section {
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+}
+
+.hero-section img {
+  box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+}
+
+/* Stats Section */
+.stats-section {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+/* Recipe Cards */
+.recipe-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  overflow: hidden;
+}
+
+.recipe-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175) !important;
+}
+
+.recipe-card img {
+  transition: transform 0.3s ease;
+}
+
+.recipe-card:hover img {
+  transform: scale(1.05);
+}
+
+/* Card badges */
+.badge {
+  font-weight: 500;
+  padding: 0.35em 0.65em;
+}
+
+/* Smooth transitions for all cards */
+.card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Custom button styles */
+.btn {
+  transition: all 0.2s ease;
+  font-weight: 500;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+.btn:active {
+  transform: translateY(0);
+}
+
+/* Navigation active state */
+.nav-link.active {
+  font-weight: 600;
+}
+
+/* Section spacing */
+section {
+  scroll-margin-top: 80px; /* Account for sticky navbar */
+}
+
+/* About section icons */
+.about-section i {
+  transition: transform 0.3s ease;
+}
+
+.about-section i:hover {
+  transform: scale(1.2);
+}
+
+/* Responsive adjustments */
+@media (max-width: 991.98px) {
+  .hero-section h1 {
+    font-size: 2.5rem;
+  }
+  
+  .stats-section .display-5 {
+    font-size: 2rem;
+  }
 }
