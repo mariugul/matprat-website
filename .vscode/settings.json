@@ -1,7 +1,7 @@
 {
   "workbench.colorTheme": "Default Dark+",
   "workbench.iconTheme": "vscode-icons",
-  "workbench.sideBar.location": "right",
+  "workbench.sideBar.location": "left",
   "terminal.integrated.defaultProfile.linux": "fish",
 
   "editor.minimap.enabled": false,
