@@ -3,18 +3,18 @@
 // Globals -> Loaded only once and after the html page has rendered
 // ----------------------------------------------------------------------
 
-// The deault amount of portions defined for the recipe. This value is
+// The default amount of portions defined for the recipe. This value is
 // used to scale the recipes accurately.
 const DEFAULT_PORTIONS = document.getElementById('nr-of-portions').value;
 
 // The default amount of each ingredient defined for the recipe. This
 // value is used to scale the recipes accurately.
-const DEFAULT_AMOUNTS = (function setDefaultIngredients(nr) {
-  let defaultNumbers = [];
+const DEFAULT_AMOUNTS = (function setDefaultIngredients() {
+  const defaultNumbers = [];
 
   const table = document.getElementsByClassName('amounts');
   for (let index = 0; index < table.length; index += 1) {
-    defaultNumbers += parseInt(table[index].innerHTML, 10);
+    defaultNumbers.push(parseFloat(table[index].innerHTML));
   }
 
   return defaultNumbers;

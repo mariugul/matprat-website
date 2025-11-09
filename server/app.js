@@ -64,10 +64,14 @@ app.get('/', async (req, res) => {
 
     // Get total recipe count for stats
     const recipeCount = await sqlQuery('SELECT COUNT(*) as count FROM recipes');
+    
+    // Get average cook time for stats
+    const avgCookTime = await sqlQuery('SELECT ROUND(AVG(cook_time)) as avg FROM recipes');
 
     res.render('index', {
       featuredRecipes: featuredRecipes || [],
       totalRecipes: recipeCount[0]?.count || 0,
+      avgCookTime: avgCookTime[0]?.avg || 30,
       activePage: 'home',
     });
   } catch (err) {
@@ -75,6 +79,7 @@ app.get('/', async (req, res) => {
     res.render('index', {
       featuredRecipes: [],
       totalRecipes: 0,
+      avgCookTime: 30,
       activePage: 'home',
     });
   }
@@ -82,20 +87,24 @@ app.get('/', async (req, res) => {
 
 // The recipes that exist
 app.get('/recipes', (req, res) => {
-  // eslint-disable-next-line no-undef
-  queries = (async function queryDatabase() {
+  (async function queryDatabase() {
     let recipeExists = false;
     let recipesInfo;
 
-    // Get info of all recipes
-    await sqlQuery('SELECT * FROM recipes() LEFT JOIN images ON name = recipe_name WHERE image_nr=1')
+    // Get info of all recipes with categories
+    await sqlQuery(`
+      SELECT r.name, r.description, r.default_portions, r.difficulty, r.cook_time,
+             i.link, i.description as image_description, i.image_nr, 
+             ARRAY_AGG(c.category) FILTER (WHERE c.category IS NOT NULL) as categories
+      FROM recipes r
+      LEFT JOIN images i ON r.name = i.recipe_name AND i.image_nr = 1
+      LEFT JOIN categories c ON r.name = c.recipe_name
+      GROUP BY r.name, r.description, r.default_portions, r.difficulty, r.cook_time, i.link, i.description, i.image_nr
+    `)
       .then((result) => {
         if (result === undefined || result.length === 0) {
           res.render('error', {
-            errorMessage:
-              `The recipe "${
-                req.params.name
-              }" does not exist in the database.`,
+            errorMessage: 'No recipes found in the database.',
           });
           recipeExists = false;
         } else {
@@ -103,34 +112,21 @@ app.get('/recipes', (req, res) => {
           recipesInfo = result;
         }
       })
-      .catch((err) => res.render('error', {
-        errorMessage: err,
-      }));
+      .catch((err) => {
+        console.error('Database error fetching recipes:', err);
+        res.render('error', {
+          errorMessage: 'Unable to load recipes. Please try again later.',
+        });
+      });
 
     // If no recipe was returned from the previous query, exit this function
     if (!recipeExists) {
       return 0;
     }
 
-    // Define vars for query results
-    let images;
-    let categories;
-
-    // Get recipe images (links)
-    await sqlQuery('SELECT recipe_name, link, description FROM images WHERE image_nr=1')
-      .then((result) => (images = result))
-      .catch((err) => console.log(err));
-
-    // Get recipe categories
-    await sqlQuery('SELECT * FROM categories()')
-      .then((result) => (categories = result))
-      .catch((err) => console.log(err));
-
     // Generate the webpage from template and send back
     res.render('recipes', {
       recipesInfo,
-      categories,
-      images,
       activePage: 'recipes',
     });
 
@@ -141,19 +137,20 @@ app.get('/recipes', (req, res) => {
 // POSTGRES ----------------------------------------
 // Get recipe information by name
 app.get('/api/db/select/recipe/:name', (req, res) => {
-  // Get recipe information by name
   pool.query(
     'SELECT * FROM recipes WHERE name=$1',
     [req.params.name],
     (err, resDb) => {
       if (err) {
-        // console.log(err.stack);
+        console.error('Database error fetching recipe:', err);
         return res
-          .status(404)
-          .send('There was an error getting the recipes from the database.');
+          .status(500)
+          .json({ error: 'Unable to retrieve recipe. Please try again later.' });
       }
-      // console.table(res_db.rows[0]);
-      return res.status(200).send(resDb.rows[0]);
+      if (!resDb.rows[0]) {
+        return res.status(404).json({ error: 'Recipe not found' });
+      }
+      return res.status(200).json(resDb.rows[0]);
     },
   );
 });
@@ -167,13 +164,12 @@ app.get('/api/db/select/recipes', (req, res) => {
 
   pool.query(query, (err, resDb) => {
     if (err) {
-      // console.log(err.stack);
+      console.error('Database error fetching recipes:', err);
       return res
-        .status(404)
-        .send('There was an error getting the recipe names from the database.');
+        .status(500)
+        .json({ error: 'Unable to retrieve recipes. Please try again later.' });
     }
-    // console.table(res_db.rows);
-    return res.status(200).send(resDb.rows);
+    return res.status(200).json(resDb.rows);
   });
 });
 
@@ -183,8 +179,7 @@ app.get('/recipes/:name', (req, res) => {
   // whether the recipe exists first and then the following 3 queries need to finish
   // before the page can be generated and sent back. Therfore an inline async function
   // is declared here to use the 'await' keyword on the sqlQuery function, which is also async.
-  // eslint-disable-next-line no-undef
-  queries = (async function queryDatabase() {
+  (async function queryDatabase() {
     let recipeExists = false;
     let recipeInfo;
 
@@ -193,10 +188,7 @@ app.get('/recipes/:name', (req, res) => {
       .then((result) => {
         if (result === undefined || result.length === 0) {
           res.render('error', {
-            errorMessage:
-              `The recipe "${
-                req.params.name
-              }" does not exist in the database.`,
+            errorMessage: `The recipe "${req.params.name}" does not exist.`,
           });
           recipeExists = false;
         } else {
@@ -204,9 +196,12 @@ app.get('/recipes/:name', (req, res) => {
           recipeInfo = result;
         }
       })
-      .catch((err) => res.render('error', {
-        errorMessage: err,
-      }));
+      .catch((err) => {
+        console.error('Database error fetching recipe:', err);
+        res.render('error', {
+          errorMessage: 'Unable to load recipe. Please try again later.',
+        });
+      });
 
     // If no recipe was returned from the previous query, exit this function
     if (!recipeExists) {
@@ -244,45 +239,6 @@ app.get('/recipes/:name', (req, res) => {
 
     return 0;
   }());
-});
-
-// POSTGRES ----------------------------------------
-// Get recipe information by name
-app.get('/api/db/select/recipe/:name', (req, res) => {
-  // Get recipe information by name
-  pool.query(
-    'SELECT * FROM recipes WHERE name=$1',
-    [req.params.name],
-    (err, resDb) => {
-      if (err) {
-        // console.log(err.stack);
-        return res
-          .status(404)
-          .send('There was an error getting the recipes from the database.');
-      }
-      // console.table(res_db.rows[0]);
-      return res.status(200).send(resDb.rows[0]);
-    },
-  );
-});
-
-// Get all recipe names
-app.get('/api/db/select/recipes', (req, res) => {
-  const query = {
-    text: 'SELECT name FROM recipes',
-    rowMode: 'array',
-  };
-
-  pool.query(query, (err, resDb) => {
-    if (err) {
-      // console.log(err.stack);
-      return res
-        .status(404)
-        .send('There was an error getting the recipe names from the database.');
-    }
-    // console.table(res_db.rows);
-    return res.status(200).send(resDb.rows);
-  });
 });
 
 // Read port from environment variable.
