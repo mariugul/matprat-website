@@ -32,30 +32,35 @@ function updateIngredientValues(portion) {
   document.getElementById('plus-button').disabled = false;
   document.getElementById('minus-button').disabled = false;
 
+  // Parse and validate input
+  let portionNum = parseInt(portion, 10);
+
   // Reset portions on invalid number input
-  if (portion === '' || portion === '0') portion = DEFAULT_PORTIONS; // Reset values to default on invalid input
+  if (Number.isNaN(portionNum) || portionNum <= 0) {
+    portionNum = DEFAULT_PORTIONS;
+  }
 
   // Limit portions to MAX_PORTIONS and disable plus button
-  if (portion >= MAX_PORTIONS) {
-    portion = MAX_PORTIONS;
+  if (portionNum >= MAX_PORTIONS) {
+    portionNum = MAX_PORTIONS;
     document.getElementById('plus-button').disabled = true;
   }
 
   // Limit portions to MIN_PORTIONS and disable minus button
-  if (portion <= MIN_PORTIONS) {
-    portion = MIN_PORTIONS;
+  if (portionNum <= MIN_PORTIONS) {
+    portionNum = MIN_PORTIONS;
     document.getElementById('minus-button').disabled = true;
   }
 
   // Update portions number
-  document.getElementById('nr-of-portions').value = portion;
+  document.getElementById('nr-of-portions').value = portionNum;
 
   // Get all 'td's of ingredient-amounts from the table
   const tableTd = document.getElementsByClassName('amounts');
 
   // Loop over every ingredient and scale the value
   for (let index = 0; index < tableTd.length; index += 1) {
-    const scaledAmount = (portion / DEFAULT_PORTIONS) * DEFAULT_AMOUNTS[index];
+    const scaledAmount = (portionNum / DEFAULT_PORTIONS) * DEFAULT_AMOUNTS[index];
     tableTd[index].innerHTML = Math.round((scaledAmount + Number.EPSILON) * 10) / 10;
   }
 }
@@ -67,15 +72,15 @@ function getPortionsObject() {
 // Steps up the number of portions when the plus button is clicked
 function stepUpPortions() {
   const portions = getPortionsObject();
-  portions.stepUp();
-  updateIngredientValues(parseInt(portions.value, 10));
+  const currentValue = parseInt(portions.value, 10) || DEFAULT_PORTIONS;
+  updateIngredientValues(currentValue + 1);
 }
 
 // Steps down the number of portions when the minus button in clicked
 function stepDownPortions() {
   const portions = getPortionsObject();
-  portions.stepDown();
-  updateIngredientValues(parseInt(portions.value, 10));
+  const currentValue = parseInt(portions.value, 10) || DEFAULT_PORTIONS;
+  updateIngredientValues(currentValue - 1);
 }
 
 // Check if all steps are complete and show completion message
