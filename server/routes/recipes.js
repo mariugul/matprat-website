@@ -3,6 +3,7 @@
  */
 
 const express = require('express');
+const logger = require('../utils/logger');
 
 const router = express.Router();
 
@@ -20,6 +21,8 @@ router.init = (queryFunction) => {
  */
 router.get('/', async (req, res, next) => {
   try {
+    logger.debug('Loading recipes list page');
+
     // Get all recipes with categories
     const recipesInfo = await sqlQuery(`
       SELECT r.name, r.description, r.default_portions, r.difficulty, r.cook_time,
@@ -32,18 +35,21 @@ router.get('/', async (req, res, next) => {
     `);
 
     if (!recipesInfo || recipesInfo.length === 0) {
+      logger.warn('No recipes found in database');
       return res.render('error', {
         errorMessage: 'No recipes found in the database.',
         activePage: undefined,
       });
     }
 
+    logger.info('Recipes list loaded successfully', { count: recipesInfo.length });
+
     res.render('recipes', {
       recipesInfo,
       activePage: 'recipes',
     });
   } catch (err) {
-    console.error('Database error fetching recipes:', err);
+    logger.error('Database error fetching recipes', { error: err.message });
     err.statusCode = 500;
     next(err);
   }
@@ -55,10 +61,13 @@ router.get('/', async (req, res, next) => {
  */
 router.get('/:name', async (req, res, next) => {
   try {
+    logger.debug('Loading recipe detail', { recipeName: req.params.name });
+
     // Get recipe info
     const recipeInfo = await sqlQuery('SELECT * FROM recipeInfo($1)', [req.params.name]);
 
     if (!recipeInfo || recipeInfo.length === 0) {
+      logger.warn('Recipe not found', { recipeName: req.params.name });
       const err = new Error(`The recipe "${req.params.name}" does not exist.`);
       err.statusCode = 404;
       return next(err);
@@ -71,6 +80,13 @@ router.get('/:name', async (req, res, next) => {
       sqlQuery('SELECT * FROM images($1)', [req.params.name]),
     ]);
 
+    logger.info('Recipe detail loaded successfully', {
+      recipeName: req.params.name,
+      ingredientsCount: ingredients?.length || 0,
+      stepsCount: steps?.length || 0,
+      imagesCount: images?.length || 0,
+    });
+
     res.render('recipe', {
       recipeInfo,
       ingredients,
@@ -79,7 +95,10 @@ router.get('/:name', async (req, res, next) => {
       activePage: 'recipes',
     });
   } catch (err) {
-    console.error('Database error fetching recipe:', err);
+    logger.error('Database error fetching recipe', {
+      recipeName: req.params.name,
+      error: err.message,
+    });
     err.statusCode = err.statusCode || 500;
     next(err);
   }

@@ -3,13 +3,16 @@
  * Logs errors and returns user-friendly messages
  */
 
+const logger = require('../utils/logger');
+
 const errorHandler = (err, req, res, next) => {
   // Log error for debugging
-  console.error('Error occurred:', {
+  logger.error('Error occurred', {
     message: err.message,
     stack: process.env.NODE_ENV === 'development' ? err.stack : undefined,
     url: req.url,
     method: req.method,
+    statusCode: err.statusCode || 500,
   });
 
   // Determine if we're in development mode
