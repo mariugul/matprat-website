@@ -13,7 +13,7 @@ module.exports = defineConfig({
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : undefined, // undefined = auto-detect CPUs
   reporter: 'html',
-  
+
   use: {
     baseURL: 'http://localhost:3001',
     trace: 'on-first-retry',
