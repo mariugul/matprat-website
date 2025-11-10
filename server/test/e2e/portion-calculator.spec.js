@@ -21,13 +21,13 @@ test.describe('Portion Calculator', () => {
   test('should increase portions when plus button clicked', async ({ page }) => {
     const portionInput = page.locator('#nr-of-portions');
     const initialValue = await portionInput.inputValue();
-    
+
     // Click plus button
     await page.click('#plus-button');
-    
+
     // Wait a moment for update
     await page.waitForTimeout(100);
-    
+
     const newValue = await portionInput.inputValue();
     expect(parseInt(newValue, 10)).toBe(parseInt(initialValue, 10) + 1);
   });
@@ -36,15 +36,15 @@ test.describe('Portion Calculator', () => {
     // First increase to make sure we can decrease
     await page.click('#plus-button');
     await page.click('#plus-button');
-    
+
     const portionInput = page.locator('#nr-of-portions');
     const initialValue = await portionInput.inputValue();
-    
+
     // Click minus button
     await page.click('#minus-button');
-    
+
     await page.waitForTimeout(100);
-    
+
     const newValue = await portionInput.inputValue();
     expect(parseInt(newValue, 10)).toBe(parseInt(initialValue, 10) - 1);
   });
@@ -54,15 +54,15 @@ test.describe('Portion Calculator', () => {
     const firstAmount = page.locator('.amounts').first();
     const initialAmount = await firstAmount.textContent();
     const initialValue = parseFloat(initialAmount);
-    
+
     // Increase portions
     await page.click('#plus-button');
     await page.waitForTimeout(200);
-    
+
     // Check ingredient updated
     const newAmount = await firstAmount.textContent();
     const newValue = parseFloat(newAmount);
-    
+
     expect(newValue).toBeGreaterThan(initialValue);
   });
 
@@ -70,18 +70,18 @@ test.describe('Portion Calculator', () => {
     // Get all ingredient amounts
     const amounts = page.locator('.amounts');
     const count = await amounts.count();
-    
+
     // Store initial values
     const initialValues = [];
     for (let i = 0; i < count; i++) {
       const text = await amounts.nth(i).textContent();
       initialValues.push(parseFloat(text));
     }
-    
+
     // Double the portions
     await page.click('#plus-button');
     await page.waitForTimeout(200);
-    
+
     // Check all updated proportionally
     for (let i = 0; i < count; i++) {
       const text = await amounts.nth(i).textContent();
@@ -92,13 +92,13 @@ test.describe('Portion Calculator', () => {
 
   test('should allow manual input of portion number', async ({ page }) => {
     const portionInput = page.locator('#nr-of-portions');
-    
+
     // Clear and type new value
     await portionInput.fill('5');
     await portionInput.blur();
-    
+
     await page.waitForTimeout(200);
-    
+
     const value = await portionInput.inputValue();
     expect(value).toBe('5');
   });

@@ -44,14 +44,14 @@ router.get('/', async (req, res, next) => {
 
     logger.info('Recipes list loaded successfully', { count: recipesInfo.length });
 
-    res.render('recipes', {
+    return res.render('recipes', {
       recipesInfo,
       activePage: 'recipes',
     });
   } catch (err) {
     logger.error('Database error fetching recipes', { error: err.message });
     err.statusCode = 500;
-    next(err);
+    return next(err);
   }
 });
 
@@ -87,7 +87,7 @@ router.get('/:name', async (req, res, next) => {
       imagesCount: images?.length || 0,
     });
 
-    res.render('recipe', {
+    return res.render('recipe', {
       recipeInfo,
       ingredients,
       steps,
@@ -100,7 +100,7 @@ router.get('/:name', async (req, res, next) => {
       error: err.message,
     });
     err.statusCode = err.statusCode || 500;
-    next(err);
+    return next(err);
   }
 });
 

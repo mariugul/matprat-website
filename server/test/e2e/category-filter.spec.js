@@ -26,15 +26,15 @@ test.describe('Category Filtering', () => {
     // Get initial count
     const initialCards = page.locator('.recipe-item');
     const initialCount = await initialCards.count();
-    
+
     // Click a category filter (e.g., Breakfast)
     await page.click('button:has-text("Breakfast")');
     await page.waitForTimeout(300);
-    
+
     // Count visible recipes
     const visibleCards = page.locator('.recipe-item:visible');
     const visibleCount = await visibleCards.count();
-    
+
     // Should have some visible (could be same or less depending on data)
     expect(visibleCount).toBeGreaterThan(0);
     expect(visibleCount).toBeLessThanOrEqual(initialCount);
@@ -42,15 +42,13 @@ test.describe('Category Filtering', () => {
 
   test('should highlight active category button', async ({ page }) => {
     const breakfastButton = page.locator('button:has-text("Breakfast")');
-    
+
     // Click breakfast
     await breakfastButton.click();
     await page.waitForTimeout(100);
-    
+
     // Check if button has active class
-    const hasActiveClass = await breakfastButton.evaluate((el) => 
-      el.classList.contains('active') || el.classList.contains('btn-primary')
-    );
+    const hasActiveClass = await breakfastButton.evaluate((el) => el.classList.contains('active') || el.classList.contains('btn-primary'));
     expect(hasActiveClass).toBe(true);
   });
 
@@ -58,15 +56,15 @@ test.describe('Category Filtering', () => {
     // First filter by a category
     await page.click('button:has-text("Breakfast")');
     await page.waitForTimeout(200);
-    
+
     // Then click "All Recipes"
     await page.click('button:has-text("All Recipes")');
     await page.waitForTimeout(200);
-    
+
     // All recipe cards should be visible
     const recipeCards = page.locator('.recipe-item');
     const count = await recipeCards.count();
-    
+
     // Check all are visible
     for (let i = 0; i < count; i++) {
       await expect(recipeCards.nth(i)).toBeVisible();
@@ -75,15 +73,13 @@ test.describe('Category Filtering', () => {
 
   test('should update URL or maintain state on filter', async ({ page }) => {
     const breakfastButton = page.locator('button:has-text("Breakfast")');
-    
+
     // Click breakfast filter
     await breakfastButton.click();
     await page.waitForTimeout(200);
-    
+
     // Button should still be active
-    const hasActiveClass = await breakfastButton.evaluate((el) => 
-      el.classList.contains('active')
-    );
+    const hasActiveClass = await breakfastButton.evaluate((el) => el.classList.contains('active'));
     expect(hasActiveClass).toBe(true);
   });
 });
