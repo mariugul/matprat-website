@@ -6,7 +6,8 @@
 const { defineConfig, devices } = require('@playwright/test');
 
 module.exports = defineConfig({
-  testDir: './server/test/e2e',
+  testDir: './test/e2e',
+  testMatch: '**/*.spec.js',
   fullyParallel: false,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
@@ -26,11 +27,11 @@ module.exports = defineConfig({
     },
   ],
 
-  // Run local dev server before tests
+  // Use existing Docker server
   webServer: {
-    command: 'cd server && npm start',
+    command: 'docker compose -f ../docker-compose.local.yml up server',
     url: 'http://localhost:3001',
-    reuseExistingServer: !process.env.CI,
+    reuseExistingServer: true,
     timeout: 120 * 1000,
   },
 });
