@@ -21,23 +21,64 @@ jobs:
   lint-build-test:
     needs: [lint]
     runs-on: ubuntu-latest
+    
+    services:
+      postgres:
+        image: postgres:14
+        env:
+          POSTGRES_PASSWORD: nodejs
+          POSTGRES_USER: nodejs
+          POSTGRES_DB: matprat
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+    
     defaults:
       run:
         shell: bash
         working-directory: server
+    
     steps:
       - uses: actions/checkout@v4
+      
       - name: Setup Node Environment
         uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: 'npm'
           cache-dependency-path: server/package-lock.json
+      
       - name: Clean Install Packages
         run: npm ci
+      
+      - name: Setup Test Database
+        env:
+          PGPASSWORD: nodejs
+        run: |
+          cd ../database
+          psql -h localhost -U nodejs -d matprat -f sql/create_all.sql
+          psql -h localhost -U nodejs -d matprat -f sql/insert_recipes.sql
+          psql -h localhost -U nodejs -d matprat -f sql/insert_categories.sql
+          psql -h localhost -U nodejs -d matprat -f sql/insert_ingredients.sql
+          psql -h localhost -U nodejs -d matprat -f sql/insert_steps.sql
+          psql -h localhost -U nodejs -d matprat -f sql/insert_images.sql
+      
       - name: Lint with ESLint and EJS-Lint
         run: npm run lint
-      - name: Test
-        run: npm test
+      
+      - name: Run Integration Tests
+        env:
+          NODE_ENV: test
+          DB_HOST: localhost
+          DB_PORT: 5432
+          DB_USER: nodejs
+          DB_PASSWORD: nodejs
+          DB: matprat
+        run: npm run test:integration
+      
       - name: Build
         run: npm run build

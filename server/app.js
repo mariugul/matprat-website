@@ -76,12 +76,15 @@ process.on('SIGTERM', () => {
   });
 });
 
-// Start server
-// Read port from environment variable.
-// If it doesn't exist, use port 3000.
-const port = process.env.NODE_PORT || 3000;
-app.listen(port, () => {
-  logger.info(`Server started on port ${port}`);
-  logger.info(`Environment: ${process.env.NODE_ENV || 'development'}`);
-  logger.info(`Database: ${process.env.DB_HOST || 'localhost'}:${process.env.DB_PORT || 5432}`);
-});
+// Start server only if not being required by tests
+if (require.main === module) {
+  const port = process.env.NODE_PORT || 3000;
+  app.listen(port, () => {
+    logger.info(`Server started on port ${port}`);
+    logger.info(`Environment: ${process.env.NODE_ENV || 'development'}`);
+    logger.info(`Database: ${process.env.DB_HOST || 'localhost'}:${process.env.DB_PORT || 5432}`);
+  });
+}
+
+// Export app for testing
+module.exports = app;

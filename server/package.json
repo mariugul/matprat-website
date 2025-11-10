@@ -8,7 +8,9 @@
     "lint": "npm run lint:js && npm run lint:ejs",
     "lint:js": "npx eslint .",
     "lint:ejs": "npx ejslint $(find ./ -type f -iname '*.ejs')",
-    "test": "exit 0",
+    "test": "NODE_ENV=test mocha 'test/**/*.test.js' --timeout 5000 --exit",
+    "test:integration": "NODE_ENV=test mocha 'test/integration/**/*.test.js' --timeout 5000 --exit",
+    "test:e2e": "playwright test",
     "start": "node app.js",
     "build": "echo \"Error: no build specified\" && exit 0"
   },
@@ -25,11 +27,14 @@
     "winston": "^3.11.0"
   },
   "devDependencies": {
+    "@playwright/test": "^1.40.0",
+    "chai": "^4.3.10",
     "ejs-lint": "^1.2.1",
     "eslint": "^8.4.1",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.25.3",
     "git-conventional-commits": "^1.1.0",
-    "mocha": "^9.1.3"
+    "mocha": "^9.1.3",
+    "supertest": "^6.3.3"
   }
 }
