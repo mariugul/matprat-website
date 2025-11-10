@@ -21,7 +21,7 @@ test.describe('Category Filtering', () => {
     // Check that "All" button exists
     const allButton = page.locator('button', { hasText: /all/i });
     await expect(allButton.first()).toBeVisible();
-    
+
     // Category buttons are optional if no recipes have categories assigned
     // Just verify the filter UI exists
     const filterContainer = page.locator('.category-filter, .btn-group, #categoryFilters');
@@ -32,7 +32,7 @@ test.describe('Category Filtering', () => {
     // Find category buttons (excluding "All")
     const categoryButtons = page.locator('button[data-category]:not([data-category="all"]), .btn-group button:not(:has-text("All"))');
     const buttonCount = await categoryButtons.count();
-    
+
     // Skip test if no category buttons exist (recipes don't have categories yet)
     if (buttonCount === 0) {
       console.log('Skipping: No category buttons found - recipes may not have categories assigned');
@@ -42,7 +42,7 @@ test.describe('Category Filtering', () => {
     // Get initial count
     const initialCards = page.locator('.recipe-item, .recipe-card');
     const initialCount = await initialCards.count();
-    
+
     // Click first category button
     await categoryButtons.first().click();
     await page.waitForTimeout(500);
@@ -50,7 +50,7 @@ test.describe('Category Filtering', () => {
     // Just verify the page still works after clicking
     const visibleCards = page.locator('.recipe-item:visible, .recipe-card:visible');
     const visibleCount = await visibleCards.count();
-    
+
     // Should have at least 0 recipes (could show none if no recipes match)
     expect(visibleCount).toBeGreaterThanOrEqual(0);
     expect(visibleCount).toBeLessThanOrEqual(initialCount);
@@ -60,7 +60,7 @@ test.describe('Category Filtering', () => {
     // Find any category button
     const categoryButtons = page.locator('button[data-category]:not([data-category="all"]), .btn-group button:not(:has-text("All"))');
     const buttonCount = await categoryButtons.count();
-    
+
     // Skip if no category buttons
     if (buttonCount === 0) {
       console.log('Skipping: No category buttons found');
@@ -80,7 +80,7 @@ test.describe('Category Filtering', () => {
     // Find category buttons
     const categoryButtons = page.locator('button[data-category]:not([data-category="all"]), .btn-group button:not(:has-text("All"))');
     const buttonCount = await categoryButtons.count();
-    
+
     // Skip if no category buttons
     if (buttonCount === 0) {
       console.log('Skipping: No category buttons found');
@@ -108,7 +108,7 @@ test.describe('Category Filtering', () => {
     // Find category buttons
     const categoryButtons = page.locator('button[data-category]:not([data-category="all"]), .btn-group button:not(:has-text("All"))');
     const buttonCount = await categoryButtons.count();
-    
+
     // Skip if no category buttons
     if (buttonCount === 0) {
       console.log('Skipping: No category buttons found');

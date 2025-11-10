@@ -13,7 +13,10 @@ overrides:
   - files:
       - 'test/**/*.js'
       - 'test/**/*.spec.js'
+      - 'playwright.config.js'
     rules:
       no-plusplus: off
       no-await-in-loop: off
       global-require: off
+      import/no-extraneous-dependencies: off
+      no-console: off

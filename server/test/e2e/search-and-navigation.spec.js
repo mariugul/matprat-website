@@ -65,22 +65,18 @@ test.describe('Search and Navigation', () => {
     await page.goto('/recipes');
 
     const searchInput = page.locator('#searchInput');
-    
-    // Get initial recipe count
-    const initialRecipes = page.locator('.recipe-card, .recipe-item');
-    const initialCount = await initialRecipes.count();
 
     // Type search term that doesn't match and trigger input event
     await searchInput.fill('XYZ_NONEXISTENT_987654');
     await searchInput.press('Enter');
-    
+
     // Wait longer for JavaScript filtering
     await page.waitForTimeout(2000);
-    
+
     // Verify filtering happened - either fewer recipes or none visible
     const visibleRecipes = page.locator('.recipe-card:visible, .recipe-item:visible');
     const visibleCount = await visibleRecipes.count();
-    
+
     // Search should filter out recipes (0 visible or show no results message)
     if (visibleCount === 0) {
       // Perfect - no recipes match
