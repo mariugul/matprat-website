@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('../partials/head') %>
+<body>
+  <%- include('../partials/nav') %>
+
+  <div class="container mt-4">
+    <div class="row">
+      <div class="col-12">
+        <!-- Header -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <h1>
+            <% if (mode === 'edit') { %>
+              ✏️ Edit Recipe: <%= recipe.name %>
+            <% } else { %>
+              ➕ Create New Recipe
+            <% } %>
+          </h1>
+          <a href="/admin" class="btn btn-outline-secondary">← Back to Dashboard</a>
+        </div>
+
+        <!-- Error Alert -->
+        <% if (error) { %>
+          <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <%= error %>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+          </div>
+        <% } %>
+
+        <!-- Recipe Form -->
+        <div class="card">
+          <div class="card-body">
+            <form id="recipeForm" method="POST" action="/admin/recipes/preview">
+              <!-- Hidden fields for mode and original name -->
+              <input type="hidden" name="mode" value="<%= mode %>">
+              <% if (mode === 'edit' && recipe) { %>
+                <input type="hidden" name="originalName" value="<%= recipe.name %>">
+              <% } %>
+
+              <div class="row">
+                <!-- Basic Info Column -->
+                <div class="col-md-8">
+                  <!-- Recipe Name -->
+                  <div class="mb-3">
+                    <label for="name" class="form-label">Recipe Name *</label>
+                    <input 
+                      type="text" 
+                      class="form-control" 
+                      id="name" 
+                      name="name" 
+                      value="<%= recipe ? recipe.name : '' %>" 
+                      required
+                    >
+                  </div>
+
+                  <!-- Description -->
+                  <div class="mb-3">
+                    <label for="description" class="form-label">Description</label>
+                    <textarea 
+                      class="form-control" 
+                      id="description" 
+                      name="description" 
+                      rows="3"
+                      placeholder="A brief description of your recipe..."
+                    ><%= recipe ? recipe.description : '' %></textarea>
+                  </div>
+
+                  <!-- Ingredients Section -->
+                  <div class="mb-4">
+                    <label class="form-label">Ingredients *</label>
+                    <div id="ingredientsContainer">
+                      <% if (recipe && recipe.ingredients) { %>
+                        <% recipe.ingredients.forEach((ingredient, index) => { %>
+                          <div class="ingredient-row mb-2">
+                            <div class="input-group">
+                              <input 
+                                type="text" 
+                                class="form-control" 
+                                name="ingredient_<%= index + 1 %>" 
+                                value="<%= ingredient %>"
+                                placeholder="e.g., 2 cups flour"
+                              >
+                              <button type="button" class="btn btn-outline-danger remove-ingredient">
+                                🗑️
+                              </button>
+                            </div>
+                          </div>
+                        <% }); %>
+                      <% } else { %>
+                        <div class="ingredient-row mb-3">
+                          <div class="card">
+                            <div class="card-body">
+                              <div class="row g-2">
+                                <div class="col-md-2">
+                                  <label class="form-label small">Amount</label>
+                                  <input 
+                                    type="text" 
+                                    class="form-control form-control-sm" 
+                                    name="ingredient_amount_1" 
+                                    placeholder="2"
+                                  >
+                                </div>
+                                <div class="col-md-2">
+                                  <label class="form-label small">Unit</label>
+                                  <select class="form-select form-select-sm" name="ingredient_unit_1">
+                                    <option value="">-</option>
+                                    <% if (measurementUnits) { %>
+                                      <% measurementUnits.forEach(unit => { %>
+                                        <option value="<%= unit %>"><%= unit %></option>
+                                      <% }); %>
+                                    <% } %>
+                                  </select>
+                                </div>
+                                <div class="col-md-4">
+                                  <label class="form-label small">Ingredient</label>
+                                  <input 
+                                    type="text" 
+                                    class="form-control form-control-sm" 
+                                    name="ingredient_name_1" 
+                                    placeholder="flour"
+                                    required
+                                  >
+                                </div>
+                                <div class="col-md-3">
+                                  <label class="form-label small">Note (optional)</label>
+                                  <input 
+                                    type="text" 
+                                    class="form-control form-control-sm" 
+                                    name="ingredient_note_1" 
+                                    placeholder="room temperature"
+                                  >
+                                </div>
+                                <div class="col-md-1">
+                                  <label class="form-label small">&nbsp;</label>
+                                  <button type="button" class="btn btn-outline-danger btn-sm remove-ingredient d-block">
+                                    🗑️
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      <% } %>
+                    </div>
+                    <button type="button" id="addIngredient" class="btn btn-outline-primary btn-sm mt-2">
+                      ➕ Add Ingredient
+                    </button>
+                  </div>
+
+                  <!-- Cooking Steps Section -->
+                  <div class="mb-4">
+                    <label class="form-label">Cooking Steps *</label>
+                    <div id="stepsContainer">
+                      <% if (recipe && recipe.steps) { %>
+                        <% recipe.steps.forEach((step, index) => { %>
+                          <div class="step-row mb-3">
+                            <label class="form-label">Step <%= index + 1 %></label>
+                            <div class="input-group mb-2">
+                              <textarea 
+                                class="form-control" 
+                                name="step_<%= index + 1 %>" 
+                                rows="2"
+                                placeholder="Describe this cooking step..."
+                              ><%= typeof step === 'string' ? step : step.text %></textarea>
+                              <button type="button" class="btn btn-outline-danger remove-step">
+                                🗑️
+                              </button>
+                            </div>
+                            <!-- Note field for step -->
+                            <div class="ms-4">
+                              <div class="form-check mb-2">
+                                <input class="form-check-input step-note-toggle" type="checkbox" 
+                                       id="noteToggle_<%= index + 1 %>" 
+                                       <%= (typeof step === 'object' && step.note) ? 'checked' : '' %>>
+                                <label class="form-check-label" for="noteToggle_<%= index + 1 %>">
+                                  💡 Add special note for this step
+                                </label>
+                              </div>
+                              <div class="step-note-field" style="display: <%= (typeof step === 'object' && step.note) ? 'block' : 'none' %>">
+                                <textarea 
+                                  class="form-control form-control-sm" 
+                                  name="step_note_<%= index + 1 %>" 
+                                  rows="2"
+                                  placeholder="Add a special note or tip for this step..."
+                                ><%= (typeof step === 'object' && step.note) ? step.note : '' %></textarea>
+                              </div>
+                            </div>
+                          </div>
+                        <% }); %>
+                      <% } else { %>
+                        <div class="step-row mb-3">
+                          <label class="form-label">Step 1</label>
+                          <div class="input-group mb-2">
+                            <textarea 
+                              class="form-control" 
+                              name="step_1" 
+                              rows="2"
+                              placeholder="Describe this cooking step..."
+                              required
+                            ></textarea>
+                            <button type="button" class="btn btn-outline-danger remove-step">
+                              🗑️
+                            </button>
+                          </div>
+                          <!-- Note field for step -->
+                          <div class="ms-4">
+                            <div class="form-check mb-2">
+                              <input class="form-check-input step-note-toggle" type="checkbox" id="noteToggle_1">
+                              <label class="form-check-label" for="noteToggle_1">
+                                💡 Add special note for this step
+                              </label>
+                            </div>
+                            <div class="step-note-field" style="display: none">
+                              <textarea 
+                                class="form-control form-control-sm" 
+                                name="step_note_1" 
+                                rows="2"
+                                placeholder="Add a special note or tip for this step..."
+                              ></textarea>
+                            </div>
+                          </div>
+                        </div>
+                      <% } %>
+                    </div>
+                    <button type="button" id="addStep" class="btn btn-outline-primary btn-sm mt-2">
+                      ➕ Add Step
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Recipe Details Column -->
+                <div class="col-md-4">
+                  <!-- Cook Time -->
+                  <div class="mb-3">
+                    <label for="cook_time" class="form-label">Cook Time (minutes) *</label>
+                    <input 
+                      type="number" 
+                      class="form-control" 
+                      id="cook_time" 
+                      name="cook_time" 
+                      value="<%= recipe ? recipe.cook_time : '' %>"
+                      min="0"
+                      required
+                    >
+                  </div>
+
+                  <!-- Prep Time -->
+                  <div class="mb-3">
+                    <label for="prep_time" class="form-label">Prep Time (minutes)</label>
+                    <input 
+                      type="number" 
+                      class="form-control" 
+                      id="prep_time" 
+                      name="prep_time" 
+                      value="<%= recipe ? recipe.prep_time : '' %>"
+                      min="0"
+                    >
+                  </div>
+
+                  <!-- Servings -->
+                  <div class="mb-3">
+                    <label for="servings" class="form-label">Servings *</label>
+                    <input 
+                      type="number" 
+                      class="form-control" 
+                      id="servings" 
+                      name="servings" 
+                      value="<%= recipe ? recipe.servings : '4' %>"
+                      min="1"
+                      required
+                    >
+                  </div>
+
+                  <!-- Difficulty -->
+                  <div class="mb-3">
+                    <label for="difficulty" class="form-label">Difficulty *</label>
+                    <select class="form-select" id="difficulty" name="difficulty" required>
+                      <option value="">-- Select Difficulty --</option>
+                      <% if (difficultyLevels) { %>
+                        <% difficultyLevels.forEach(level => { %>
+                          <option value="<%= level %>" <%= recipe && recipe.difficulty === level ? 'selected' : '' %>>
+                            <%= level.charAt(0).toUpperCase() + level.slice(1) %>
+                          </option>
+                        <% }); %>
+                      <% } %>
+                    </select>
+                  </div>
+
+                  <!-- Category -->
+                  <div class="mb-3">
+                    <label for="category" class="form-label">Category</label>
+                    <input 
+                      type="text" 
+                      class="form-control" 
+                      id="category" 
+                      name="category" 
+                      value="<%= recipe ? recipe.category : '' %>"
+                      placeholder="e.g., Dinner, Dessert, Breakfast"
+                    >
+                  </div>
+
+                  <!-- Recipe Images -->
+                  <div class="mb-4">
+                    <h5>📸 Recipe Images</h5>
+                    <div id="imagesContainer">
+                      <% if (recipe && recipe.images && recipe.images.length > 0) { %>
+                        <% recipe.images.forEach((image, index) => { %>
+                          <div class="image-row mb-3 p-3 border rounded">
+                            <div class="row">
+                              <div class="col-md-6">
+                                <label class="form-label">Image URL/Path</label>
+                                <input 
+                                  type="text" 
+                                  class="form-control mb-2" 
+                                  name="image_url_<%= index + 1 %>" 
+                                  value="<%= image.link || '' %>"
+                                  placeholder="/images/recipe1.jpg or https://example.com/image.jpg"
+                                >
+                              </div>
+                              <div class="col-md-4">
+                                <label class="form-label">Description</label>
+                                <input 
+                                  type="text" 
+                                  class="form-control mb-2" 
+                                  name="image_desc_<%= index + 1 %>" 
+                                  value="<%= image.description || '' %>"
+                                  placeholder="Image description"
+                                >
+                              </div>
+                              <div class="col-md-2 d-flex align-items-end">
+                                <button type="button" class="btn btn-outline-danger remove-image">
+                                  🗑️ Remove
+                                </button>
+                              </div>
+                            </div>
+                            <% if (image.link) { %>
+                              <div class="mt-2">
+                                <small class="text-muted">Preview:</small><br>
+                                <img src="<%= image.link %>" alt="<%= image.description || 'Recipe image' %>" 
+                                     class="img-thumbnail" style="max-width: 150px; max-height: 100px;">
+                              </div>
+                            <% } %>
+                          </div>
+                        <% }); %>
+                      <% } else { %>
+                        <div class="image-row mb-3 p-3 border rounded">
+                          <div class="row">
+                            <div class="col-md-6">
+                              <label class="form-label">Image URL/Path</label>
+                              <input 
+                                type="text" 
+                                class="form-control mb-2" 
+                                name="image_url_1" 
+                                placeholder="/images/recipe1.jpg or https://example.com/image.jpg"
+                              >
+                            </div>
+                            <div class="col-md-4">
+                              <label class="form-label">Description</label>
+                              <input 
+                                type="text" 
+                                class="form-control mb-2" 
+                                name="image_desc_1" 
+                                placeholder="Image description"
+                              >
+                            </div>
+                            <div class="col-md-2 d-flex align-items-end">
+                              <button type="button" class="btn btn-outline-danger remove-image">
+                                🗑️ Remove
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      <% } %>
+                    </div>
+                    <button type="button" id="addImage" class="btn btn-outline-primary btn-sm">
+                      ➕ Add Image
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Form Actions -->
+              <div class="row mt-4">
+                <div class="col-12">
+                  <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-info">
+                      👀 Preview Recipe
+                    </button>
+                    <button type="button" class="btn btn-success" onclick="saveDirectly()">
+                      💾 Save Recipe
+                    </button>
+                    <a href="/admin" class="btn btn-outline-secondary">
+                      Cancel
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Measurement units from database
+    const measurementUnits = <%- JSON.stringify(measurementUnits || []) %>;
+    
+    // Generate unit options HTML
+    function generateUnitOptions() {
+      let options = '<option value="">-</option>';
+      measurementUnits.forEach(unit => {
+        options += `<option value="${unit}">${unit}</option>`;
+      });
+      return options;
+    }
+    
+    // Dynamic ingredient management
+    let ingredientCount = <%= recipe && recipe.ingredients ? recipe.ingredients.length : 1 %>;
+    
+    document.getElementById('addIngredient').addEventListener('click', function() {
+      ingredientCount++;
+      const container = document.getElementById('ingredientsContainer');
+      const newRow = document.createElement('div');
+      newRow.className = 'ingredient-row mb-3';
+      newRow.innerHTML = `
+        <div class="card">
+          <div class="card-body">
+            <div class="row g-2">
+              <div class="col-md-2">
+                <label class="form-label small">Amount</label>
+                <input 
+                  type="text" 
+                  class="form-control form-control-sm" 
+                  name="ingredient_amount_${ingredientCount}" 
+                  placeholder="2"
+                >
+              </div>
+              <div class="col-md-2">
+                <label class="form-label small">Unit</label>
+                <select class="form-select form-select-sm" name="ingredient_unit_${ingredientCount}">
+                  ${generateUnitOptions()}
+                </select>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label small">Ingredient</label>
+                <input 
+                  type="text" 
+                  class="form-control form-control-sm" 
+                  name="ingredient_name_${ingredientCount}" 
+                  placeholder="flour"
+                  required
+                >
+              </div>
+              <div class="col-md-3">
+                <label class="form-label small">Note (optional)</label>
+                <input 
+                  type="text" 
+                  class="form-control form-control-sm" 
+                  name="ingredient_note_${ingredientCount}" 
+                  placeholder="room temperature"
+                >
+              </div>
+              <div class="col-md-1">
+                <label class="form-label small">&nbsp;</label>
+                <button type="button" class="btn btn-outline-danger btn-sm remove-ingredient d-block">
+                  🗑️
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+      container.appendChild(newRow);
+    });
+
+    // Dynamic step management
+    let stepCount = <%= recipe && recipe.steps ? recipe.steps.length : 1 %>;
+    
+    document.getElementById('addStep').addEventListener('click', function() {
+      stepCount++;
+      const container = document.getElementById('stepsContainer');
+      const newRow = document.createElement('div');
+      newRow.className = 'step-row mb-3';
+      newRow.innerHTML = `
+        <label class="form-label">Step ${stepCount}</label>
+        <div class="input-group mb-2">
+          <textarea 
+            class="form-control" 
+            name="step_${stepCount}" 
+            rows="2"
+            placeholder="Describe this cooking step..."
+          ></textarea>
+          <button type="button" class="btn btn-outline-danger remove-step">
+            🗑️
+          </button>
+        </div>
+        <!-- Note field for step -->
+        <div class="ms-4">
+          <div class="form-check mb-2">
+            <input class="form-check-input step-note-toggle" type="checkbox" id="noteToggle_${stepCount}">
+            <label class="form-check-label" for="noteToggle_${stepCount}">
+              💡 Add special note for this step
+            </label>
+          </div>
+          <div class="step-note-field" style="display: none">
+            <textarea 
+              class="form-control form-control-sm" 
+              name="step_note_${stepCount}" 
+              rows="2"
+              placeholder="Add a special note or tip for this step..."
+            ></textarea>
+          </div>
+        </div>
+      `;
+      container.appendChild(newRow);
+    });
+
+    // Remove ingredient/step functionality
+    document.addEventListener('click', function(e) {
+      if (e.target.classList.contains('remove-ingredient')) {
+        e.target.closest('.ingredient-row').remove();
+      }
+      if (e.target.classList.contains('remove-step')) {
+        e.target.closest('.step-row').remove();
+        // Renumber steps
+        updateStepNumbers();
+      }
+      if (e.target.classList.contains('remove-image')) {
+        e.target.closest('.image-row').remove();
+        // Renumber images
+        updateImageNumbers();
+      }
+    });
+
+    function updateStepNumbers() {
+      const stepRows = document.querySelectorAll('.step-row');
+      stepRows.forEach((row, index) => {
+        const label = row.querySelector('label');
+        if (label) {
+          label.textContent = `Step ${index + 1}`;
+        }
+      });
+    }
+
+    // Dynamic image management
+    let imageCount = <%= recipe && recipe.images ? recipe.images.length : 1 %>;
+    
+    document.getElementById('addImage').addEventListener('click', function() {
+      imageCount++;
+      const container = document.getElementById('imagesContainer');
+      const newRow = document.createElement('div');
+      newRow.className = 'image-row mb-3 p-3 border rounded';
+      newRow.innerHTML = `
+        <div class="row">
+          <div class="col-md-6">
+            <label class="form-label">Image URL/Path</label>
+            <input 
+              type="text" 
+              class="form-control mb-2" 
+              name="image_url_${imageCount}" 
+              placeholder="/images/recipe1.jpg or https://example.com/image.jpg"
+            >
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Description</label>
+            <input 
+              type="text" 
+              class="form-control mb-2" 
+              name="image_desc_${imageCount}" 
+              placeholder="Image description"
+            >
+          </div>
+          <div class="col-md-2 d-flex align-items-end">
+            <button type="button" class="btn btn-outline-danger remove-image">
+              🗑️ Remove
+            </button>
+          </div>
+        </div>
+      `;
+      container.appendChild(newRow);
+    });
+
+    function updateImageNumbers() {
+      const imageRows = document.querySelectorAll('.image-row');
+      imageRows.forEach((row, index) => {
+        const urlInput = row.querySelector('input[name^="image_url_"]');
+        const descInput = row.querySelector('input[name^="image_desc_"]');
+        if (urlInput) {
+          urlInput.name = `image_url_${index + 1}`;
+        }
+        if (descInput) {
+          descInput.name = `image_desc_${index + 1}`;
+        }
+      });
+    }
+
+    // Save directly (skip preview)
+    function saveDirectly() {
+      const form = document.getElementById('recipeForm');
+      form.action = '/admin/recipes/save';
+      form.submit();
+    }
+
+    // Note toggle functionality
+    document.addEventListener('change', function(e) {
+      if (e.target.classList.contains('step-note-toggle')) {
+        const noteField = e.target.closest('.ms-4').querySelector('.step-note-field');
+        if (e.target.checked) {
+          noteField.style.display = 'block';
+        } else {
+          noteField.style.display = 'none';
+          // Clear note text when hiding
+          const textarea = noteField.querySelector('textarea');
+          if (textarea) textarea.value = '';
+        }
+      }
+    });
+
+    // Form validation
+    document.getElementById('recipeForm').addEventListener('submit', function(e) {
+      const name = document.getElementById('name').value.trim();
+      const ingredients = document.querySelectorAll('input[name^="ingredient_"]');
+      const steps = document.querySelectorAll('textarea[name^="step_"]');
+      
+      let hasIngredients = false;
+      let hasSteps = false;
+      
+      ingredients.forEach(input => {
+        if (input.value.trim()) hasIngredients = true;
+      });
+      
+      steps.forEach(textarea => {
+        if (textarea.value.trim()) hasSteps = true;
+      });
+      
+      if (!name) {
+        alert('Recipe name is required!');
+        e.preventDefault();
+        return;
+      }
+      
+      if (!hasIngredients) {
+        alert('At least one ingredient is required!');
+        e.preventDefault();
+        return;
+      }
+      
+      if (!hasSteps) {
+        alert('At least one cooking step is required!');
+        e.preventDefault();
+        return;
+      }
+    });
+  </script>
+
+  <%- include('../partials/footer') %>
+</body>
+</html>

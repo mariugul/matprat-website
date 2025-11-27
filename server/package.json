@@ -12,15 +12,18 @@
     "test:integration": "NODE_ENV=test mocha 'test/integration/**/*.test.js' --timeout 5000 --exit",
     "test:e2e": "playwright test",
     "start": "node app.js",
+    "dev": "nodemon app.js",
     "build": "echo \"Error: no build specified\" && exit 0"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "ejs": "^3.1.6",
     "express": "^4.17.1",
+    "express-session": "^1.17.3",
     "joi": "^17.7.1",
     "nodemon": "^3.1.9",
     "pg": "^8.7.1",
@@ -35,6 +38,7 @@
     "eslint-plugin-import": "^2.25.3",
     "git-conventional-commits": "^1.1.0",
     "mocha": "^11.7.5",
+    "nodemon": "^3.0.1",
     "supertest": "^6.3.3"
   }
 }

@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 /* eslint-disable no-return-assign */
 const express = require('express');
+const session = require('express-session');
 const process = require('process');
 const { Pool } = require('pg');
 
@@ -14,6 +15,8 @@ const app = express();
 const indexRouter = require('./routes/index');
 const recipesRouter = require('./routes/recipes');
 const apiRouter = require('./routes/api');
+const authRouter = require('./routes/auth');
+const adminRouter = require('./routes/admin');
 
 // Import middleware
 const errorHandler = require('./middleware/errorHandler');
@@ -25,6 +28,24 @@ app.use(express.static('public/css'));
 app.use(express.static('public/js'));
 app.use(express.static('public/images'));
 app.use(express.json());
+app.use(express.urlencoded({ extended: true })); // For form data
+
+// Configure session
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'matprat-secret-change-in-production',
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    secure: process.env.NODE_ENV === 'production', // HTTPS only in production
+    maxAge: 24 * 60 * 60 * 1000, // 24 hours
+  },
+}));
+
+// Make session available to all views
+app.use((req, res, next) => {
+  res.locals.session = req.session;
+  next();
+});
 
 // Set up PostgreSQL connection pool
 const pool = new Pool({
@@ -46,15 +67,19 @@ async function sqlQuery(query, queryArgs) {
   });
 }
 
-// Initialize routes with database access
+// Initialize route dependencies
 indexRouter.init(sqlQuery);
 recipesRouter.init(sqlQuery);
 apiRouter.init(pool);
+authRouter.init(pool);
+adminRouter.init(sqlQuery);
 
 // Mount routes
+app.use('/', authRouter); // Mount auth routes (login, logout)
 app.use('/', indexRouter);
 app.use('/recipes', recipesRouter);
 app.use('/api', apiRouter);
+app.use('/admin', adminRouter);
 
 // Error handling middleware (must be last)
 app.use(errorHandler);

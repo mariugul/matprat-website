@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('../partials/head') %>
+<body>
+  <%- include('../partials/nav') %>
+
+  <div class="container mt-4">
+    <div class="row">
+      <div class="col-12">
+        <!-- Header -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <h1>👀 Recipe Preview</h1>
+          <div>
+            <button onclick="goBack()" class="btn btn-outline-secondary me-2">← Edit Recipe</button>
+            <button onclick="publishRecipe()" class="btn btn-success">✅ Publish Recipe</button>
+          </div>
+        </div>
+
+        <!-- Preview Notice -->
+        <div class="alert alert-info" role="alert">
+          <strong>📋 This is a preview!</strong> Review your recipe below, then click "Publish Recipe" to save it to the database and make it live on your website.
+        </div>
+
+        <!-- Recipe Preview (same layout as actual recipe page) -->
+        <div class="recipe-container">
+          <div class="card">
+            <div class="card-body">
+              <!-- Recipe Header -->
+              <div class="row mb-4">
+                <div class="col-md-8">
+                  <h1 class="recipe-title"><%= recipe.name %></h1>
+                  <% if (recipe.description) { %>
+                    <p class="recipe-description text-muted"><%= recipe.description %></p>
+                  <% } %>
+                </div>
+                <div class="col-md-4">
+                  <div class="recipe-meta">
+                    <% if (recipe.prep_time && recipe.prep_time > 0) { %>
+                      <div class="meta-item">
+                        <strong>⏱️ Prep:</strong> <%= recipe.prep_time %> min
+                      </div>
+                    <% } %>
+                    <% if (recipe.cook_time && recipe.cook_time > 0) { %>
+                      <div class="meta-item">
+                        <strong>🔥 Cook:</strong> <%= recipe.cook_time %> min
+                      </div>
+                    <% } %>
+                    <div class="meta-item">
+                      <strong>🍽️ Servings:</strong> <%= recipe.servings || 4 %>
+                    </div>
+                    <div class="meta-item">
+                      <strong>📊 Difficulty:</strong> 
+                      <% if (recipe.difficulty === 'easy') { %>
+                        <span class="badge bg-success">Easy</span>
+                      <% } else if (recipe.difficulty === 'medium') { %>
+                        <span class="badge bg-warning">Medium</span>
+                      <% } else { %>
+                        <span class="badge bg-danger">Hard</span>
+                      <% } %>
+                    </div>
+                    <% if (recipe.category) { %>
+                      <div class="meta-item">
+                        <strong>🏷️ Category:</strong> <%= recipe.category %>
+                      </div>
+                    <% } %>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Recipe Content -->
+              <div class="row">
+                <!-- Ingredients -->
+                <div class="col-md-4">
+                  <div class="ingredients-section">
+                    <h3>🥕 Ingredients</h3>
+                    <ul class="ingredients-list">
+                      <% recipe.ingredients.forEach(ingredient => { %>
+                        <li class="ingredient-item">
+                          <label class="ingredient-checkbox">
+                            <input type="checkbox" disabled>
+                            <span class="ingredient-text"><%= ingredient %></span>
+                          </label>
+                        </li>
+                      <% }); %>
+                    </ul>
+                  </div>
+                </div>
+
+                <!-- Cooking Steps -->
+                <div class="col-md-8">
+                  <div class="steps-section">
+                    <h3>👨‍🍳 Instructions</h3>
+                    <ol class="steps-list">
+                      <% recipe.steps.forEach((step, index) => { %>
+                        <li class="step-item">
+                          <div class="step-content">
+                            <label class="step-checkbox">
+                              <input type="checkbox" disabled>
+                              <span class="step-text"><%= typeof step === 'string' ? step : step.text %></span>
+                            </label>
+                            <% if (typeof step === 'object' && step.note) { %>
+                              <div class="step-note mt-2">
+                                <div class="alert alert-info alert-sm mb-0">
+                                  <i class="bi bi-info-circle"></i>
+                                  <%= step.note %>
+                                </div>
+                              </div>
+                            <% } %>
+                          </div>
+                        </li>
+                      <% }); %>
+                    </ol>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hidden form to publish recipe -->
+  <form id="publishForm" method="POST" action="/admin/recipes/save" style="display: none;">
+    <input type="hidden" name="mode" value="<%= mode %>">
+    <input type="hidden" name="name" value="<%= recipe.name %>">
+    <input type="hidden" name="description" value="<%= recipe.description || '' %>">
+    <input type="hidden" name="cook_time" value="<%= recipe.cook_time || 0 %>">
+    <input type="hidden" name="prep_time" value="<%= recipe.prep_time || 0 %>">
+    <input type="hidden" name="servings" value="<%= recipe.servings || 4 %>">
+    <input type="hidden" name="difficulty" value="<%= recipe.difficulty %>">
+    <input type="hidden" name="category" value="<%= recipe.category || '' %>">
+    <% if (originalName) { %>
+      <input type="hidden" name="originalName" value="<%= originalName %>">
+    <% } %>
+    
+    <!-- Add ingredients as hidden fields -->
+    <% recipe.ingredients.forEach((ingredient, index) => { %>
+      <input type="hidden" name="ingredient_<%= index + 1 %>" value="<%= ingredient %>">
+    <% }); %>
+    
+    <!-- Add steps as hidden fields -->
+    <% recipe.steps.forEach((step, index) => { %>
+      <input type="hidden" name="step_<%= index + 1 %>" value="<%= step %>">
+    <% }); %>
+  </form>
+
+  <!-- Hidden form to go back to edit -->
+  <form id="backForm" method="GET" style="display: none;">
+    <input type="hidden" name="name" value="<%= recipe.name %>">
+    <input type="hidden" name="description" value="<%= recipe.description || '' %>">
+    <input type="hidden" name="cook_time" value="<%= recipe.cook_time || 0 %>">
+    <input type="hidden" name="prep_time" value="<%= recipe.prep_time || 0 %>">
+    <input type="hidden" name="servings" value="<%= recipe.servings || 4 %>">
+    <input type="hidden" name="difficulty" value="<%= recipe.difficulty %>">
+    <input type="hidden" name="category" value="<%= recipe.category || '' %>">
+    
+    <!-- Add ingredients -->
+    <% recipe.ingredients.forEach((ingredient, index) => { %>
+      <input type="hidden" name="ingredient_<%= index + 1 %>" value="<%= ingredient %>">
+    <% }); %>
+    
+    <!-- Add steps -->
+    <% recipe.steps.forEach((step, index) => { %>
+      <input type="hidden" name="step_<%= index + 1 %>" value="<%= step %>">
+    <% }); %>
+  </form>
+
+  <script>
+    function publishRecipe() {
+      if (confirm('Are you sure you want to publish this recipe? It will be saved to the database and visible on your website.')) {
+        document.getElementById('publishForm').submit();
+      }
+    }
+
+    function goBack() {
+      // Set the back form action based on mode
+      const backForm = document.getElementById('backForm');
+      <% if (mode === 'edit') { %>
+        backForm.action = '/admin/recipes/edit/<%= encodeURIComponent(originalName || recipe.name) %>';
+      <% } else { %>
+        backForm.action = '/admin/recipes/new';
+      <% } %>
+      backForm.submit();
+    }
+  </script>
+
+  <style>
+    .recipe-container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .recipe-title {
+      color: #2c3e50;
+      font-weight: bold;
+    }
+
+    .recipe-description {
+      font-size: 1.1em;
+      margin-bottom: 1rem;
+    }
+
+    .recipe-meta {
+      background: #f8f9fa;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      border-left: 4px solid #007bff;
+    }
+
+    .meta-item {
+      margin-bottom: 0.5rem;
+    }
+
+    .ingredients-section,
+    .steps-section {
+      margin-bottom: 2rem;
+    }
+
+    .ingredients-section h3,
+    .steps-section h3 {
+      color: #e67e22;
+      border-bottom: 2px solid #e67e22;
+      padding-bottom: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .ingredients-list {
+      list-style: none;
+      padding: 0;
+    }
+
+    .ingredient-item {
+      margin-bottom: 0.5rem;
+    }
+
+    .ingredient-checkbox,
+    .step-checkbox {
+      display: flex;
+      align-items: flex-start;
+      cursor: pointer;
+    }
+
+    .ingredient-checkbox input,
+    .step-checkbox input {
+      margin-right: 0.75rem;
+      margin-top: 0.25rem;
+      cursor: pointer;
+    }
+
+    .ingredient-text,
+    .step-text {
+      flex: 1;
+    }
+
+    .steps-list {
+      counter-reset: step-counter;
+      padding-left: 0;
+    }
+
+    .step-item {
+      counter-increment: step-counter;
+      margin-bottom: 1.5rem;
+      position: relative;
+      padding-left: 3rem;
+    }
+
+    .step-item::before {
+      content: counter(step-counter);
+      position: absolute;
+      left: 0;
+      top: 0;
+      background: #007bff;
+      color: white;
+      width: 2rem;
+      height: 2rem;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 0.9rem;
+    }
+
+    .step-content {
+      background: #f8f9fa;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      border-left: 3px solid #007bff;
+    }
+  </style>
+
+  <%- include('../partials/footer') %>
+</body>
+</html>

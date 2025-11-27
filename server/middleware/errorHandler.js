@@ -5,7 +5,7 @@
 
 const logger = require('../utils/logger');
 
-const errorHandler = (err, req, res) => {
+const errorHandler = (err, req, res, next) => { // eslint-disable-line no-unused-vars
   // Log error for debugging
   logger.error('Error occurred', {
     message: err.message,
@@ -43,7 +43,7 @@ const errorHandler = (err, req, res) => {
   }
 
   // Send error response
-  if (req.xhr || req.headers.accept?.includes('application/json')) {
+  if (req.xhr || (req.headers && req.headers.accept && req.headers.accept.includes('application/json'))) {
     // API request - return JSON
     return res.status(statusCode).json({
       error: errorMessage,
