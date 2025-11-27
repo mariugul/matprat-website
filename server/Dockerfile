@@ -1,10 +1,18 @@
 FROM node:20-alpine3.20
-ENV NODE_ENV=production
 WORKDIR /usr/src/app
+
+# Copy package files
 COPY ["package.json", "package-lock.json*", "npm-shrinkwrap.json*", "./"]
-RUN npm install --production --silent && mv node_modules ../
+
+# Install dependencies based on NODE_ENV
+RUN if [ "$NODE_ENV" = "production" ] ; then npm install --only=production --silent ; else npm install --silent ; fi
+
+# Copy source code
 COPY . .
-EXPOSE 3000
+
+# Create app directory with proper permissions
 RUN chown -R node /usr/src/app
-USER node
-CMD ["npm", "start"]
+EXPOSE 3000
+
+# Use different commands based on NODE_ENV
+CMD if [ "$NODE_ENV" = "development" ] ; then npm run dev ; else npm start ; fi

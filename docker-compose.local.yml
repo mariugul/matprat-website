@@ -5,7 +5,6 @@ services:
       dockerfile: Dockerfile
     restart: unless-stopped
     container_name: "pratmat-website-local"
-    user: node
     environment:
       NODE_ENV: development
       NODE_PORT: 3000
@@ -16,6 +15,11 @@ services:
       DB_PORT: 5432
     ports:
       - 3001:3000
+    volumes:
+      # Mount source code for live development
+      - ./server:/usr/src/app
+      # Preserve node_modules in container
+      - /usr/src/app/node_modules
     depends_on:
       - db
 

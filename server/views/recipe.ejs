@@ -25,7 +25,15 @@
              style="height: 400px; object-fit: cover;">
         <div class="position-absolute bottom-0 start-0 w-100 bg-dark bg-opacity-50 text-white p-4">
           <div class="container">
-            <h1 class="display-4 fw-bold mb-0"><%= recipeInfo[0].name %></h1>
+            <div class="d-flex justify-content-between align-items-end">
+              <h1 class="display-4 fw-bold mb-0"><%= recipeInfo[0].name %></h1>
+              <% if (session && session.userId) { %>
+                <a href="/admin/recipes/edit/<%= encodeURIComponent(recipeInfo[0].name) %>" 
+                   class="btn btn-outline-light btn-sm">
+                  ✏️ Edit Recipe
+                </a>
+              <% } %>
+            </div>
           </div>
         </div>
       </div>
@@ -33,7 +41,17 @@
       <!-- Fallback header without image -->
       <div class="bg-light py-5">
         <div class="container">
-          <h1 class="display-3 fw-bold text-center"><%= recipeInfo[0].name %></h1>
+          <div class="d-flex justify-content-between align-items-center">
+            <div class="flex-grow-1 text-center">
+              <h1 class="display-3 fw-bold"><%= recipeInfo[0].name %></h1>
+            </div>
+            <% if (session && session.userId) { %>
+              <a href="/admin/recipes/edit/<%= encodeURIComponent(recipeInfo[0].name) %>" 
+                 class="btn btn-primary btn-sm">
+                ✏️ Edit Recipe
+              </a>
+            <% } %>
+          </div>
         </div>
       </div>
     <% } %>
@@ -169,11 +187,11 @@
                           </div>
                         </div>
                         <p class="mb-0" id="stepText<%= index + 1 %>">
-                          <%= step.description %>
+                          <%= typeof step === 'string' ? step : (step.text || step.description) %>
                         </p>
                         
                         <!-- Step Note/Info Box -->
-                        <% if (step.note) { %>
+                        <% if (typeof step === 'object' && step.note) { %>
                           <div class="alert alert-info border border-info mt-3 mb-0 d-flex align-items-start" role="alert">
                             <i class="bi bi-info-circle-fill text-info fs-4 me-2 flex-shrink-0"></i>
                             <div>
