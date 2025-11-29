@@ -23,10 +23,11 @@ const errorHandler = require('./middleware/errorHandler');
 
 // Configure Express
 app.set('view engine', 'ejs');
-app.use(express.static('public'));
-app.use(express.static('public/css'));
-app.use(express.static('public/js'));
-app.use(express.static('public/images'));
+
+// Serve static files
+app.use(express.static('public')); // Site assets (git-tracked): logos, icons, UI elements
+app.use('/content', express.static('content')); // Recipe content (gitignored): user photos, recipe images
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true })); // For form data
 

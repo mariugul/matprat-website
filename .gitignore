@@ -120,3 +120,6 @@ dist
 
 playwright-report
 test-results
+
+# User-uploaded recipe content (keep out of git)
+server/content/
