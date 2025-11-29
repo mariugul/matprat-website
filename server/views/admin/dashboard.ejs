@@ -1,103 +1,164 @@
 <!DOCTYPE html>
 <html lang="en">
 <%- include('../partials/head') %>
-<body>
-  <%- include('../partials/nav') %>
 
-  <div class="container mt-5">
-    <!-- Welcome Header -->
-    <div class="row mb-4">
-      <div class="col-12">
-        <h1>👋 Welcome, <%= username %>!</h1>
-        <p class="text-muted">Manage your recipes from this dashboard</p>
-      </div>
-    </div>
+  <body>
+    <%- include('../partials/nav') %>
 
-    <!-- Stats Cards -->
-    <div class="row mb-4">
-      <div class="col-md-6">
-        <div class="card">
-          <div class="card-body">
-            <h5 class="card-title">📚 Total Recipes</h5>
-            <h2><%= recipeCount %></h2>
+      <div class="container mt-5">
+        <!-- Welcome Header -->
+        <div class="row mb-4">
+          <div class="col-12">
+            <h1>👋 Welcome, <%= username %>!</h1>
+            <p class="text-muted">Manage your recipes from this dashboard</p>
           </div>
         </div>
-      </div>
-      <div class="col-md-6">
-        <div class="card">
-          <div class="card-body">
-            <h5 class="card-title">⚡ Quick Actions</h5>
-            <div class="mt-3">
-              <a href="/admin/recipes/new" class="btn btn-primary me-2">➕ Create New Recipe</a>
-              <a href="/recipes" class="btn btn-outline-secondary me-2">👀 View All Recipes</a>
-              <a href="/admin" class="btn btn-outline-info">🔄 Refresh Dashboard</a>
+
+        <!-- Stats Cards -->
+        <div class="row mb-4">
+          <div class="col-md-6">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">📚 Total Recipes</h5>
+                <h2>
+                  <%= recipeCount %>
+                </h2>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">⚡ Quick Actions</h5>
+                <div class="mt-3">
+                  <a href="/admin/recipes/new" class="btn btn-primary me-2">➕ Create New Recipe</a>
+                  <a href="/recipes" class="btn btn-outline-secondary me-2">👀 View All Recipes</a>
+                  <a href="/admin" class="btn btn-outline-info">🔄 Refresh Dashboard</a>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </div>
 
-    <!-- Recent Recipes -->
-    <% if (recipes && recipes.length > 0) { %>
-    <div class="row">
-      <div class="col-12">
-        <div class="card">
-          <div class="card-header">
-            <h5>📋 Recent Recipes</h5>
-          </div>
-          <div class="card-body">
-            <div class="table-responsive">
-              <table class="table table-hover">
-                <thead>
-                  <tr>
-                    <th>Recipe Name</th>
-                    <th>Cook Time</th>
-                    <th>Difficulty</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <% recipes.forEach(recipe => { %>
-                  <tr>
-                    <td><strong><%= recipe.name %></strong></td>
-                    <td><%= recipe.cook_time %> min</td>
-                    <td>
-                      <% if (recipe.difficulty === 'easy') { %>
-                        <span class="badge bg-success">Easy</span>
-                      <% } else if (recipe.difficulty === 'medium') { %>
-                        <span class="badge bg-warning">Medium</span>
-                      <% } else { %>
-                        <span class="badge bg-danger">Hard</span>
-                      <% } %>
-                    </td>
-                    <td>
-                      <a href="/recipes/<%= encodeURIComponent(recipe.name) %>" class="btn btn-sm btn-outline-primary">👀 View</a>
-                      <a href="/admin/recipes/edit/<%= encodeURIComponent(recipe.name) %>" class="btn btn-sm btn-outline-warning">✏️ Edit</a>
-                    </td>
-                  </tr>
-                  <% }); %>
-                </tbody>
-              </table>
+        <!-- Recent Recipes -->
+        <% if (recipes && recipes.length> 0) { %>
+          <div class="row">
+            <div class="col-12">
+              <div class="card">
+                <div class="card-header">
+                  <h5>📋 Recent Recipes</h5>
+                </div>
+                <div class="card-body">
+                  <div class="table-responsive">
+                    <table class="table table-hover">
+                      <thead>
+                        <tr>
+                          <th>Recipe Name</th>
+                          <th>Cook Time</th>
+                          <th>Difficulty</th>
+                          <th>Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <% recipes.forEach(recipe=> { %>
+                          <tr>
+                            <td><strong>
+                                <%= recipe.name %>
+                              </strong></td>
+                            <td>
+                              <%= recipe.cook_time %> min
+                            </td>
+                            <td>
+                              <% if (recipe.difficulty==='easy' ) { %>
+                                <span class="badge bg-success">Easy</span>
+                                <% } else if (recipe.difficulty==='medium' ) { %>
+                                  <span class="badge bg-warning">Medium</span>
+                                  <% } else { %>
+                                    <span class="badge bg-danger">Hard</span>
+                                    <% } %>
+                            </td>
+                            <td>
+                              <a href="/recipes/<%= encodeURIComponent(recipe.name) %>"
+                                class="btn btn-sm btn-outline-primary">👀 View</a>
+                              <a href="/admin/recipes/edit/<%= encodeURIComponent(recipe.name) %>"
+                                class="btn btn-sm btn-outline-warning">✏️ Edit</a>
+                              <button type="button" class="btn btn-sm btn-outline-danger"
+                                onclick="deleteRecipe('<%= recipe.name.replace(/'/g, " \\'") %>')">🗑️ Delete</button>
+                            </td>
+                          </tr>
+                          <% }); %>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
+          <% } else { %>
+            <div class="row">
+              <div class="col-12">
+                <div class="card">
+                  <div class="card-body text-center">
+                    <h5>🍽️ No recipes yet!</h5>
+                    <p class="text-muted">Start building your recipe collection</p>
+                    <a href="/admin/recipes/new" class="btn btn-primary">➕ Add Your First Recipe</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <% } %>
       </div>
-    </div>
-    <% } else { %>
-    <div class="row">
-      <div class="col-12">
-        <div class="card">
-          <div class="card-body text-center">
-            <h5>🍽️ No recipes yet!</h5>
-            <p class="text-muted">Start building your recipe collection</p>
-            <a href="/admin/recipes/new" class="btn btn-primary">➕ Add Your First Recipe</a>
+
+      <!-- Toast Container -->
+      <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div id="deleteToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+          <div class="toast-header bg-success text-white">
+            <strong class="me-auto">✅ Success</strong>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+          </div>
+          <div class="toast-body">
+            Recipe deleted successfully!
           </div>
         </div>
       </div>
-    </div>
-    <% } %>
-  </div>
 
-  <%- include('../partials/footer') %>
-</body>
+      <script>
+        async function deleteRecipe(recipeName) {
+          // Confirm deletion
+          const confirmDelete = confirm(`Are you sure you want to delete "${recipeName}"?\n\nThis will permanently delete the recipe and all associated data (ingredients, steps, images, categories).`);
+
+          if (!confirmDelete) return;
+
+          try {
+            const response = await fetch(`/admin/recipes/delete/${encodeURIComponent(recipeName)}`, {
+              method: 'DELETE',
+            });
+
+            if (response.ok) {
+              // Show success toast
+              const toastEl = document.getElementById('deleteToast');
+              const toast = new bootstrap.Toast(toastEl, {
+                autohide: true,
+                delay: 2000
+              });
+
+              toast.show();
+
+              // Reload after toast is shown
+              toastEl.addEventListener('hidden.bs.toast', () => {
+                window.location.reload();
+              });
+            } else {
+              const error = await response.json();
+              alert(`Failed to delete recipe: ${error.message || 'Unknown error'}`);
+            }
+          } catch (error) {
+            alert(`Error deleting recipe: ${error.message}`);
+          }
+        }
+      </script>
+
+      <%- include('../partials/footer') %>
+  </body>
+
 </html>
