@@ -58,7 +58,7 @@ function updateImageNumbers() {
 function saveDirectly() {
   const form = document.getElementById('recipeForm');
   form.action = '/admin/recipes/save';
-  
+
   // Use requestSubmit() instead of submit() to trigger HTML5 validation
   // This shows native browser validation messages (hover text)
   if (form.requestSubmit) {
@@ -239,63 +239,6 @@ function handleNoteToggle(e) {
         textarea.value = '';
       }
     }
-  }
-}
-
-function validateForm(e) {
-  const name = document.getElementById('name').value.trim();
-  const defaultPortions = document.getElementById('default_portions').value;
-  const cookTime = document.getElementById('cook_time').value;
-  const difficulty = document.getElementById('difficulty').value;
-
-  // Check ingredient completeness
-  const ingredientNames = document.querySelectorAll('input[name^="ingredient_name_"]');
-  const ingredientAmounts = document.querySelectorAll('input[name^="ingredient_amount_"]');
-  const ingredientUnits = document.querySelectorAll('select[name^="ingredient_unit_"]');
-
-  // Check steps
-  const steps = document.querySelectorAll('textarea[name^="step_"]');
-
-  let hasCompleteIngredients = false;
-  let hasSteps = false;
-  const validationErrors = [];
-
-  // Validate required fields
-  if (!name) validationErrors.push('Recipe name is required');
-  if (!defaultPortions) validationErrors.push('Default portions is required');
-  if (!cookTime) validationErrors.push('Cook time is required');
-  if (!difficulty) validationErrors.push('Difficulty level is required');
-
-  // Check for at least one complete ingredient
-  for (let i = 0; i < ingredientNames.length; i += 1) {
-    const ingredientName = ingredientNames[i].value.trim();
-    const amount = ingredientAmounts[i] ? ingredientAmounts[i].value.trim() : '';
-    const unit = ingredientUnits[i] ? ingredientUnits[i].value : '';
-
-    if (ingredientName && amount && unit) {
-      hasCompleteIngredients = true;
-      break;
-    }
-  }
-
-  // Check for at least one step
-  steps.forEach((textarea) => {
-    if (textarea.value.trim()) hasSteps = true;
-  });
-
-  if (!hasCompleteIngredients) {
-    validationErrors.push('At least one complete ingredient (name, amount, and unit) is required');
-  }
-
-  if (!hasSteps) {
-    validationErrors.push('At least one cooking step is required');
-  }
-
-  // Show all validation errors
-  if (validationErrors.length > 0) {
-    // eslint-disable-next-line no-alert
-    alert(`Please fix the following errors:\n\n• ${validationErrors.join('\n• ')}`);
-    e.preventDefault();
   }
 }
 
@@ -781,12 +724,13 @@ if (uploadButton) {
         // Find first empty image URL field and auto-fill it
         const imageUrlInputs = document.querySelectorAll('input[name^="image_url_"]');
         let filled = false;
-        
+
         imageUrlInputs.forEach((input) => {
           if (!filled && (!input.value || input.value.trim() === '')) {
-            input.value = data.path;
-            input.dispatchEvent(new Event('input', { bubbles: true }));
-            input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            const inputField = input;
+            inputField.value = data.path;
+            inputField.dispatchEvent(new Event('input', { bubbles: true }));
+            inputField.scrollIntoView({ behavior: 'smooth', block: 'center' });
             filled = true;
           }
         });
