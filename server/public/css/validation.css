@@ -1,0 +1,43 @@
+/**
+ * Form Validation Styles
+ * Uses CSS custom properties for centralized theming
+ */
+
+:root {
+  --validation-error-color: #dc3545;
+  --validation-success-color: #198754;
+  --validation-error-glow: rgba(220, 53, 69, 0.25);
+  --validation-success-glow: rgba(25, 135, 84, 0.25);
+}
+
+/* Show red outline on required fields when invalid and user has interacted */
+input:required:invalid:not(:focus):not(:placeholder-shown),
+select:required:invalid:not(:focus),
+textarea:required:invalid:not(:focus):not(:placeholder-shown) {
+  border-color: var(--validation-error-color) !important;
+  box-shadow: 0 0 0 0.2rem var(--validation-error-glow);
+}
+
+/* Show red outline after form submission attempt */
+form.was-validated input:required:invalid,
+form.was-validated select:required:invalid,
+form.was-validated textarea:required:invalid {
+  border-color: var(--validation-error-color) !important;
+  box-shadow: 0 0 0 0.2rem var(--validation-error-glow);
+}
+
+/* Green outline for valid required fields after validation */
+form.was-validated input:required:valid,
+form.was-validated select:required:valid,
+form.was-validated textarea:required:valid {
+  border-color: var(--validation-success-color);
+  box-shadow: 0 0 0 0.2rem var(--validation-success-glow);
+}
+
+/* Remove green outline on focus for better UX */
+form.was-validated input:required:valid:focus,
+form.was-validated select:required:valid:focus,
+form.was-validated textarea:required:valid:focus {
+  border-color: #86b7fe;
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
