@@ -72,13 +72,23 @@ router.get('/recipes/new', async (req, res) => {
       ORDER BY e.enumsortorder
     `);
 
+    // Get all available categories
+    const availableCategories = await sqlQuery(`
+      SELECT e.enumlabel as category
+      FROM pg_enum e 
+      JOIN pg_type t ON e.enumtypid = t.oid 
+      WHERE t.typname = 'category' 
+      ORDER BY e.enumsortorder
+    `);
+
     res.render('admin/recipe-form', {
       activePage: 'admin',
       username: req.session.username,
       mode: 'create',
       recipe: null,
-      measurementUnits: measurementUnits.map(row => row.unit),
-      difficultyLevels: difficultyLevels.map(row => row.difficulty),
+      measurementUnits: measurementUnits.map((row) => row.unit),
+      difficultyLevels: difficultyLevels.map((row) => row.difficulty),
+      availableCategories: availableCategories.map((row) => row.category),
       error: req.query.error,
     });
   } catch (err) {
@@ -109,9 +119,27 @@ router.get('/recipes/edit/:name', async (req, res) => {
     }
 
     const recipe = recipes[0];
-    
+
+    // Load recipe ingredients
+    const ingredients = await sqlQuery(
+      'SELECT ingredient, amount, unit, note FROM ingredients WHERE recipe_name = $1 ORDER BY ingredient',
+      [recipeName],
+    );
+
+    // Load recipe steps
+    const steps = await sqlQuery(
+      'SELECT step_nr, description, note FROM steps WHERE recipe_name = $1 ORDER BY step_nr',
+      [recipeName],
+    );
+
     // Load recipe images
     const images = await sqlQuery('SELECT * FROM images WHERE recipe_name = $1 ORDER BY image_nr', [recipeName]);
+
+    // Load recipe categories
+    const categories = await sqlQuery(
+      'SELECT category FROM categories WHERE recipe_name = $1',
+      [recipeName],
+    );
 
     // Get measurement units from database
     const measurementUnits = await sqlQuery(`
@@ -131,15 +159,36 @@ router.get('/recipes/edit/:name', async (req, res) => {
       ORDER BY e.enumsortorder
     `);
 
+    // Get all available categories
+    const availableCategories = await sqlQuery(`
+      SELECT e.enumlabel as category
+      FROM pg_enum e 
+      JOIN pg_type t ON e.enumtypid = t.oid 
+      WHERE t.typname = 'category' 
+      ORDER BY e.enumsortorder
+    `);
+
+    // Attach related data to recipe object
+    recipe.ingredients = ingredients;
+    recipe.steps = steps;
     recipe.images = images;
+    recipe.categories = categories.map((row) => row.category);
+
+    // Debug logging
+    logger.debug('Recipe categories loaded', {
+      recipeName,
+      categoriesCount: categories.length,
+      categories: recipe.categories,
+    });
 
     return res.render('admin/recipe-form', {
       activePage: 'admin',
       username: req.session.username,
       mode: 'edit',
       recipe,
-      measurementUnits: measurementUnits.map(row => row.unit),
-      difficultyLevels: difficultyLevels.map(row => row.difficulty),
+      measurementUnits: measurementUnits.map((row) => row.unit),
+      difficultyLevels: difficultyLevels.map((row) => row.difficulty),
+      availableCategories: availableCategories.map((row) => row.category),
       error: req.query.error,
     });
   } catch (err) {
@@ -250,11 +299,11 @@ router.post('/recipes/save', async (req, res) => {
   try {
     const recipeData = req.body;
     const isEdit = recipeData.mode === 'edit';
-    
+
     logger.debug('Recipe save process started', {
       mode: isEdit ? 'EDIT' : 'CREATE',
       dataKeys: Object.keys(recipeData),
-      formData: recipeData
+      formData: recipeData,
     });
 
     // Parse ingredients, steps, and images
@@ -281,13 +330,13 @@ router.post('/recipes/save', async (req, res) => {
       const unit = recipeData[`ingredient_unit_${num}`] || '';
       const name = recipeData[`ingredient_name_${num}`] || '';
       const note = recipeData[`ingredient_note_${num}`] || '';
-      
+
       if (name.trim()) {
         ingredients.push({
           amount: amount.trim(),
-          unit: unit.trim(), 
+          unit: unit.trim(),
           name: name.trim(),
-          note: note.trim()
+          note: note.trim(),
         });
       }
     });
@@ -329,7 +378,7 @@ router.post('/recipes/save', async (req, res) => {
       stepTexts,
       stepNotes,
       imageUrls,
-      imageDescs
+      imageDescs,
     });
 
     // Process images
@@ -351,7 +400,7 @@ router.post('/recipes/save', async (req, res) => {
       description: recipeData.description,
       cookTime: parseInt(recipeData.cook_time, 10) || 0,
       servings: parseInt(recipeData.servings, 10) || 1,
-      difficulty: recipeData.difficulty
+      difficulty: recipeData.difficulty,
     });
 
     // Validate required fields
@@ -372,9 +421,9 @@ router.post('/recipes/save', async (req, res) => {
         recipeData.difficulty,
         recipeData.originalName,
       ];
-      
+
       logger.debug('Updating existing recipe', { updateParams });
-      
+
       // Update existing recipe (only the columns that exist)
       await sqlQuery(`
         UPDATE recipes SET 
@@ -394,9 +443,9 @@ router.post('/recipes/save', async (req, res) => {
         parseInt(recipeData.servings, 10) || 1,
         recipeData.difficulty,
       ];
-      
+
       logger.debug('Creating new recipe', { insertParams });
-      
+
       // Create new recipe (only the columns that exist in the table)
       await sqlQuery(`
         INSERT INTO recipes (name, description, cook_time, default_portions, difficulty)
@@ -409,21 +458,22 @@ router.post('/recipes/save', async (req, res) => {
       });
     }
 
-    logger.debug('Processing ingredients', { 
-      recipeName: recipeData.name, 
-      ingredientCount: ingredients.length 
+    logger.debug('Processing ingredients', {
+      recipeName: recipeData.name,
+      ingredientCount: ingredients.length,
     });
-    
+
     // Handle ingredients - delete existing and insert new ones
     await sqlQuery('DELETE FROM ingredients WHERE recipe_name = $1', [recipeData.name]);
-    
+
     // Insert ingredients
-    for (let i = 0; i < ingredients.length; i++) {
+    for (let i = 0; i < ingredients.length; i += 1) {
       const ingredient = ingredients[i];
-      logger.debug('Inserting ingredient', { 
-        stepNumber: i + 1, 
-        ingredient: ingredient 
+      logger.debug('Inserting ingredient', {
+        stepNumber: i + 1,
+        ingredient,
       });
+      // eslint-disable-next-line no-await-in-loop
       await sqlQuery(`
         INSERT INTO ingredients (recipe_name, ingredient, amount, unit, note)
         VALUES ($1, $2, $3, $4, $5)
@@ -437,21 +487,22 @@ router.post('/recipes/save', async (req, res) => {
     }
     logger.debug('Ingredients processing completed');
 
-    logger.debug('Processing steps', { 
-      recipeName: recipeData.name, 
-      stepCount: cleanSteps.length 
+    logger.debug('Processing steps', {
+      recipeName: recipeData.name,
+      stepCount: cleanSteps.length,
     });
-    
-    // Handle steps - delete existing and insert new ones  
+
+    // Handle steps - delete existing and insert new ones
     await sqlQuery('DELETE FROM steps WHERE recipe_name = $1', [recipeData.name]);
-    
+
     // Insert steps
-    for (let i = 0; i < cleanSteps.length; i++) {
+    for (let i = 0; i < cleanSteps.length; i += 1) {
       const step = cleanSteps[i];
-      logger.debug('Inserting step', { 
-        stepNumber: i + 1, 
-        step 
+      logger.debug('Inserting step', {
+        stepNumber: i + 1,
+        step,
       });
+      // eslint-disable-next-line no-await-in-loop
       await sqlQuery(`
         INSERT INTO steps (recipe_name, step_nr, description, note)
         VALUES ($1, $2, $3, $4)
@@ -464,17 +515,19 @@ router.post('/recipes/save', async (req, res) => {
     }
     logger.debug('Steps processing completed');
 
-    logger.debug('Processing images', { 
-      recipeName: recipeData.name, 
-      imageCount: images.length 
+    logger.debug('Processing images', {
+      recipeName: recipeData.name,
+      imageCount: images.length,
     });
-    
+
     // Handle images - delete existing and insert new ones
     await sqlQuery('DELETE FROM images WHERE recipe_name = $1', [recipeData.name]);
-    
+
     // Insert new images
+    // eslint-disable-next-line no-restricted-syntax
     for (const image of images) {
       logger.debug('Inserting image', { image });
+      // eslint-disable-next-line no-await-in-loop
       await sqlQuery(`
         INSERT INTO images (recipe_name, image_nr, link, description)
         VALUES ($1, $2, $3, $4)
@@ -492,32 +545,110 @@ router.post('/recipes/save', async (req, res) => {
       imageCount: images.length,
     });
 
+    // Handle categories - delete existing and insert new ones
+    logger.debug('Processing categories', {
+      recipeName: recipeData.name,
+    });
+
+    await sqlQuery('DELETE FROM categories WHERE recipe_name = $1', [recipeData.name]);
+
+    // Parse categories from form (can be a single value or an array)
+    let selectedCategories = [];
+    if (recipeData.categories) {
+      selectedCategories = Array.isArray(recipeData.categories)
+        ? recipeData.categories
+        : [recipeData.categories];
+    }
+
+    // Insert new categories
+    // eslint-disable-next-line no-restricted-syntax
+    for (const category of selectedCategories) {
+      if (category && category.trim()) {
+        logger.debug('Inserting category', { category });
+        // eslint-disable-next-line no-await-in-loop
+        await sqlQuery(`
+          INSERT INTO categories (recipe_name, category)
+          VALUES ($1, $2)
+        `, [
+          recipeData.name,
+          category.trim(),
+        ]);
+      }
+    }
+
+    logger.debug('Categories processing completed', {
+      categoryCount: selectedCategories.length,
+      categories: selectedCategories,
+    });
+
     logger.info('Recipe save process completed successfully', {
       recipeName: recipeData.name,
-      redirectUrl: `/recipes/${encodeURIComponent(recipeData.name)}`
+      redirectUrl: `/recipes/${encodeURIComponent(recipeData.name)}`,
     });
-    
+
     // Redirect to the recipe page
     return res.redirect(`/recipes/${encodeURIComponent(recipeData.name)}`);
   } catch (err) {
-    console.log('=== RAW ERROR DETAILS ===');
-    console.log('Error message:', err.message);
-    console.log('Error code:', err.code);
-    console.log('Error detail:', err.detail);
-    console.log('Full error object:', JSON.stringify(err, null, 2));
-    console.log('=== END RAW ERROR ===');
-    
-    logger.error('Error saving recipe', { 
-      error: err.message, 
+    logger.error('Error saving recipe', {
+      error: err.message,
       stack: err.stack,
       recipeName: req.body.name,
-      mode: req.body.mode 
+      mode: req.body.mode,
     });
     const errorMsg = 'Unable to save recipe. Please try again.';
     const redirectUrl = req.body.mode === 'edit'
       ? `/admin/recipes/edit/${encodeURIComponent(req.body.originalName || req.body.name)}`
       : '/admin/recipes/new';
     return res.redirect(`${redirectUrl}?error=${encodeURIComponent(errorMsg)}`);
+  }
+});
+
+/**
+ * DELETE /admin/recipes/delete/:name
+ * Delete a recipe and all associated data
+ */
+router.delete('/recipes/delete/:name', async (req, res) => {
+  const recipeName = req.params.name;
+
+  try {
+    logger.info('Deleting recipe', {
+      recipeName,
+      userId: req.session.userId,
+    });
+
+    // Database will cascade delete related records due to foreign key constraints
+    // Delete from: categories, ingredients, steps, images, recipes
+    await sqlQuery('BEGIN');
+
+    try {
+      // Delete in order (child tables first due to foreign keys)
+      await sqlQuery('DELETE FROM categories WHERE recipe_name = $1', [recipeName]);
+      await sqlQuery('DELETE FROM ingredients WHERE recipe_name = $1', [recipeName]);
+      await sqlQuery('DELETE FROM steps WHERE recipe_name = $1', [recipeName]);
+      await sqlQuery('DELETE FROM images WHERE recipe_name = $1', [recipeName]);
+      await sqlQuery('DELETE FROM recipes WHERE name = $1', [recipeName]);
+
+      await sqlQuery('COMMIT');
+
+      logger.info('Recipe deleted successfully', { recipeName });
+      return res.status(200).json({
+        success: true,
+        message: `Recipe "${recipeName}" deleted successfully`,
+      });
+    } catch (err) {
+      await sqlQuery('ROLLBACK');
+      throw err;
+    }
+  } catch (err) {
+    logger.error('Error deleting recipe', {
+      error: err.message,
+      recipeName,
+    });
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to delete recipe',
+      error: err.message,
+    });
   }
 });
 
