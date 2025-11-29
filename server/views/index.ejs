@@ -10,198 +10,203 @@
   <!-- Header Navigation Menu -->
   <%- include('partials/nav.ejs') %>
 
-  <!-- Main Content -->
-  <main class="flex-grow-1">
-    
-    <!-- Hero Section -->
-    <section class="hero-section bg-light py-5">
-      <div class="container">
-        <div class="row align-items-center">
-          <!-- Left: Text Content -->
-          <div class="col-lg-7 mb-4 mb-lg-0">
-            <h1 class="display-3 fw-bold text-dark mb-3">
-              Delicious Home-Cooked Recipes
-            </h1>
-            <p class="lead text-muted mb-4">
-              Welcome to my collection of tried and tested recipes. 
-              From quick weeknight dinners to special occasion treats, 
-              find your next favorite dish here.
-            </p>
-            <div class="d-flex gap-3 flex-wrap">
-              <a href="/recipes" class="btn btn-primary btn-lg px-4">
-                <i class="bi bi-book"></i> Browse All Recipes
-              </a>
-              <a href="#featured" class="btn btn-outline-secondary btn-lg px-4">
-                <i class="bi bi-star"></i> Featured
-              </a>
-            </div>
-          </div>
-          
-          <!-- Right: Profile Image -->
-          <div class="col-lg-5 text-center">
-            <div class="position-relative d-inline-block">
-              <img src="marius.jpg" 
-                   alt="Marius - Home Chef" 
-                   class="img-fluid rounded-circle shadow-lg"
-                   style="max-width: 350px; width: 100%; border: 5px solid white;">
-              <span class="position-absolute bottom-0 end-0 badge bg-success fs-6 px-3 py-2 shadow"
-                    style="transform: translate(-20%, -20%);">
-                <i class="bi bi-award"></i> YES CHEF!
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
+    <!-- Main Content -->
+    <main class="flex-grow-1">
 
-    <!-- Stats Bar -->
-    <section class="stats-section bg-primary text-white py-4">
-      <div class="container">
-        <div class="row text-center">
-          <div class="col-md-4 mb-3 mb-md-0">
-            <div class="d-flex align-items-center justify-content-center">
-              <i class="bi bi-journal-text display-5 me-3"></i>
-              <div class="text-start">
-                <h3 class="mb-0 fw-bold"><%= totalRecipes %>+</h3>
-                <small class="opacity-75">Recipes Available</small>
+      <!-- Hero Section -->
+      <section class="hero-section bg-light py-5">
+        <div class="container">
+          <div class="row align-items-center">
+            <!-- Left: Text Content -->
+            <div class="col-lg-7 mb-4 mb-lg-0">
+              <h1 class="display-3 fw-bold text-dark mb-3">
+                Delicious Home-Cooked Recipes
+              </h1>
+              <p class="lead text-muted mb-4">
+                Welcome to my collection of tried and tested recipes.
+                From quick weeknight dinners to special occasion treats,
+                find your next favorite dish here.
+              </p>
+              <div class="d-flex gap-3 flex-wrap">
+                <a href="/recipes" class="btn btn-primary btn-lg px-4">
+                  <i class="bi bi-book"></i> Browse All Recipes
+                </a>
+                <a href="#featured" class="btn btn-outline-secondary btn-lg px-4">
+                  <i class="bi bi-star"></i> Featured
+                </a>
               </div>
             </div>
-          </div>
-          <div class="col-md-4 mb-3 mb-md-0">
-            <div class="d-flex align-items-center justify-content-center">
-              <i class="bi bi-clock-history display-5 me-3"></i>
-              <div class="text-start">
-                <h3 class="mb-0 fw-bold"><%= avgCookTime %> min</h3>
-                <small class="opacity-75">Average Cook Time</small>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-4">
-            <div class="d-flex align-items-center justify-content-center">
-              <i class="bi bi-people display-5 me-3"></i>
-              <div class="text-start">
-                <h3 class="mb-0 fw-bold">100%</h3>
-                <small class="opacity-75">Family Tested</small>
+
+            <!-- Right: Profile Image -->
+            <div class="col-lg-5 text-center">
+              <div class="position-relative d-inline-block">
+                <img src="/images/marius.jpg" alt="Marius - Home Chef" class="img-fluid rounded-circle shadow-lg"
+                  style="max-width: 350px; width: 100%; border: 5px solid white;">
+                <span class="position-absolute bottom-0 end-0 badge bg-success fs-6 px-3 py-2 shadow"
+                  style="transform: translate(-20%, -20%);">
+                  <i class="bi bi-award"></i> YES CHEF!
+                </span>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <!-- Featured Recipes Section -->
-    <section id="featured" class="featured-recipes py-5">
-      <div class="container">
-        <div class="text-center mb-5">
-          <h2 class="display-5 fw-bold">Featured Recipes</h2>
-          <p class="lead text-muted">Start with these popular favorites</p>
-        </div>
-
-        <% if (featuredRecipes && featuredRecipes.length > 0) { %>
-          <div class="row g-4">
-            <% featuredRecipes.forEach(recipe => { %>
-              <div class="col-md-6 col-lg-4">
-                <div class="card h-100 border-0 shadow-sm recipe-card">
-                  <!-- Recipe Image -->
-                  <% if (recipe.link) { %>
-                    <img src="<%= recipe.link %>" 
-                         class="card-img-top" 
-                         alt="<%= recipe.description || recipe.name %>"
-                         style="height: 250px; object-fit: cover;">
-                  <% } else { %>
-                    <div class="card-img-top bg-secondary d-flex align-items-center justify-content-center" 
-                         style="height: 250px;">
-                      <i class="bi bi-image text-white display-1"></i>
-                    </div>
-                  <% } %>
-                  
-                  <!-- Recipe Content -->
-                  <div class="card-body">
-                    <h5 class="card-title fw-bold"><%= recipe.name %></h5>
-                    <p class="card-text text-muted"><%= recipe.description %></p>
-                    
-                    <!-- Recipe Metadata -->
-                    <div class="d-flex justify-content-between align-items-center mt-3">
-                      <div class="d-flex gap-2">
-                        <span class="badge bg-success-subtle text-success border border-success">
-                          <i class="bi bi-mortarboard"></i> <%= recipe.difficulty %>
-                        </span>
-                        <span class="badge bg-info-subtle text-info border border-info">
-                          <i class="bi bi-clock"></i> <%= recipe.cook_time %> min
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <!-- Card Footer with CTA -->
-                  <div class="card-footer bg-transparent border-top-0">
-                    <a href="/recipes/<%= recipe.name %>" 
-                       class="btn btn-outline-primary w-100">
-                      View Recipe <i class="bi bi-arrow-right"></i>
-                    </a>
-                  </div>
+      <!-- Stats Bar -->
+      <section class="stats-section bg-primary text-white py-4">
+        <div class="container">
+          <div class="row text-center">
+            <div class="col-md-4 mb-3 mb-md-0">
+              <div class="d-flex align-items-center justify-content-center">
+                <i class="bi bi-journal-text display-5 me-3"></i>
+                <div class="text-start">
+                  <h3 class="mb-0 fw-bold">
+                    <%= totalRecipes %>+
+                  </h3>
+                  <small class="opacity-75">Recipes Available</small>
                 </div>
               </div>
-            <% }) %>
-          </div>
-        <% } else { %>
-          <div class="text-center text-muted py-5">
-            <i class="bi bi-exclamation-circle display-1"></i>
-            <p class="mt-3">No recipes available yet. Check back soon!</p>
-          </div>
-        <% } %>
-
-        <!-- View All CTA -->
-        <% if (featuredRecipes && featuredRecipes.length > 0) { %>
-          <div class="text-center mt-5">
-            <a href="/recipes" class="btn btn-lg btn-primary px-5">
-              View All <%= totalRecipes %> Recipes <i class="bi bi-arrow-right"></i>
-            </a>
-          </div>
-        <% } %>
-      </div>
-    </section>
-
-    <!-- About Section -->
-    <section class="about-section bg-light py-5">
-      <div class="container">
-        <div class="row justify-content-center">
-          <div class="col-lg-8 text-center">
-            <h2 class="display-6 fw-bold mb-4">About Marius Foods</h2>
-            <p class="lead text-muted mb-4">
-              I'm Marius, a passionate home cook sharing my favorite recipes. 
-              Each recipe here has been tested, perfected, and enjoyed by my family. 
-              Whether you're a beginner or an experienced cook, you'll find 
-              easy-to-follow instructions and delicious results.
-            </p>
-            <div class="d-flex gap-3 justify-content-center">
-              <div class="text-center">
-                <i class="bi bi-patch-check-fill text-success display-5"></i>
-                <p class="small mt-2 mb-0">Tested Recipes</p>
+            </div>
+            <div class="col-md-4 mb-3 mb-md-0">
+              <div class="d-flex align-items-center justify-content-center">
+                <i class="bi bi-clock-history display-5 me-3"></i>
+                <div class="text-start">
+                  <h3 class="mb-0 fw-bold">
+                    <%= avgCookTime %> min
+                  </h3>
+                  <small class="opacity-75">Average Cook Time</small>
+                </div>
               </div>
-              <div class="text-center">
-                <i class="bi bi-heart-fill text-danger display-5"></i>
-                <p class="small mt-2 mb-0">Made with Love</p>
-              </div>
-              <div class="text-center">
-                <i class="bi bi-star-fill text-warning display-5"></i>
-                <p class="small mt-2 mb-0">Easy to Follow</p>
+            </div>
+            <div class="col-md-4">
+              <div class="d-flex align-items-center justify-content-center">
+                <i class="bi bi-people display-5 me-3"></i>
+                <div class="text-start">
+                  <h3 class="mb-0 fw-bold">100%</h3>
+                  <small class="opacity-75">Family Tested</small>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
 
-  </main>
+      <!-- Featured Recipes Section -->
+      <section id="featured" class="featured-recipes py-5">
+        <div class="container">
+          <div class="text-center mb-5">
+            <h2 class="display-5 fw-bold">Featured Recipes</h2>
+            <p class="lead text-muted">Start with these popular favorites</p>
+          </div>
 
-  <!-- Footer -->
-  <%- include('partials/footer.ejs') %>
+          <% if (featuredRecipes && featuredRecipes.length> 0) { %>
+            <div class="row g-4">
+              <% featuredRecipes.forEach(recipe=> { %>
+                <div class="col-md-6 col-lg-4">
+                  <div class="card h-100 border-0 shadow-sm recipe-card">
+                    <!-- Recipe Image -->
+                    <% if (recipe.link) { %>
+                      <img src="<%= recipe.link %>" class="card-img-top" alt="<%= recipe.description || recipe.name %>"
+                        style="height: 250px; object-fit: cover;">
+                      <% } else { %>
+                        <div class="card-img-top bg-secondary d-flex align-items-center justify-content-center"
+                          style="height: 250px;">
+                          <i class="bi bi-image text-white display-1"></i>
+                        </div>
+                        <% } %>
 
-  <!-- Bootstrap JS Bundle (includes Popper) -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" 
-          integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" 
-          crossorigin="anonymous"></script>
+                          <!-- Recipe Content -->
+                          <div class="card-body">
+                            <h5 class="card-title fw-bold">
+                              <%= recipe.name %>
+                            </h5>
+                            <p class="card-text text-muted">
+                              <%= recipe.description %>
+                            </p>
+
+                            <!-- Recipe Metadata -->
+                            <div class="d-flex justify-content-between align-items-center mt-3">
+                              <div class="d-flex gap-2">
+                                <span class="badge bg-success-subtle text-success border border-success">
+                                  <i class="bi bi-mortarboard"></i>
+                                  <%= recipe.difficulty %>
+                                </span>
+                                <span class="badge bg-info-subtle text-info border border-info">
+                                  <i class="bi bi-clock"></i>
+                                  <%= recipe.cook_time %> min
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+
+                          <!-- Card Footer with CTA -->
+                          <div class="card-footer bg-transparent border-top-0">
+                            <a href="/recipes/<%= recipe.name %>" class="btn btn-outline-primary w-100">
+                              View Recipe <i class="bi bi-arrow-right"></i>
+                            </a>
+                          </div>
+                  </div>
+                </div>
+                <% }) %>
+            </div>
+            <% } else { %>
+              <div class="text-center text-muted py-5">
+                <i class="bi bi-exclamation-circle display-1"></i>
+                <p class="mt-3">No recipes available yet. Check back soon!</p>
+              </div>
+              <% } %>
+
+                <!-- View All CTA -->
+                <% if (featuredRecipes && featuredRecipes.length> 0) { %>
+                  <div class="text-center mt-5">
+                    <a href="/recipes" class="btn btn-lg btn-primary px-5">
+                      View All <%= totalRecipes %> Recipes <i class="bi bi-arrow-right"></i>
+                    </a>
+                  </div>
+                  <% } %>
+        </div>
+      </section>
+
+      <!-- About Section -->
+      <section class="about-section bg-light py-5">
+        <div class="container">
+          <div class="row justify-content-center">
+            <div class="col-lg-8 text-center">
+              <h2 class="display-6 fw-bold mb-4">About Marius Foods</h2>
+              <p class="lead text-muted mb-4">
+                I'm Marius, a passionate home cook sharing my favorite recipes.
+                Each recipe here has been tested, perfected, and enjoyed by my family.
+                Whether you're a beginner or an experienced cook, you'll find
+                easy-to-follow instructions and delicious results.
+              </p>
+              <div class="d-flex gap-3 justify-content-center">
+                <div class="text-center">
+                  <i class="bi bi-patch-check-fill text-success display-5"></i>
+                  <p class="small mt-2 mb-0">Tested Recipes</p>
+                </div>
+                <div class="text-center">
+                  <i class="bi bi-heart-fill text-danger display-5"></i>
+                  <p class="small mt-2 mb-0">Made with Love</p>
+                </div>
+                <div class="text-center">
+                  <i class="bi bi-star-fill text-warning display-5"></i>
+                  <p class="small mt-2 mb-0">Easy to Follow</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Footer -->
+    <%- include('partials/footer.ejs') %>
+
+      <!-- Bootstrap JS Bundle (includes Popper) -->
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
 </body>
 
 </html>

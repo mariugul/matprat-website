@@ -82,9 +82,9 @@ VALUES
 -- Insert images
 INSERT INTO images (recipe_name, image_nr, link, description)
 VALUES
-('Waffles', 1, '/waffles.jpg', 'Waffles cover'),
-('Pancakes', 1, '/pancake.jpg', 'Pancakes cover'),
-('Creamy Scrambled Eggs', 1, '/creamy-scrambled-eggs.jpg', 'Creamy Eggs cover');
+('Waffles', 1, '/content/recipes/waffles.jpg', 'Waffles cover'),
+('Pancakes', 1, '/content/recipes/pancake.jpg', 'Pancakes cover'),
+('Creamy Scrambled Eggs', 1, '/content/recipes/creamy-scrambled-eggs.jpg', 'Creamy Eggs cover');
 
 -- Insert categories
 INSERT INTO categories (recipe_name, category)
