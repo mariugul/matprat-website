@@ -8,6 +8,7 @@
     "lint": "npm run lint:js && npm run lint:ejs",
     "lint:js": "npx eslint .",
     "lint:ejs": "npx ejslint $(find ./ -type f -iname '*.ejs')",
+    "format:js": "npx eslint . --fix",
     "test": "NODE_ENV=test mocha 'test/**/*.test.js' --timeout 5000 --exit",
     "test:integration": "NODE_ENV=test mocha 'test/integration/**/*.test.js' --timeout 5000 --exit",
     "test:e2e": "playwright test",
@@ -25,6 +26,7 @@
     "express": "^4.17.1",
     "express-session": "^1.17.3",
     "joi": "^17.7.1",
+    "multer": "^2.0.2",
     "nodemon": "^3.1.9",
     "pg": "^8.7.1",
     "winston": "^3.11.0"
