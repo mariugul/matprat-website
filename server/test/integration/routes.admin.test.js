@@ -21,9 +21,9 @@ describe('Admin Routes', () => {
       .post('/login')
       .send({
         username: 'admin',
-        password: 'admin'
+        password: 'admin',
       });
-    
+
     expect(loginRes.status).to.be.oneOf([200, 302]); // Success or redirect
     return loginRes;
   }
@@ -80,7 +80,7 @@ describe('Admin Routes', () => {
         ingredient_1: 'Test ingredient 1',
         ingredient_2: 'Test ingredient 2',
         step_1: 'Test step 1',
-        step_2: 'Test step 2'
+        step_2: 'Test step 2',
       };
 
       const res = await agent
@@ -93,7 +93,7 @@ describe('Admin Routes', () => {
 
       // Should redirect to the recipe page on success
       expect(res.status).to.be.oneOf([200, 302]);
-      
+
       if (res.status === 302) {
         expect(res.headers.location).to.include('/recipes/');
         expect(res.headers.location).to.include(encodeURIComponent('Test Recipe Minimal'));
@@ -109,7 +109,7 @@ describe('Admin Routes', () => {
         difficulty: 'medium',
         ingredient_1: 'Ingredient with note',
         step_1: 'Step with note',
-        step_note_1: 'This is a special note for step 1'
+        step_note_1: 'This is a special note for step 1',
       };
 
       const res = await agent
@@ -132,7 +132,7 @@ describe('Admin Routes', () => {
         ingredient_1: 'Image test ingredient',
         step_1: 'Image test step',
         image_url_1: '/test-image.jpg',
-        image_desc_1: 'Test image description'
+        image_desc_1: 'Test image description',
       };
 
       const res = await agent
@@ -148,7 +148,7 @@ describe('Admin Routes', () => {
     it('should handle validation errors for missing required fields', async () => {
       const incompleteData = {
         name: 'Incomplete Recipe',
-        description: 'Missing ingredients and steps'
+        description: 'Missing ingredients and steps',
         // No ingredients or steps
       };
 
@@ -177,7 +177,7 @@ describe('Admin Routes', () => {
         ingredient_3: 'Another valid ingredient',
         step_1: 'Valid step',
         step_2: '', // Empty
-        step_3: 'Another valid step'
+        step_3: 'Another valid step',
       };
 
       const res = await agent
@@ -204,7 +204,7 @@ describe('Admin Routes', () => {
         servings: 'also-not-a-number',
         difficulty: 'easy',
         ingredient_1: 'Test ingredient',
-        step_1: 'Test step'
+        step_1: 'Test step',
       };
 
       const res = await agent
@@ -212,7 +212,7 @@ describe('Admin Routes', () => {
         .send(invalidData);
 
       console.log('Invalid numbers test - Status:', res.status);
-      
+
       // Should still process (with defaults) or show validation error
       expect(res.status).to.be.oneOf([200, 302]);
     });
@@ -225,7 +225,7 @@ describe('Admin Routes', () => {
         servings: '4',
         difficulty: 'easy',
         ingredient_1: 'Test ingredient',
-        step_1: 'Test step'
+        step_1: 'Test step',
       };
 
       const res = await agent
@@ -233,7 +233,7 @@ describe('Admin Routes', () => {
         .send(longNameData);
 
       console.log('Long name test - Status:', res.status);
-      
+
       expect(res.status).to.be.oneOf([200, 302, 400, 500]);
     });
   });
@@ -251,7 +251,7 @@ describe('Admin Routes', () => {
         servings: '2',
         difficulty: 'medium',
         ingredient_1: 'Preview ingredient',
-        step_1: 'Preview step'
+        step_1: 'Preview step',
       };
 
       const res = await agent
