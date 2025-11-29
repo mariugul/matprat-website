@@ -4,169 +4,169 @@
 <head>
   <!-- Partial Head Data -->
   <%- include('partials/head.ejs') %>
-  <link rel="stylesheet" href="/footer.css">
-  <script src="/recipes.js" defer></script>
+    <link rel="stylesheet" href="/footer.css">
+    <script src="/js/recipes.js" defer></script>
 </head>
 
 <body class="d-flex flex-column min-vh-100">
   <!-- Header Navigation Menu -->
   <%- include('partials/nav.ejs') %>
 
-  <!-- Main Content -->
-  <main class="flex-grow-1">
-    
-    <!-- Page Header -->
-    <section class="page-header bg-light py-5">
-      <div class="container">
-        <div class="row align-items-center">
-          <div class="col-lg-8 mx-auto text-center">
-            <h1 class="display-4 fw-bold mb-3">
-              <i class="bi bi-book text-primary"></i> All Recipes
-            </h1>
-            <p class="lead text-muted mb-4">
-              Browse through <%= recipesInfo.length %> delicious recipes
-            </p>
-            
-            <!-- Search Bar -->
-            <div class="input-group input-group-lg shadow-sm">
-              <span class="input-group-text bg-white border-end-0">
-                <i class="bi bi-search text-muted"></i>
-              </span>
-              <input type="text" 
-                     class="form-control border-start-0 ps-0" 
-                     id="searchInput"
-                     placeholder="Search recipes by name..."
-                     onkeyup="filterRecipes()">
+    <!-- Main Content -->
+    <main class="flex-grow-1">
+
+      <!-- Page Header -->
+      <section class="page-header bg-light py-5">
+        <div class="container">
+          <div class="row align-items-center">
+            <div class="col-lg-8 mx-auto text-center">
+              <h1 class="display-4 fw-bold mb-3">
+                <i class="bi bi-book text-primary"></i> All Recipes
+              </h1>
+              <p class="lead text-muted mb-4">
+                Browse through <%= recipesInfo.length %> delicious recipes
+              </p>
+
+              <!-- Search Bar -->
+              <div class="input-group input-group-lg shadow-sm">
+                <span class="input-group-text bg-white border-end-0">
+                  <i class="bi bi-search text-muted"></i>
+                </span>
+                <input type="text" class="form-control border-start-0 ps-0" id="searchInput"
+                  placeholder="Search recipes by name..." onkeyup="filterRecipes()">
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <!-- Filters Section -->
-    <section class="filters-section py-4 bg-white border-bottom">
-      <div class="container">
-        <div class="row align-items-center">
-          <!-- Category Filters -->
-          <div class="col-lg-8 mb-3 mb-lg-0">
-            <div class="d-flex flex-wrap gap-2" id="categoryFilters">
-              <button class="btn btn-sm btn-primary active" onclick="filterByCategory('all', event)">
-                <i class="bi bi-grid-3x3"></i> All Recipes
-              </button>
-              <button class="btn btn-sm btn-outline-primary" onclick="filterByCategory('breakfast', event)">
-                <i class="bi bi-sunrise"></i> Breakfast
-              </button>
-              <button class="btn btn-sm btn-outline-primary" onclick="filterByCategory('lunch', event)">
-                <i class="bi bi-sun"></i> Lunch
-              </button>
-              <button class="btn btn-sm btn-outline-primary" onclick="filterByCategory('dinner', event)">
-                <i class="bi bi-moon-stars"></i> Dinner
-              </button>
-              <button class="btn btn-sm btn-outline-primary" onclick="filterByCategory('tradition', event)">
-                <i class="bi bi-award"></i> Tradition
-              </button>
+      <!-- Filters Section -->
+      <section class="filters-section py-4 bg-white border-bottom">
+        <div class="container">
+          <div class="row align-items-center">
+            <!-- Category Filters -->
+            <div class="col-lg-8 mb-3 mb-lg-0">
+              <div class="d-flex flex-wrap gap-2" id="categoryFilters">
+                <button class="btn btn-sm btn-primary active" onclick="filterByCategory('all', event)">
+                  <i class="bi bi-grid-3x3"></i> All Recipes
+                </button>
+                <button class="btn btn-sm btn-outline-primary" onclick="filterByCategory('breakfast', event)">
+                  <i class="bi bi-sunrise"></i> Breakfast
+                </button>
+                <button class="btn btn-sm btn-outline-primary" onclick="filterByCategory('lunch', event)">
+                  <i class="bi bi-sun"></i> Lunch
+                </button>
+                <button class="btn btn-sm btn-outline-primary" onclick="filterByCategory('dinner', event)">
+                  <i class="bi bi-moon-stars"></i> Dinner
+                </button>
+                <button class="btn btn-sm btn-outline-primary" onclick="filterByCategory('tradition', event)">
+                  <i class="bi bi-award"></i> Tradition
+                </button>
+              </div>
             </div>
-          </div>
-          
-          <!-- Sort Options -->
-          <div class="col-lg-4 text-lg-end">
-            <div class="btn-group" role="group">
-              <button type="button" class="btn btn-sm btn-outline-secondary active" onclick="sortRecipes('default', event)">
-                <i class="bi bi-grid"></i> Default
-              </button>
-              <button type="button" class="btn btn-sm btn-outline-secondary" onclick="sortRecipes('name', event)">
-                <i class="bi bi-sort-alpha-down"></i> A-Z
-              </button>
-              <button type="button" class="btn btn-sm btn-outline-secondary" onclick="sortRecipes('time', event)">
-                <i class="bi bi-clock"></i> Time
-              </button>
+
+            <!-- Sort Options -->
+            <div class="col-lg-4 text-lg-end">
+              <div class="btn-group" role="group">
+                <button type="button" class="btn btn-sm btn-outline-secondary active"
+                  onclick="sortRecipes('default', event)">
+                  <i class="bi bi-grid"></i> Default
+                </button>
+                <button type="button" class="btn btn-sm btn-outline-secondary" onclick="sortRecipes('name', event)">
+                  <i class="bi bi-sort-alpha-down"></i> A-Z
+                </button>
+                <button type="button" class="btn btn-sm btn-outline-secondary" onclick="sortRecipes('time', event)">
+                  <i class="bi bi-clock"></i> Time
+                </button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <!-- Recipes Grid -->
-    <section class="recipes-grid py-5">
-      <div class="container">
-        <% if (recipesInfo && recipesInfo.length > 0) { %>
-          <div class="row g-4" id="recipesContainer">
-            <% recipesInfo.forEach(recipe => { %>
-              <div class="col-sm-6 col-md-4 col-lg-3 recipe-item" 
-                   data-category="<%= recipe.categories && recipe.categories.length > 0 ? recipe.categories[0] : 'all' %>"
-                   data-name="<%= recipe.name.toLowerCase() %>"
-                   data-time="<%= recipe.cook_time %>">
-                <div class="card h-100 border-0 shadow-sm recipe-card" 
-                     onclick="openRecipe('<%= recipe.name %>')"
-                     style="cursor: pointer;">
-                  <!-- Recipe Image -->
-                  <% if (recipe.link) { %>
-                    <div class="position-relative overflow-hidden">
-                      <img src="/images<%= recipe.link %>" 
-                           class="card-img-top" 
-                           alt="<%= recipe.name %>"
-                           style="height: 200px; object-fit: cover;">
-                      <!-- Difficulty Badge Overlay -->
-                      <span class="position-absolute top-0 end-0 m-2 badge bg-<%= recipe.difficulty === 'easy' ? 'success' : recipe.difficulty === 'intermediate' ? 'warning' : 'danger' %> shadow">
-                        <i class="bi bi-mortarboard"></i> <%= recipe.difficulty.charAt(0).toUpperCase() + recipe.difficulty.slice(1) %>
-                      </span>
-                    </div>
-                  <% } else { %>
-                    <div class="card-img-top bg-secondary d-flex align-items-center justify-content-center" 
-                         style="height: 200px;">
-                      <i class="bi bi-image text-white display-4"></i>
-                    </div>
-                  <% } %>
-                  
-                  <!-- Recipe Content -->
-                  <div class="card-body">
-                    <h5 class="card-title fw-bold mb-2"><%= recipe.name %></h5>
-                    <p class="card-text text-muted small mb-3">
-                      <%= recipe.description ? (recipe.description.length > 60 ? recipe.description.substring(0, 60) + '...' : recipe.description) : 'Delicious recipe' %>
-                    </p>
-                    
-                    <!-- Recipe Meta -->
-                    <div class="d-flex justify-content-between align-items-center">
-                      <span class="badge bg-info-subtle text-info border border-info">
-                        <i class="bi bi-clock"></i> <%= recipe.cook_time %> min
-                      </span>
-                      <span class="text-primary small">
-                        View Recipe <i class="bi bi-arrow-right"></i>
-                      </span>
-                    </div>
+      <!-- Recipes Grid -->
+      <section class="recipes-grid py-5">
+        <div class="container">
+          <% if (recipesInfo && recipesInfo.length> 0) { %>
+            <div class="row g-4" id="recipesContainer">
+              <% recipesInfo.forEach(recipe=> { %>
+                <div class="col-sm-6 col-md-4 col-lg-3 recipe-item"
+                  data-category="<%= recipe.categories && recipe.categories.length > 0 ? recipe.categories[0] : 'all' %>"
+                  data-name="<%= recipe.name.toLowerCase() %>" data-time="<%= recipe.cook_time %>">
+                  <div class="card h-100 border-0 shadow-sm recipe-card" onclick="openRecipe('<%= recipe.name %>')"
+                    style="cursor: pointer;">
+                    <!-- Recipe Image -->
+                    <% if (recipe.link) { %>
+                      <div class="position-relative overflow-hidden">
+                        <img src="<%= recipe.link %>" class="card-img-top" alt="<%= recipe.name %>"
+                          style="height: 200px; object-fit: cover;">
+                        <!-- Difficulty Badge Overlay -->
+                        <span
+                          class="position-absolute top-0 end-0 m-2 badge bg-<%= recipe.difficulty === 'easy' ? 'success' : recipe.difficulty === 'intermediate' ? 'warning' : 'danger' %> shadow">
+                          <i class="bi bi-mortarboard"></i>
+                          <%= recipe.difficulty.charAt(0).toUpperCase() + recipe.difficulty.slice(1) %>
+                        </span>
+                      </div>
+                      <% } else { %>
+                        <div class="card-img-top bg-secondary d-flex align-items-center justify-content-center"
+                          style="height: 200px;">
+                          <i class="bi bi-image text-white display-4"></i>
+                        </div>
+                        <% } %>
+
+                          <!-- Recipe Content -->
+                          <div class="card-body">
+                            <h5 class="card-title fw-bold mb-2">
+                              <%= recipe.name %>
+                            </h5>
+                            <p class="card-text text-muted small mb-3">
+                              <%= recipe.description ? (recipe.description.length> 60 ? recipe.description.substring(0,
+                                60) + '...' : recipe.description) : 'Delicious recipe' %>
+                            </p>
+
+                            <!-- Recipe Meta -->
+                            <div class="d-flex justify-content-between align-items-center">
+                              <span class="badge bg-info-subtle text-info border border-info">
+                                <i class="bi bi-clock"></i>
+                                <%= recipe.cook_time %> min
+                              </span>
+                              <span class="text-primary small">
+                                View Recipe <i class="bi bi-arrow-right"></i>
+                              </span>
+                            </div>
+                          </div>
                   </div>
                 </div>
+                <% }) %>
+            </div>
+
+            <!-- No Results Message (hidden by default) -->
+            <div id="noResults" class="text-center py-5" style="display: none;">
+              <i class="bi bi-search display-1 text-muted"></i>
+              <h3 class="mt-3">No recipes found</h3>
+              <p class="text-muted">Try adjusting your search or filters</p>
+            </div>
+
+            <% } else { %>
+              <!-- Empty State -->
+              <div class="text-center py-5">
+                <i class="bi bi-inbox display-1 text-muted"></i>
+                <h3 class="mt-3">No recipes yet</h3>
+                <p class="text-muted">Check back soon for delicious recipes!</p>
               </div>
-            <% }) %>
-          </div>
+              <% } %>
+        </div>
+      </section>
 
-          <!-- No Results Message (hidden by default) -->
-          <div id="noResults" class="text-center py-5" style="display: none;">
-            <i class="bi bi-search display-1 text-muted"></i>
-            <h3 class="mt-3">No recipes found</h3>
-            <p class="text-muted">Try adjusting your search or filters</p>
-          </div>
+    </main>
 
-        <% } else { %>
-          <!-- Empty State -->
-          <div class="text-center py-5">
-            <i class="bi bi-inbox display-1 text-muted"></i>
-            <h3 class="mt-3">No recipes yet</h3>
-            <p class="text-muted">Check back soon for delicious recipes!</p>
-          </div>
-        <% } %>
-      </div>
-    </section>
+    <!-- Footer -->
+    <%- include('partials/footer.ejs') %>
 
-  </main>
-
-  <!-- Footer -->
-  <%- include('partials/footer.ejs') %>
-
-  <!-- Bootstrap JS Bundle (includes Popper) -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" 
-          integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" 
-          crossorigin="anonymous"></script>
+      <!-- Bootstrap JS Bundle (includes Popper) -->
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
 </body>
 
 </html>
