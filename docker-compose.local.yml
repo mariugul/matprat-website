@@ -18,8 +18,6 @@ services:
     volumes:
       # Mount source code for live development
       - ./server:/usr/src/app
-      # Preserve node_modules in container
-      - /usr/src/app/node_modules
     depends_on:
       - db
 
