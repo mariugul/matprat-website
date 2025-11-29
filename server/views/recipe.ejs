@@ -4,237 +4,245 @@
 <head>
   <!-- Partial Head Data -->
   <%- include('partials/head.ejs') %>
-  <link rel="stylesheet" href="/recipe.css">
-  <link rel="stylesheet" href="/footer.css">
-  <script src="/recipe.js" defer></script>
+    <link rel="stylesheet" href="/recipe.css">
+    <link rel="stylesheet" href="/footer.css">
+    <script src="/js/recipe.js" defer></script>
 </head>
 
 <body class="d-flex flex-column min-vh-100">
   <!-- Navigation Menu -->
   <%- include('partials/nav.ejs') %>
 
-  <!-- Main Content -->
-  <main class="flex-grow-1">
-    
-    <!-- Hero Image Section -->
-    <% if (images && images.length > 0 && images[0].link) { %>
-      <div class="recipe-hero position-relative">
-        <img src="<%= images[0].link %>" 
-             alt="<%= images[0].description %>" 
-             class="w-100"
-             style="height: 400px; object-fit: cover;">
-        <div class="position-absolute bottom-0 start-0 w-100 bg-dark bg-opacity-50 text-white p-4">
-          <div class="container">
-            <div class="d-flex justify-content-between align-items-end">
-              <h1 class="display-4 fw-bold mb-0"><%= recipeInfo[0].name %></h1>
-              <% if (session && session.userId) { %>
-                <a href="/admin/recipes/edit/<%= encodeURIComponent(recipeInfo[0].name) %>" 
-                   class="btn btn-outline-light btn-sm">
-                  ✏️ Edit Recipe
-                </a>
-              <% } %>
-            </div>
-          </div>
-        </div>
-      </div>
-    <% } else { %>
-      <!-- Fallback header without image -->
-      <div class="bg-light py-5">
-        <div class="container">
-          <div class="d-flex justify-content-between align-items-center">
-            <div class="flex-grow-1 text-center">
-              <h1 class="display-3 fw-bold"><%= recipeInfo[0].name %></h1>
-            </div>
-            <% if (session && session.userId) { %>
-              <a href="/admin/recipes/edit/<%= encodeURIComponent(recipeInfo[0].name) %>" 
-                 class="btn btn-primary btn-sm">
-                ✏️ Edit Recipe
-              </a>
-            <% } %>
-          </div>
-        </div>
-      </div>
-    <% } %>
+    <!-- Main Content -->
+    <main class="flex-grow-1">
 
-    <!-- Recipe Meta Information -->
-    <section class="recipe-meta bg-white border-bottom py-3">
-      <div class="container">
-        <div class="row align-items-center">
-          <div class="col-md-8">
-            <p class="lead mb-md-0"><%= recipeInfo[0].description %></p>
-          </div>
-          <div class="col-md-4 text-md-end">
-            <div class="d-flex gap-2 justify-content-md-end justify-content-start flex-wrap">
-              <span class="badge bg-<%= recipeInfo[0].difficulty === 'easy' ? 'success' : recipeInfo[0].difficulty === 'intermediate' ? 'warning' : 'danger' %> fs-6 px-3 py-2">
-                <i class="bi bi-mortarboard"></i> <%= recipeInfo[0].difficulty.charAt(0).toUpperCase() + recipeInfo[0].difficulty.slice(1) %>
-              </span>
-              <span class="badge bg-info fs-6 px-3 py-2">
-                <i class="bi bi-clock"></i> <%= recipeInfo[0].cook_time %> min
-              </span>
-              <span class="badge bg-primary fs-6 px-3 py-2">
-                <i class="bi bi-people"></i> <%= recipeInfo[0].default_portions %> portions
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Recipe Content (2-column layout) -->
-    <section class="recipe-content py-5">
-      <div class="container">
-        <div class="row">
-          
-          <!-- Left Column: Ingredients (Sticky) -->
-          <div class="col-lg-4 mb-4 mb-lg-0">
-            <div class="card shadow-sm sticky-top" style="top: 80px;">
-              <!-- Card Header -->
-              <div class="card-header bg-primary text-white">
-                <h3 class="mb-0">
-                  <i class="bi bi-basket"></i> Ingredients
-                </h3>
-              </div>
-              
-              <!-- Ingredients List -->
-              <ul class="list-group list-group-flush">
-                <% ingredients.forEach((ingredient, index) => { %>
-                  <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <div class="flex-grow-1">
-                      <span class="amounts fw-bold text-primary"><%= ingredient.amount %></span>
-                      <span class="text-muted"><%= ingredient.unit %></span>
-                      <span class="ms-2"><%= ingredient.ingredient %></span>
-                      <% if (ingredient.note) { %>
-                        <button class="btn btn-sm btn-link p-0 ms-1" 
-                                data-bs-toggle="tooltip" 
-                                title="<%= ingredient.note %>">
-                          <i class="bi bi-info-circle text-info"></i>
-                        </button>
-                      <% } %>
-                    </div>
-                  </li>
-                <% }) %>
-              </ul>
-              
-              <!-- Portion Adjuster -->
-              <div class="card-footer bg-light border-top">
-                <label class="form-label text-center w-100 mb-2">
-                  <i class="bi bi-people"></i> <strong>Adjust Portions</strong>
-                </label>
-                <div class="input-group mb-3">
-                  <button class="btn btn-outline-primary" 
-                          id="minus-button"
-                          type="button" 
-                          onclick="stepDownPortions()">
-                    <i class="bi bi-dash-lg"></i>
-                  </button>
-                  <input type="text" 
-                         class="form-control text-center fw-bold" 
-                         id="nr-of-portions" 
-                         inputmode="numeric"
-                         pattern="[0-9]*"
-                         value="<%= parseInt(recipeInfo[0].default_portions) %>"
-                         onchange="updateIngredientValues(value)">
-                  <button class="btn btn-outline-primary" 
-                          id="plus-button"
-                          type="button" 
-                          onclick="stepUpPortions()">
-                    <i class="bi bi-plus-lg"></i>
-                  </button>
-                </div>
-                <small class="text-muted d-block text-center mb-3">
-                  Ingredients will adjust automatically
-                </small>
-                
-                <!-- Back to Recipes Button (inside card) -->
-                <div class="d-grid">
-                  <a href="/recipes" class="btn btn-outline-secondary">
-                    <i class="bi bi-arrow-left"></i> Back to Recipes
+      <!-- Hero Image Section -->
+      <% if (images && images.length> 0 && images[0].link) { %>
+        <div class="recipe-hero position-relative">
+          <img src="<%= images[0].link %>" alt="<%= images[0].description %>" class="w-100"
+            style="height: 400px; object-fit: cover;">
+          <div class="position-absolute bottom-0 start-0 w-100 bg-dark bg-opacity-50 text-white p-4">
+            <div class="container">
+              <div class="d-flex justify-content-between align-items-end">
+                <h1 class="display-4 fw-bold mb-0">
+                  <%= recipeInfo[0].name %>
+                </h1>
+                <% if (session && session.userId) { %>
+                  <a href="/admin/recipes/edit/<%= encodeURIComponent(recipeInfo[0].name) %>"
+                    class="btn btn-outline-light btn-sm">
+                    ✏️ Edit Recipe
                   </a>
-                </div>
+                  <% } %>
               </div>
             </div>
           </div>
+        </div>
+        <% } else { %>
+          <!-- Fallback header without image -->
+          <div class="bg-light py-5">
+            <div class="container">
+              <div class="d-flex justify-content-between align-items-center">
+                <div class="flex-grow-1 text-center">
+                  <h1 class="display-3 fw-bold">
+                    <%= recipeInfo[0].name %>
+                  </h1>
+                </div>
+                <% if (session && session.userId) { %>
+                  <a href="/admin/recipes/edit/<%= encodeURIComponent(recipeInfo[0].name) %>"
+                    class="btn btn-primary btn-sm">
+                    ✏️ Edit Recipe
+                  </a>
+                  <% } %>
+              </div>
+            </div>
+          </div>
+          <% } %>
 
-          <!-- Right Column: Instructions -->
-          <div class="col-lg-8">
-            <div class="instructions">
-              <h2 class="mb-4">
-                <i class="bi bi-list-ol"></i> Instructions
-              </h2>
-
-              <% steps.forEach((step, index) => { %>
-                <div class="card mb-3 border border-2 border-primary-subtle shadow-sm step-card bg-light bg-opacity-25" 
-                     id="step-<%= index + 1 %>"
-                     onclick="toggleStepByCard(this, 'stepText<%= index + 1 %>')"
-                     style="border-radius: 12px; cursor: pointer; transition: all 0.2s ease;">
-                  <div class="card-body">
-                    <div class="row align-items-start">
-                      <!-- Step Number -->
-                      <div class="col-auto">
-                        <div class="step-number bg-primary text-white rounded-circle d-flex align-items-center justify-content-center fw-bold"
-                             style="width: 45px; height: 45px; font-size: 1.2rem;">
-                          <%= index + 1 %>
-                        </div>
-                      </div>
-                      
-                      <!-- Step Content -->
-                      <div class="col">
-                        <div class="d-flex justify-content-between align-items-start mb-2">
-                          <h5 class="mb-0">Step <%= index + 1 %></h5>
-                          <!-- Completion Indicator (hidden by default) -->
-                          <div class="completion-indicator" style="display: none;">
-                            <i class="bi bi-check-circle-fill text-success fs-4"></i>
-                          </div>
-                        </div>
-                        <p class="mb-0" id="stepText<%= index + 1 %>">
-                          <%= typeof step === 'string' ? step : (step.text || step.description) %>
-                        </p>
-                        
-                        <!-- Step Note/Info Box -->
-                        <% if (typeof step === 'object' && step.note) { %>
-                          <div class="alert alert-info border border-info mt-3 mb-0 d-flex align-items-start" role="alert">
-                            <i class="bi bi-info-circle-fill text-info fs-4 me-2 flex-shrink-0"></i>
-                            <div>
-                              <%= step.note %>
-                            </div>
-                          </div>
-                        <% } %>
-                      </div>
+            <!-- Recipe Meta Information -->
+            <section class="recipe-meta bg-white border-bottom py-3">
+              <div class="container">
+                <div class="row align-items-center">
+                  <div class="col-md-8">
+                    <p class="lead mb-md-0">
+                      <%= recipeInfo[0].description %>
+                    </p>
+                  </div>
+                  <div class="col-md-4 text-md-end">
+                    <div class="d-flex gap-2 justify-content-md-end justify-content-start flex-wrap">
+                      <span
+                        class="badge bg-<%= recipeInfo[0].difficulty === 'easy' ? 'success' : recipeInfo[0].difficulty === 'intermediate' ? 'warning' : 'danger' %> fs-6 px-3 py-2">
+                        <i class="bi bi-mortarboard"></i>
+                        <%= recipeInfo[0].difficulty.charAt(0).toUpperCase() + recipeInfo[0].difficulty.slice(1) %>
+                      </span>
+                      <span class="badge bg-info fs-6 px-3 py-2">
+                        <i class="bi bi-clock"></i>
+                        <%= recipeInfo[0].cook_time %> min
+                      </span>
+                      <span class="badge bg-primary fs-6 px-3 py-2">
+                        <i class="bi bi-people"></i>
+                        <%= recipeInfo[0].default_portions %> portions
+                      </span>
                     </div>
                   </div>
                 </div>
-              <% }) %>
+              </div>
+            </section>
 
-              <!-- Completion Message -->
-              <div class="card border-success mt-4" id="completionCard" style="display: none;">
-                <div class="card-body text-center text-success">
-                  <i class="bi bi-check-circle display-4"></i>
-                  <h4 class="mt-2">Recipe Complete!</h4>
-                  <p class="mb-0">Enjoy your delicious <%= recipeInfo[0].name %>!</p>
+            <!-- Recipe Content (2-column layout) -->
+            <section class="recipe-content py-5">
+              <div class="container">
+                <div class="row">
+
+                  <!-- Left Column: Ingredients (Sticky) -->
+                  <div class="col-lg-4 mb-4 mb-lg-0">
+                    <div class="card shadow-sm sticky-top" style="top: 80px;">
+                      <!-- Card Header -->
+                      <div class="card-header bg-primary text-white">
+                        <h3 class="mb-0">
+                          <i class="bi bi-basket"></i> Ingredients
+                        </h3>
+                      </div>
+
+                      <!-- Ingredients List -->
+                      <ul class="list-group list-group-flush">
+                        <% ingredients.forEach((ingredient, index)=> { %>
+                          <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div class="flex-grow-1">
+                              <span class="amounts fw-bold text-primary">
+                                <%= ingredient.amount %>
+                              </span>
+                              <span class="text-muted">
+                                <%= ingredient.unit %>
+                              </span>
+                              <span class="ms-2">
+                                <%= ingredient.ingredient %>
+                              </span>
+                              <% if (ingredient.note) { %>
+                                <button class="btn btn-sm btn-link p-0 ms-1" data-bs-toggle="tooltip"
+                                  title="<%= ingredient.note %>">
+                                  <i class="bi bi-info-circle text-info"></i>
+                                </button>
+                                <% } %>
+                            </div>
+                          </li>
+                          <% }) %>
+                      </ul>
+
+                      <!-- Portion Adjuster -->
+                      <div class="card-footer bg-light border-top">
+                        <label class="form-label text-center w-100 mb-2">
+                          <i class="bi bi-people"></i> <strong>Adjust Portions</strong>
+                        </label>
+                        <div class="input-group mb-3">
+                          <button class="btn btn-outline-primary" id="minus-button" type="button"
+                            onclick="stepDownPortions()">
+                            <i class="bi bi-dash-lg"></i>
+                          </button>
+                          <input type="text" class="form-control text-center fw-bold" id="nr-of-portions"
+                            inputmode="numeric" pattern="[0-9]*" value="<%= parseInt(recipeInfo[0].default_portions) %>"
+                            onchange="updateIngredientValues(value)">
+                          <button class="btn btn-outline-primary" id="plus-button" type="button"
+                            onclick="stepUpPortions()">
+                            <i class="bi bi-plus-lg"></i>
+                          </button>
+                        </div>
+                        <small class="text-muted d-block text-center mb-3">
+                          Ingredients will adjust automatically
+                        </small>
+
+                        <!-- Back to Recipes Button (inside card) -->
+                        <div class="d-grid">
+                          <a href="/recipes" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left"></i> Back to Recipes
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Right Column: Instructions -->
+                  <div class="col-lg-8">
+                    <div class="instructions">
+                      <h2 class="mb-4">
+                        <i class="bi bi-list-ol"></i> Instructions
+                      </h2>
+
+                      <% steps.forEach((step, index)=> { %>
+                        <div
+                          class="card mb-3 border border-2 border-primary-subtle shadow-sm step-card bg-light bg-opacity-25"
+                          id="step-<%= index + 1 %>" onclick="toggleStepByCard(this, 'stepText<%= index + 1 %>')"
+                          style="border-radius: 12px; cursor: pointer; transition: all 0.2s ease;">
+                          <div class="card-body">
+                            <div class="row align-items-start">
+                              <!-- Step Number -->
+                              <div class="col-auto">
+                                <div
+                                  class="step-number bg-primary text-white rounded-circle d-flex align-items-center justify-content-center fw-bold"
+                                  style="width: 45px; height: 45px; font-size: 1.2rem;">
+                                  <%= index + 1 %>
+                                </div>
+                              </div>
+
+                              <!-- Step Content -->
+                              <div class="col">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                  <h5 class="mb-0">Step <%= index + 1 %>
+                                  </h5>
+                                  <!-- Completion Indicator (hidden by default) -->
+                                  <div class="completion-indicator" style="display: none;">
+                                    <i class="bi bi-check-circle-fill text-success fs-4"></i>
+                                  </div>
+                                </div>
+                                <p class="mb-0" id="stepText<%= index + 1 %>">
+                                  <%= typeof step==='string' ? step : (step.text || step.description) %>
+                                </p>
+
+                                <!-- Step Note/Info Box -->
+                                <% if (typeof step==='object' && step.note) { %>
+                                  <div class="alert alert-info border border-info mt-3 mb-0 d-flex align-items-start"
+                                    role="alert">
+                                    <i class="bi bi-info-circle-fill text-info fs-4 me-2 flex-shrink-0"></i>
+                                    <div>
+                                      <%= step.note %>
+                                    </div>
+                                  </div>
+                                  <% } %>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <% }) %>
+
+                          <!-- Completion Message -->
+                          <div class="card border-success mt-4" id="completionCard" style="display: none;">
+                            <div class="card-body text-center text-success">
+                              <i class="bi bi-check-circle display-4"></i>
+                              <h4 class="mt-2">Recipe Complete!</h4>
+                              <p class="mb-0">Enjoy your delicious <%= recipeInfo[0].name %>!</p>
+                            </div>
+                          </div>
+                    </div>
+                  </div>
+
                 </div>
               </div>
-            </div>
-          </div>
+            </section>
 
-        </div>
-      </div>
-    </section>
+    </main>
 
-  </main>
+    <!-- Footer -->
+    <%- include('partials/footer.ejs') %>
 
-  <!-- Footer -->
-  <%- include('partials/footer.ejs') %>
+      <!-- Bootstrap JS Bundle (includes Popper) -->
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
 
-  <!-- Bootstrap JS Bundle (includes Popper) -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" 
-          integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" 
-          crossorigin="anonymous"></script>
-  
-  <!-- Initialize tooltips -->
-  <script>
-    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
-    const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
-  </script>
+      <!-- Initialize tooltips -->
+      <script>
+        const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+        const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
+      </script>
 </body>
 
 </html>
