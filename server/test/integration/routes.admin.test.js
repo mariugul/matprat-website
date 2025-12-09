@@ -39,7 +39,7 @@ describe('Admin Routes', () => {
       await loginAsAdmin();
       const res = await agent.get('/admin');
       expect(res.status).to.equal(200);
-      expect(res.text).to.include('Admin Dashboard');
+      expect(res.text).to.include('Manage your recipes');
     });
   });
 
@@ -77,8 +77,12 @@ describe('Admin Routes', () => {
         cook_time: '30',
         servings: '4',
         difficulty: 'easy',
-        ingredient_1: 'Test ingredient 1',
-        ingredient_2: 'Test ingredient 2',
+        ingredient_name_1: 'Test ingredient 1',
+        ingredient_amount_1: '1',
+        ingredient_unit_1: 'gram',
+        ingredient_name_2: 'Test ingredient 2',
+        ingredient_amount_2: '2',
+        ingredient_unit_2: 'gram',
         step_1: 'Test step 1',
         step_2: 'Test step 2',
       };
