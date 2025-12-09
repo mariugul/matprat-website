@@ -6,10 +6,5 @@ CREATE TABLE IF NOT EXISTS users (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Insert default admin user (password: admin)
--- Using bcrypt hash for 'admin' with cost factor 10
-INSERT INTO users (username, password_hash)
-VALUES ('admin', '$2b$10$rKvVLZ5z5h5h5h5h5h5h5eK1YQYqYqYqYqYqYqYqYqYqYqYqYqY')
-ON CONFLICT (username) DO NOTHING;
-
--- Note: This is a placeholder hash. The actual hash will be generated when you first run the app
+-- Note: Admin user must be initialized using init_admin_user.js script
+-- This generates a proper bcrypt hash for the default 'admin' user

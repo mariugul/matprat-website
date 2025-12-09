@@ -67,6 +67,15 @@ jobs:
           psql -h localhost -U nodejs -d matprat -f sql/insert_steps.sql
           psql -h localhost -U nodejs -d matprat -f sql/insert_images.sql
       
+      - name: Initialize Admin User
+        env:
+          DB_HOST: localhost
+          DB_PORT: 5432
+          DB_USER: nodejs
+          DB_PASSWORD: nodejs
+          DB: matprat
+        run: node init_admin_user.js
+      
       - name: Lint with ESLint and EJS-Lint
         run: npm run lint
       
