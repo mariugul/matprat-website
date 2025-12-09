@@ -19,6 +19,219 @@ router.init = (queryFunction) => {
   sqlQuery = queryFunction;
 };
 
+// ============================================================================
+// Recipe Form Parsing Helpers
+// ============================================================================
+
+/**
+ * Parse ingredients from form data
+ * @param {Object} formData - The form data object
+ * @returns {Array} Array of ingredient objects
+ */
+function parseIngredients(formData) {
+  const ingredientNumbers = [];
+  Object.keys(formData).forEach((key) => {
+    if (key.startsWith('ingredient_name_')) {
+      const num = key.split('_')[2];
+      if (formData[key].trim()) {
+        ingredientNumbers.push(num);
+      }
+    }
+  });
+
+  return ingredientNumbers
+    .map((num) => ({
+      amount: (formData[`ingredient_amount_${num}`] || '').trim(),
+      unit: (formData[`ingredient_unit_${num}`] || '').trim(),
+      name: (formData[`ingredient_name_${num}`] || '').trim(),
+      note: (formData[`ingredient_note_${num}`] || '').trim(),
+    }))
+    .filter((ing) => ing.name);
+}
+
+/**
+ * Parse steps from form data
+ * @param {Object} formData - The form data object
+ * @returns {Array} Array of step objects with text and optional note
+ */
+function parseSteps(formData) {
+  const stepTexts = [];
+  const stepNotes = [];
+
+  Object.keys(formData).forEach((key) => {
+    if (key.startsWith('step_') && !key.includes('note_') && formData[key].trim()) {
+      const stepNum = parseInt(key.split('_')[1], 10);
+      stepTexts[stepNum - 1] = formData[key].trim();
+    }
+    if (key.startsWith('step_note_') && formData[key].trim()) {
+      const stepNum = parseInt(key.split('_')[2], 10);
+      stepNotes[stepNum - 1] = formData[key].trim();
+    }
+  });
+
+  return stepTexts
+    .map((text, index) => (text ? { text, note: stepNotes[index] || null } : null))
+    .filter(Boolean);
+}
+
+/**
+ * Parse images from form data
+ * @param {Object} formData - The form data object
+ * @returns {Array} Array of image objects
+ */
+function parseImages(formData) {
+  const imageUrls = [];
+  const imageDescs = [];
+
+  Object.keys(formData).forEach((key) => {
+    if (key.startsWith('image_url_') && formData[key].trim()) {
+      const imageNum = parseInt(key.split('_')[2], 10);
+      imageUrls[imageNum - 1] = formData[key].trim();
+    }
+    if (key.startsWith('image_desc_') && formData[key].trim()) {
+      const imageNum = parseInt(key.split('_')[2], 10);
+      imageDescs[imageNum - 1] = formData[key].trim();
+    }
+  });
+
+  return imageUrls
+    .map((url, index) => (url ? {
+      link: url,
+      description: imageDescs[index] || '',
+      image_nr: index + 1,
+    } : null))
+    .filter(Boolean);
+}
+
+/**
+ * Parse categories from form data
+ * @param {Object} formData - The form data object
+ * @returns {Array} Array of category strings
+ */
+function parseCategories(formData) {
+  if (!formData.categories) return [];
+  const categories = Array.isArray(formData.categories)
+    ? formData.categories
+    : [formData.categories];
+  return categories.filter((cat) => cat && cat.trim()).map((cat) => cat.trim());
+}
+
+// ============================================================================
+// Recipe Database Operations
+// ============================================================================
+
+/**
+ * Save or update the main recipe record
+ * @param {Object} recipeData - The recipe form data
+ * @param {boolean} isEdit - Whether this is an edit operation
+ */
+async function saveRecipeRecord(recipeData, isEdit) {
+  const params = [
+    recipeData.name,
+    recipeData.description || '',
+    parseInt(recipeData.cook_time, 10) || 1,
+    parseInt(recipeData.servings, 10) || 1,
+    recipeData.difficulty,
+  ];
+
+  if (isEdit && recipeData.originalName) {
+    params.push(recipeData.originalName);
+    await sqlQuery(`
+      UPDATE recipes SET 
+        name = $1, description = $2, cook_time = $3, default_portions = $4, difficulty = $5
+      WHERE name = $6
+    `, params);
+    logger.info('Recipe updated', { recipeName: recipeData.name });
+  } else {
+    await sqlQuery(`
+      INSERT INTO recipes (name, description, cook_time, default_portions, difficulty)
+      VALUES ($1, $2, $3, $4, $5)
+    `, params);
+    logger.info('Recipe created', { recipeName: recipeData.name });
+  }
+}
+
+/**
+ * Replace all ingredients for a recipe
+ * @param {string} recipeName - The recipe name
+ * @param {Array} ingredients - Array of ingredient objects
+ */
+async function saveIngredients(recipeName, ingredients) {
+  await sqlQuery('DELETE FROM ingredients WHERE recipe_name = $1', [recipeName]);
+
+  for (let i = 0; i < ingredients.length; i += 1) {
+    const ing = ingredients[i];
+    // eslint-disable-next-line no-await-in-loop
+    await sqlQuery(`
+      INSERT INTO ingredients (recipe_name, ingredient, amount, unit, note)
+      VALUES ($1, $2, $3, $4, $5)
+    `, [
+      recipeName,
+      ing.name,
+      parseFloat(ing.amount) || 1.0,
+      ing.unit || '',
+      ing.note || '',
+    ]);
+  }
+  logger.debug('Ingredients saved', { recipeName, count: ingredients.length });
+}
+
+/**
+ * Replace all steps for a recipe
+ * @param {string} recipeName - The recipe name
+ * @param {Array} steps - Array of step objects
+ */
+async function saveSteps(recipeName, steps) {
+  await sqlQuery('DELETE FROM steps WHERE recipe_name = $1', [recipeName]);
+
+  for (let i = 0; i < steps.length; i += 1) {
+    const step = steps[i];
+    // eslint-disable-next-line no-await-in-loop
+    await sqlQuery(`
+      INSERT INTO steps (recipe_name, step_nr, description, note)
+      VALUES ($1, $2, $3, $4)
+    `, [recipeName, i + 1, step.text, step.note]);
+  }
+  logger.debug('Steps saved', { recipeName, count: steps.length });
+}
+
+/**
+ * Replace all images for a recipe
+ * @param {string} recipeName - The recipe name
+ * @param {Array} images - Array of image objects
+ */
+async function saveImages(recipeName, images) {
+  await sqlQuery('DELETE FROM images WHERE recipe_name = $1', [recipeName]);
+
+  for (let i = 0; i < images.length; i += 1) {
+    const image = images[i];
+    // eslint-disable-next-line no-await-in-loop
+    await sqlQuery(`
+      INSERT INTO images (recipe_name, image_nr, link, description)
+      VALUES ($1, $2, $3, $4)
+    `, [recipeName, image.image_nr, image.link, image.description]);
+  }
+  logger.debug('Images saved', { recipeName, count: images.length });
+}
+
+/**
+ * Replace all categories for a recipe
+ * @param {string} recipeName - The recipe name
+ * @param {Array} categories - Array of category strings
+ */
+async function saveCategories(recipeName, categories) {
+  await sqlQuery('DELETE FROM categories WHERE recipe_name = $1', [recipeName]);
+
+  for (let i = 0; i < categories.length; i += 1) {
+    // eslint-disable-next-line no-await-in-loop
+    await sqlQuery(`
+      INSERT INTO categories (recipe_name, category)
+      VALUES ($1, $2)
+    `, [recipeName, categories[i]]);
+  }
+  logger.debug('Categories saved', { recipeName, count: categories.length });
+}
+
 /**
  * GET /admin
  * Admin dashboard
@@ -296,310 +509,42 @@ router.post('/recipes/preview', (req, res) => {
  * Save recipe to database
  */
 router.post('/recipes/save', async (req, res) => {
+  const recipeData = req.body;
+  const isEdit = recipeData.mode === 'edit';
+
+  const getRedirectUrl = (error) => {
+    const base = isEdit
+      ? `/admin/recipes/edit/${encodeURIComponent(recipeData.originalName || recipeData.name)}`
+      : '/admin/recipes/new';
+    return error ? `${base}?error=${encodeURIComponent(error)}` : base;
+  };
+
   try {
-    const recipeData = req.body;
-    const isEdit = recipeData.mode === 'edit';
+    logger.debug('Recipe save started', { mode: isEdit ? 'EDIT' : 'CREATE', name: recipeData.name });
 
-    logger.debug('Recipe save process started', {
-      mode: isEdit ? 'EDIT' : 'CREATE',
-      dataKeys: Object.keys(recipeData),
-      formData: recipeData,
-    });
-
-    // Parse ingredients, steps, and images
-    const ingredients = [];
-    const stepTexts = [];
-    const stepNotes = [];
-    const imageUrls = [];
-    const imageDescs = [];
-
-    // Parse structured ingredients (amount, unit, name, note)
-    const ingredientNumbers = [];
-    Object.keys(recipeData).forEach((key) => {
-      if (key.startsWith('ingredient_name_')) {
-        const num = key.split('_')[2];
-        if (recipeData[key].trim()) {
-          ingredientNumbers.push(num);
-        }
-      }
-    });
-
-    // Build ingredient objects
-    ingredientNumbers.forEach((num) => {
-      const amount = recipeData[`ingredient_amount_${num}`] || '';
-      const unit = recipeData[`ingredient_unit_${num}`] || '';
-      const name = recipeData[`ingredient_name_${num}`] || '';
-      const note = recipeData[`ingredient_note_${num}`] || '';
-
-      if (name.trim()) {
-        ingredients.push({
-          amount: amount.trim(),
-          unit: unit.trim(),
-          name: name.trim(),
-          note: note.trim(),
-        });
-      }
-    });
-
-    // Continue with original parsing logic
-    Object.keys(recipeData).forEach((key) => {
-      if (key.startsWith('step_') && !key.includes('note_') && recipeData[key].trim()) {
-        const stepNum = parseInt(key.split('_')[1], 10);
-        stepTexts[stepNum - 1] = recipeData[key].trim();
-      }
-      if (key.startsWith('step_note_') && recipeData[key].trim()) {
-        const stepNum = parseInt(key.split('_')[2], 10);
-        stepNotes[stepNum - 1] = recipeData[key].trim();
-      }
-      if (key.startsWith('image_url_') && recipeData[key].trim()) {
-        const imageNum = parseInt(key.split('_')[2], 10);
-        imageUrls[imageNum - 1] = recipeData[key].trim();
-      }
-      if (key.startsWith('image_desc_') && recipeData[key].trim()) {
-        const imageNum = parseInt(key.split('_')[2], 10);
-        imageDescs[imageNum - 1] = recipeData[key].trim();
-      }
-    });
-
-    // Combine step texts and notes into step objects
-    const cleanSteps = [];
-    stepTexts.forEach((text, index) => {
-      if (text) {
-        const stepObj = { text };
-        if (stepNotes[index]) {
-          stepObj.note = stepNotes[index];
-        }
-        cleanSteps.push(stepObj);
-      }
-    });
-
-    logger.debug('Data parsing completed', {
-      ingredients,
-      stepTexts,
-      stepNotes,
-      imageUrls,
-      imageDescs,
-    });
-
-    // Process images
-    const images = [];
-    imageUrls.forEach((url, index) => {
-      if (url) {
-        images.push({
-          link: url,
-          description: imageDescs[index] || '',
-          image_nr: index + 1,
-        });
-      }
-    });
-
-    logger.debug('Final processed data ready for database', {
-      cleanSteps,
-      images,
-      recipeName: recipeData.name,
-      description: recipeData.description,
-      cookTime: parseInt(recipeData.cook_time, 10) || 0,
-      servings: parseInt(recipeData.servings, 10) || 1,
-      difficulty: recipeData.difficulty,
-    });
+    // Parse form data
+    const ingredients = parseIngredients(recipeData);
+    const steps = parseSteps(recipeData);
+    const images = parseImages(recipeData);
+    const categories = parseCategories(recipeData);
 
     // Validate required fields
-    if (!recipeData.name || ingredients.length === 0 || cleanSteps.length === 0) {
-      const errorMsg = 'Recipe name, ingredients, and steps are required';
-      const redirectUrl = isEdit
-        ? `/admin/recipes/edit/${encodeURIComponent(recipeData.originalName || recipeData.name)}`
-        : '/admin/recipes/new';
-      return res.redirect(`${redirectUrl}?error=${encodeURIComponent(errorMsg)}`);
+    if (!recipeData.name || ingredients.length === 0 || steps.length === 0) {
+      return res.redirect(getRedirectUrl('Recipe name, ingredients, and steps are required'));
     }
 
-    if (isEdit && recipeData.originalName) {
-      const updateParams = [
-        recipeData.name,
-        recipeData.description || '',
-        parseInt(recipeData.cook_time, 10) || 0,
-        parseInt(recipeData.servings, 10) || 1,
-        recipeData.difficulty,
-        recipeData.originalName,
-      ];
+    // Save all recipe data
+    await saveRecipeRecord(recipeData, isEdit);
+    await saveIngredients(recipeData.name, ingredients);
+    await saveSteps(recipeData.name, steps);
+    await saveImages(recipeData.name, images);
+    await saveCategories(recipeData.name, categories);
 
-      logger.debug('Updating existing recipe', { updateParams });
-
-      // Update existing recipe (only the columns that exist)
-      await sqlQuery(`
-        UPDATE recipes SET 
-          name = $1, description = $2, cook_time = $3, default_portions = $4, difficulty = $5
-        WHERE name = $6
-      `, updateParams);
-
-      logger.info('Recipe updated successfully', {
-        recipeName: recipeData.name,
-        userId: req.session.userId,
-      });
-    } else {
-      const insertParams = [
-        recipeData.name,
-        recipeData.description || '',
-        parseInt(recipeData.cook_time, 10) || 1,
-        parseInt(recipeData.servings, 10) || 1,
-        recipeData.difficulty,
-      ];
-
-      logger.debug('Creating new recipe', { insertParams });
-
-      // Create new recipe (only the columns that exist in the table)
-      await sqlQuery(`
-        INSERT INTO recipes (name, description, cook_time, default_portions, difficulty)
-        VALUES ($1, $2, $3, $4, $5)
-      `, insertParams);
-
-      logger.info('Recipe created successfully', {
-        recipeName: recipeData.name,
-        userId: req.session.userId,
-      });
-    }
-
-    logger.debug('Processing ingredients', {
-      recipeName: recipeData.name,
-      ingredientCount: ingredients.length,
-    });
-
-    // Handle ingredients - delete existing and insert new ones
-    await sqlQuery('DELETE FROM ingredients WHERE recipe_name = $1', [recipeData.name]);
-
-    // Insert ingredients
-    for (let i = 0; i < ingredients.length; i += 1) {
-      const ingredient = ingredients[i];
-      logger.debug('Inserting ingredient', {
-        stepNumber: i + 1,
-        ingredient,
-      });
-      // eslint-disable-next-line no-await-in-loop
-      await sqlQuery(`
-        INSERT INTO ingredients (recipe_name, ingredient, amount, unit, note)
-        VALUES ($1, $2, $3, $4, $5)
-      `, [
-        recipeData.name,
-        ingredient.name,
-        parseFloat(ingredient.amount) || 1.0, // Default to 1.0 if empty or invalid
-        ingredient.unit || '',
-        ingredient.note || '',
-      ]);
-    }
-    logger.debug('Ingredients processing completed');
-
-    logger.debug('Processing steps', {
-      recipeName: recipeData.name,
-      stepCount: cleanSteps.length,
-    });
-
-    // Handle steps - delete existing and insert new ones
-    await sqlQuery('DELETE FROM steps WHERE recipe_name = $1', [recipeData.name]);
-
-    // Insert steps
-    for (let i = 0; i < cleanSteps.length; i += 1) {
-      const step = cleanSteps[i];
-      logger.debug('Inserting step', {
-        stepNumber: i + 1,
-        step,
-      });
-      // eslint-disable-next-line no-await-in-loop
-      await sqlQuery(`
-        INSERT INTO steps (recipe_name, step_nr, description, note)
-        VALUES ($1, $2, $3, $4)
-      `, [
-        recipeData.name,
-        i + 1,
-        step.text,
-        step.note || null,
-      ]);
-    }
-    logger.debug('Steps processing completed');
-
-    logger.debug('Processing images', {
-      recipeName: recipeData.name,
-      imageCount: images.length,
-    });
-
-    // Handle images - delete existing and insert new ones
-    await sqlQuery('DELETE FROM images WHERE recipe_name = $1', [recipeData.name]);
-
-    // Insert new images
-    // eslint-disable-next-line no-restricted-syntax
-    for (const image of images) {
-      logger.debug('Inserting image', { image });
-      // eslint-disable-next-line no-await-in-loop
-      await sqlQuery(`
-        INSERT INTO images (recipe_name, image_nr, link, description)
-        VALUES ($1, $2, $3, $4)
-      `, [
-        recipeData.name,
-        image.image_nr,
-        image.link,
-        image.description,
-      ]);
-    }
-    logger.debug('Images processing completed');
-
-    logger.info('Images updated successfully', {
-      recipeName: recipeData.name,
-      imageCount: images.length,
-    });
-
-    // Handle categories - delete existing and insert new ones
-    logger.debug('Processing categories', {
-      recipeName: recipeData.name,
-    });
-
-    await sqlQuery('DELETE FROM categories WHERE recipe_name = $1', [recipeData.name]);
-
-    // Parse categories from form (can be a single value or an array)
-    let selectedCategories = [];
-    if (recipeData.categories) {
-      selectedCategories = Array.isArray(recipeData.categories)
-        ? recipeData.categories
-        : [recipeData.categories];
-    }
-
-    // Insert new categories
-    // eslint-disable-next-line no-restricted-syntax
-    for (const category of selectedCategories) {
-      if (category && category.trim()) {
-        logger.debug('Inserting category', { category });
-        // eslint-disable-next-line no-await-in-loop
-        await sqlQuery(`
-          INSERT INTO categories (recipe_name, category)
-          VALUES ($1, $2)
-        `, [
-          recipeData.name,
-          category.trim(),
-        ]);
-      }
-    }
-
-    logger.debug('Categories processing completed', {
-      categoryCount: selectedCategories.length,
-      categories: selectedCategories,
-    });
-
-    logger.info('Recipe save process completed successfully', {
-      recipeName: recipeData.name,
-      redirectUrl: `/recipes/${encodeURIComponent(recipeData.name)}`,
-    });
-
-    // Redirect to the recipe page
+    logger.info('Recipe saved successfully', { recipeName: recipeData.name, userId: req.session.userId });
     return res.redirect(`/recipes/${encodeURIComponent(recipeData.name)}`);
   } catch (err) {
-    logger.error('Error saving recipe', {
-      error: err.message,
-      stack: err.stack,
-      recipeName: req.body.name,
-      mode: req.body.mode,
-    });
-    const errorMsg = 'Unable to save recipe. Please try again.';
-    const redirectUrl = req.body.mode === 'edit'
-      ? `/admin/recipes/edit/${encodeURIComponent(req.body.originalName || req.body.name)}`
-      : '/admin/recipes/new';
-    return res.redirect(`${redirectUrl}?error=${encodeURIComponent(errorMsg)}`);
+    logger.error('Error saving recipe', { error: err.message, recipeName: recipeData.name });
+    return res.redirect(getRedirectUrl('Unable to save recipe. Please try again.'));
   }
 });
 
