@@ -1,7 +1,7 @@
 -- Migration: Update image paths to use /content/recipes/ prefix
 -- This updates existing recipes to use the new /content/recipes/filename.jpg format
 
-UPDATE images 
+UPDATE images
 SET link = REPLACE(link, '/images/', '/content/recipes/')
 WHERE link LIKE '/images/%';
 
