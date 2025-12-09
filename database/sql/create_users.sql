@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS users (
 
 -- Insert default admin user (password: admin)
 -- Using bcrypt hash for 'admin' with cost factor 10
-INSERT INTO users (username, password_hash) 
+INSERT INTO users (username, password_hash)
 VALUES ('admin', '$2b$10$rKvVLZ5z5h5h5h5h5h5h5eK1YQYqYqYqYqYqYqYqYqYqYqYqYqY')
 ON CONFLICT (username) DO NOTHING;
 
