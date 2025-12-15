@@ -737,7 +737,7 @@ if (uploadButton) {
 
         // If no empty field found, user can manually copy the path
         if (!filled) {
-          // eslint-disable-next-line no-alert
+           
           alert(`Image uploaded! Path: ${data.path}\n\nAll image fields are filled. Add a new image field or replace an existing one.`);
         }
       }, 1500);

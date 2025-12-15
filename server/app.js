@@ -1,5 +1,5 @@
-/* eslint-disable no-console */
-/* eslint-disable no-return-assign */
+ 
+ 
 const express = require('express');
 const session = require('express-session');
 const process = require('process');
@@ -60,7 +60,7 @@ const pool = new Pool({
 // Database query helper function
 async function sqlQuery(query, queryArgs) {
   return new Promise((resolve, reject) => {
-    // eslint-disable-next-line consistent-return
+     
     pool.query(query, queryArgs, (err, res) => {
       if (err) return reject(err);
       resolve(res.rows);

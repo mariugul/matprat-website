@@ -161,7 +161,7 @@ async function saveIngredients(recipeName, ingredients) {
 
   for (let i = 0; i < ingredients.length; i += 1) {
     const ing = ingredients[i];
-    // eslint-disable-next-line no-await-in-loop
+     
     await sqlQuery(`
       INSERT INTO ingredients (recipe_name, ingredient, amount, unit, note)
       VALUES ($1, $2, $3, $4, $5)
@@ -186,7 +186,7 @@ async function saveSteps(recipeName, steps) {
 
   for (let i = 0; i < steps.length; i += 1) {
     const step = steps[i];
-    // eslint-disable-next-line no-await-in-loop
+     
     await sqlQuery(`
       INSERT INTO steps (recipe_name, step_nr, description, note)
       VALUES ($1, $2, $3, $4)
@@ -205,7 +205,7 @@ async function saveImages(recipeName, images) {
 
   for (let i = 0; i < images.length; i += 1) {
     const image = images[i];
-    // eslint-disable-next-line no-await-in-loop
+     
     await sqlQuery(`
       INSERT INTO images (recipe_name, image_nr, link, description)
       VALUES ($1, $2, $3, $4)
@@ -223,7 +223,7 @@ async function saveCategories(recipeName, categories) {
   await sqlQuery('DELETE FROM categories WHERE recipe_name = $1', [recipeName]);
 
   for (let i = 0; i < categories.length; i += 1) {
-    // eslint-disable-next-line no-await-in-loop
+     
     await sqlQuery(`
       INSERT INTO categories (recipe_name, category)
       VALUES ($1, $2)

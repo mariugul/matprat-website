@@ -1,4 +1,4 @@
-/* eslint-disable no-param-reassign */
+ 
 /* eslint-disable no-unused-vars */
 // Globals -> Loaded only once and after the html page has rendered
 // ----------------------------------------------------------------------

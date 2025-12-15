@@ -44,11 +44,11 @@ async function initMeasurementUnits() {
     console.log('Existing units:', existing);
 
     // Add missing units
-    // eslint-disable-next-line no-restricted-syntax
+     
     for (const unit of additionalUnits) {
       if (!existing.includes(unit)) {
         try {
-          // eslint-disable-next-line no-await-in-loop
+           
           await client.query(`ALTER TYPE measurement_units ADD VALUE '${unit}'`);
           console.log(`✅ Added unit: ${unit}`);
         } catch (err) {

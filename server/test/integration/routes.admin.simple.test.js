@@ -3,12 +3,15 @@
  */
 
 const request = require('supertest');
-const { expect } = require('chai');
+const { loadChai, getExpect } = require('../setup');
 
 describe('Admin Save Recipe - Simple Tests', () => {
   let app;
+  let expect;
 
-  before(() => {
+  before(async () => {
+    await loadChai();
+    expect = getExpect();
     app = require('../../app');
   });
 
