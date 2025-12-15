@@ -15,6 +15,15 @@ process.env.DB_PASSWORD = process.env.DB_PASSWORD || 'nodejs';
 // const logger = require('../utils/logger');
 // logger.transports.forEach((t) => (t.silent = true));
 
+// Load chai dynamically for ESM compatibility (Chai 6+)
+let expect;
+
+const loadChai = async () => {
+  const chai = await import('chai');
+  expect = chai.expect;
+};
+
 module.exports = {
-  // Add any test helpers here
+  loadChai,
+  getExpect: () => expect,
 };

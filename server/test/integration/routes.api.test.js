@@ -3,12 +3,15 @@
  */
 
 const request = require('supertest');
-const { expect } = require('chai');
+const { loadChai, getExpect } = require('../setup');
 
 describe('API Routes', () => {
   let app;
+  let expect;
 
-  before(() => {
+  before(async () => {
+    await loadChai();
+    expect = getExpect();
     // Import app after environment is set
     app = require('../../app');
   });

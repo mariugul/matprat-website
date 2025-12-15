@@ -3,13 +3,16 @@
  */
 
 const request = require('supertest');
-const { expect } = require('chai');
+const { loadChai, getExpect } = require('../setup');
 
 describe('Admin Routes', () => {
   let app;
   let agent; // For maintaining session across requests
+  let expect;
 
-  before(() => {
+  before(async () => {
+    await loadChai();
+    expect = getExpect();
     // Import app after environment is set
     app = require('../../app');
     agent = request.agent(app); // Create agent to maintain sessions
