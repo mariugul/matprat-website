@@ -14,5 +14,5 @@ COPY . .
 RUN chown -R node /usr/src/app
 EXPOSE 3000
 
-# Use different commands based on NODE_ENV
-CMD if [ "$NODE_ENV" = "development" ] ; then npm run dev ; else npm start ; fi
+# Use exec to ensure signals reach Node.js for graceful shutdown
+CMD if [ "$NODE_ENV" = "development" ] ; then exec npm run dev ; else exec npm start ; fi

@@ -18,9 +18,23 @@ sudo mkdir -p "$INSTALL_DIR"
 sudo chown "$USER:$USER" "$INSTALL_DIR"
 cd "$INSTALL_DIR"
 
-# Download docker-compose.yml
-echo "📥 Downloading docker-compose.yml..."
+# Download docker-compose.yml and database scripts
+echo "📥 Downloading production files..."
 curl -fsSL "$REPO_URL/docker-compose.yml" -o docker-compose.yml
+
+# Download database init script and SQL files
+DB_URL="https://raw.githubusercontent.com/mariugul/matprat-website/main/database"
+curl -fsSL "$DB_URL/init_database.sh" -o init_database.sh
+chmod +x init_database.sh
+
+mkdir -p sql
+curl -fsSL "$DB_URL/sql/create_all.sql" -o sql/create_all.sql
+curl -fsSL "$DB_URL/sql/create_users.sql" -o sql/create_users.sql
+curl -fsSL "$DB_URL/sql/insert_recipes.sql" -o sql/insert_recipes.sql
+curl -fsSL "$DB_URL/sql/insert_categories.sql" -o sql/insert_categories.sql
+curl -fsSL "$DB_URL/sql/insert_ingredients.sql" -o sql/insert_ingredients.sql
+curl -fsSL "$DB_URL/sql/insert_steps.sql" -o sql/insert_steps.sql
+curl -fsSL "$DB_URL/sql/insert_images.sql" -o sql/insert_images.sql
 
 # Create .env file if it doesn't exist
 if [ ! -f .env ]; then
@@ -30,35 +44,31 @@ if [ ! -f .env ]; then
   echo ""
 
   # Database credentials
-  read -rp "Database password [nodejs]: " DB_PASSWORD
+  read -rp "Database password [nodejs]: " DB_PASSWORD < /dev/tty
   DB_PASSWORD=${DB_PASSWORD:-nodejs}
 
-  read -rp "Database user [nodejs]: " DB_USER
+  read -rp "Database user [nodejs]: " DB_USER < /dev/tty
   DB_USER=${DB_USER:-nodejs}
 
-  read -rp "Database name [matprat]: " DB_NAME
+  read -rp "Database name [matprat]: " DB_NAME < /dev/tty
   DB_NAME=${DB_NAME:-matprat}
 
-  # Postgres admin password
-  read -rp "Postgres admin password [postgres]: " POSTGRES_PASSWORD
-  POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
-
   # pgAdmin credentials
-  read -rp "pgAdmin email [admin@localhost]: " PGADMIN_EMAIL
-  PGADMIN_EMAIL=${PGADMIN_EMAIL:-admin@localhost}
+  read -rp "pgAdmin email [admin@local.dev]: " PGADMIN_EMAIL < /dev/tty
+  PGADMIN_EMAIL=${PGADMIN_EMAIL:-admin@local.dev}
 
-  read -rp "pgAdmin password [admin]: " PGADMIN_PASSWORD
+  read -rp "pgAdmin password [admin]: " PGADMIN_PASSWORD < /dev/tty
   PGADMIN_PASSWORD=${PGADMIN_PASSWORD:-admin}
 
-  read -rp "pgAdmin port [5050]: " PGADMIN_PORT
+  read -rp "pgAdmin port [5050]: " PGADMIN_PORT < /dev/tty
   PGADMIN_PORT=${PGADMIN_PORT:-5050}
 
   # Web port
-  read -rp "Website port [3000]: " WEB_PORT
+  read -rp "Website port [3000]: " WEB_PORT < /dev/tty
   WEB_PORT=${WEB_PORT:-3000}
 
   # Session secret (auto-generate if not provided)
-  read -rp "Session secret [auto-generate]: " SESSION_SECRET
+  read -rp "Session secret [auto-generate]: " SESSION_SECRET < /dev/tty
   if [ -z "$SESSION_SECRET" ]; then
     SESSION_SECRET=$(openssl rand -hex 32)
     echo "   Generated session secret: ${SESSION_SECRET:0:16}..."
@@ -73,13 +83,10 @@ if [ ! -f .env ]; then
 SESSION_SECRET=$SESSION_SECRET
 WEB_PORT=$WEB_PORT
 
-# Database (Node.js app)
+# Database
 DB_USER=$DB_USER
 DB_PASSWORD=$DB_PASSWORD
 DB_NAME=$DB_NAME
-
-# PostgreSQL
-POSTGRES_PASSWORD=$POSTGRES_PASSWORD
 
 # pgAdmin
 PGADMIN_EMAIL=$PGADMIN_EMAIL
@@ -92,10 +99,14 @@ else
   echo "✅ .env file already exists, skipping configuration"
 fi
 
-# Create backup directory
+# Source .env to get variables for output message
+# shellcheck disable=SC1091
+source .env
+
+# Create backup directory with correct permissions for postgres user (uid 70 in alpine)
 echo "📁 Creating backup directory..."
 sudo mkdir -p /var/opt/db_backups
-sudo chown "$USER:$USER" /var/opt/db_backups
+sudo chown -R 70:70 /var/opt/db_backups
 
 # Pull and start containers
 echo ""
@@ -104,7 +115,26 @@ docker compose pull
 
 echo ""
 echo "🚀 Starting services..."
-docker compose up -d
+docker compose up -d --force-recreate
+
+# Wait for database to be ready
+echo ""
+echo "⏳ Waiting for database to be ready..."
+sleep 10
+
+# Initialize database schema (only if not already initialized)
+echo "🗄️  Checking database schema..."
+if docker compose exec -T db psql -U "${DB_USER:-nodejs}" -d "${DB_NAME:-matprat}" -tAc "SELECT 1 FROM information_schema.tables WHERE table_name='recipes'" | grep -q 1; then
+  echo "   ✅ Schema already exists, skipping initialization"
+else
+  echo "   📝 Creating schema..."
+  docker compose exec -T db psql -U "${DB_USER:-nodejs}" -d "${DB_NAME:-matprat}" -f /docker-entrypoint-initdb.d/create_all.sql
+  docker compose exec -T db psql -U "${DB_USER:-nodejs}" -d "${DB_NAME:-matprat}" -f /docker-entrypoint-initdb.d/create_users.sql
+fi
+
+# Initialize admin user
+echo "👤 Initializing admin user..."
+docker compose exec -T server node init_admin_user.js || echo "   (Admin user may already exist)"
 
 echo ""
 echo "========================================"
