@@ -82,6 +82,11 @@ app.use('/recipes', recipesRouter);
 app.use('/api', apiRouter);
 app.use('/admin', adminRouter);
 
+// Health check endpoint for Docker/orchestration
+app.get('/health', (_req, res) => {
+  res.status(200).json({ status: 'ok' });
+});
+
 // Error handling middleware (must be last)
 app.use(errorHandler);
 

@@ -18,7 +18,7 @@ services:
     ports:
       - "${WEB_PORT:-3000}:3000"
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000/"]
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
       interval: 5s
       timeout: 10s
       retries: 3
