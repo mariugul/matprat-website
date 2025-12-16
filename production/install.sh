@@ -30,35 +30,35 @@ if [ ! -f .env ]; then
   echo ""
 
   # Database credentials
-  read -p "Database password [nodejs]: " DB_PASSWORD
+  read -rp "Database password [nodejs]: " DB_PASSWORD
   DB_PASSWORD=${DB_PASSWORD:-nodejs}
 
-  read -p "Database user [nodejs]: " DB_USER
+  read -rp "Database user [nodejs]: " DB_USER
   DB_USER=${DB_USER:-nodejs}
 
-  read -p "Database name [matprat]: " DB_NAME
+  read -rp "Database name [matprat]: " DB_NAME
   DB_NAME=${DB_NAME:-matprat}
 
   # Postgres admin password
-  read -p "Postgres admin password [postgres]: " POSTGRES_PASSWORD
+  read -rp "Postgres admin password [postgres]: " POSTGRES_PASSWORD
   POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
 
   # pgAdmin credentials
-  read -p "pgAdmin email [admin@localhost]: " PGADMIN_EMAIL
+  read -rp "pgAdmin email [admin@localhost]: " PGADMIN_EMAIL
   PGADMIN_EMAIL=${PGADMIN_EMAIL:-admin@localhost}
 
-  read -p "pgAdmin password [admin]: " PGADMIN_PASSWORD
+  read -rp "pgAdmin password [admin]: " PGADMIN_PASSWORD
   PGADMIN_PASSWORD=${PGADMIN_PASSWORD:-admin}
 
-  read -p "pgAdmin port [5050]: " PGADMIN_PORT
+  read -rp "pgAdmin port [5050]: " PGADMIN_PORT
   PGADMIN_PORT=${PGADMIN_PORT:-5050}
 
   # Web port
-  read -p "Website port [3000]: " WEB_PORT
+  read -rp "Website port [3000]: " WEB_PORT
   WEB_PORT=${WEB_PORT:-3000}
 
   # Session secret (auto-generate if not provided)
-  read -p "Session secret [auto-generate]: " SESSION_SECRET
+  read -rp "Session secret [auto-generate]: " SESSION_SECRET
   if [ -z "$SESSION_SECRET" ]; then
     SESSION_SECRET=$(openssl rand -hex 32)
     echo "   Generated session secret: ${SESSION_SECRET:0:16}..."

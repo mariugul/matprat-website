@@ -17,6 +17,12 @@ services:
       SESSION_SECRET: ${SESSION_SECRET:-change-me-in-production}
     ports:
       - "${WEB_PORT:-3000}:3000"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/"]
+      interval: 5s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
 
   db:
     image: postgres:14-alpine
