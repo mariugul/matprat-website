@@ -5,7 +5,9 @@ set -e
 # Usage: curl -fsSL https://raw.githubusercontent.com/mariugul/matprat-website/main/production/install.sh | bash
 
 INSTALL_DIR="${INSTALL_DIR:-/opt/matprat}"
-REPO_URL="https://raw.githubusercontent.com/mariugul/matprat-website/main/production"
+# TODO: Change back to 'main' after testing
+BRANCH="${BRANCH:-fix-prod}"
+REPO_URL="https://raw.githubusercontent.com/mariugul/matprat-website/${BRANCH}/production"
 
 echo "========================================"
 echo "  Matprat Website Production Installer"
@@ -23,7 +25,7 @@ echo "📥 Downloading production files..."
 curl -fsSL "$REPO_URL/docker-compose.yml" -o docker-compose.yml
 
 # Download database init script and SQL files
-DB_URL="https://raw.githubusercontent.com/mariugul/matprat-website/main/database"
+DB_URL="https://raw.githubusercontent.com/mariugul/matprat-website/${BRANCH}/database"
 curl -fsSL "$DB_URL/init_database.sh" -o init_database.sh
 chmod +x init_database.sh
 
@@ -67,6 +69,12 @@ if [ ! -f .env ]; then
   read -rp "Website port [3000]: " WEB_PORT < /dev/tty
   WEB_PORT=${WEB_PORT:-3000}
 
+  # LAN IP for binding (security: prevents exposure on all interfaces)
+  # Auto-detect primary LAN IP
+  DEFAULT_LAN_IP=$(hostname -I | awk '{print $1}')
+  read -rp "LAN IP for binding [${DEFAULT_LAN_IP:-127.0.0.1}]: " LAN_IP < /dev/tty
+  LAN_IP=${LAN_IP:-${DEFAULT_LAN_IP:-127.0.0.1}}
+
   # Session secret (auto-generate if not provided)
   read -rp "Session secret [auto-generate]: " SESSION_SECRET < /dev/tty
   if [ -z "$SESSION_SECRET" ]; then
@@ -82,6 +90,7 @@ if [ ! -f .env ]; then
 # Application
 SESSION_SECRET=$SESSION_SECRET
 WEB_PORT=$WEB_PORT
+LAN_IP=$LAN_IP
 
 # Database
 DB_USER=$DB_USER
@@ -92,6 +101,9 @@ DB_NAME=$DB_NAME
 PGADMIN_EMAIL=$PGADMIN_EMAIL
 PGADMIN_PASSWORD=$PGADMIN_PASSWORD
 PGADMIN_PORT=$PGADMIN_PORT
+
+# Docker (for rootless docker)
+DOCKER_SOCK=$DOCKER_SOCK
 EOF
 
   echo "✅ Created .env file"
@@ -142,8 +154,10 @@ echo "  ✅ Installation Complete!"
 echo "========================================"
 echo ""
 echo "Services running:"
-echo "  🌐 Website:    http://localhost:${WEB_PORT:-3000}"
-echo "  🗄️  pgAdmin:    http://localhost:${PGADMIN_PORT:-5050}"
+echo "  🌐 Website:    http://${LAN_IP:-localhost}:${WEB_PORT:-3000}"
+echo "  🗄️  pgAdmin:    http://${LAN_IP:-localhost}:${PGADMIN_PORT:-5050}"
+echo ""
+echo "Note: Services are bound to ${LAN_IP:-127.0.0.1} (LAN-only access)"
 echo ""
 echo "Useful commands:"
 echo "  cd $INSTALL_DIR"
