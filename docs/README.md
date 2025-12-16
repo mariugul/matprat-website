@@ -161,24 +161,50 @@ docker compose -f docker-compose.local.yml up --build -d
 
 ## 🚀 Production Deployment
 
-Production uses Docker Compose with pre-built images from Docker Hub:
+### Quick Install
+
+Run the installer script on your server (e.g., Raspberry Pi):
 ```bash
-cd production
+curl -fsSL https://raw.githubusercontent.com/mariugul/matprat-website/main/production/install.sh | bash
+```
+
+The script will:
+- Download `docker-compose.yml`
+- Prompt for environment variables (database credentials, etc.)
+- Create the `.env` file
+- Pull and start all containers
+
+### Manual Setup
+
+```bash
+mkdir -p /opt/matprat && cd /opt/matprat
+curl -fsSL https://raw.githubusercontent.com/mariugul/matprat-website/main/production/docker-compose.yml -o docker-compose.yml
+# Edit .env file with your credentials
 docker compose up -d
 ```
 
-**Production services:**
-- Web server (port 3000)
-- PostgreSQL database
-- pgAdmin for database management
-- Automated daily backups using [prodrigestivill/postgres-backup-local](https://hub.docker.com/r/prodrigestivill/postgres-backup-local)
+### Production Services
 
-**Backups:** Database is backed up daily to `/var/opt/db_backups` with retention:
-- Daily backups: 7 days
-- Weekly backups: 4 weeks
-- Monthly backups: 6 months
+- **Website** - Node.js app on port 3000
+- **PostgreSQL** - Database
+- **pgAdmin** - Database management UI (port 5050)
+- **Watchtower** - Automatic container updates when new images are pushed
+- **Backups** - Daily automated backups via [prodrigestivill/postgres-backup-local](https://hub.docker.com/r/prodrigestivill/postgres-backup-local)
 
-For webhook configuration and automatic deployments, see [`production/webhooks/README.md`](../production/webhooks/README.md).
+**Backup retention** (`/var/opt/db_backups`):
+- Daily: 7 days
+- Weekly: 4 weeks
+- Monthly: 6 months
+
+### Useful Commands
+
+```bash
+cd /opt/matprat
+docker compose logs -f          # View logs
+docker compose restart          # Restart services
+docker compose pull && up -d    # Manual update
+docker compose down             # Stop services
+```
 
 ## 📝 API Endpoints
 
