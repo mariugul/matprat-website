@@ -16,13 +16,20 @@ services:
       DB_PORT: 5432
       SESSION_SECRET: ${SESSION_SECRET:-change-me-in-production}
     ports:
-      - "${WEB_PORT:-3000}:3000"
+      - "${LAN_IP:-127.0.0.1}:${WEB_PORT:-3000}:3000"
+    mem_limit: 256m
+    cpus: 0.5
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
-      interval: 5s
+      interval: 30s
       timeout: 10s
       retries: 3
-      start_period: 5s
+      start_period: 10s
 
   db:
     image: postgres:14-alpine
@@ -36,6 +43,13 @@ services:
       POSTGRES_USER: ${DB_USER:-nodejs}
       POSTGRES_DB: ${DB_NAME:-matprat}
       PGDATA: /var/lib/postgresql/data
+    mem_limit: 256m
+    cpus: 0.5
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
 
   db_backups:
     image: prodrigestivill/postgres-backup-local:14-alpine
@@ -57,6 +71,13 @@ services:
       BACKUP_KEEP_WEEKS: 4
       BACKUP_KEEP_MONTHS: 6
       HEALTHCHECK_PORT: 8000
+    mem_limit: 128m
+    cpus: 0.25
+    logging:
+      driver: json-file
+      options:
+        max-size: "5m"
+        max-file: "2"
 
   pgadmin:
     image: dpage/pgadmin4:latest
@@ -65,24 +86,37 @@ services:
     depends_on:
       - db
     ports:
-      - "${PGADMIN_PORT:-5050}:80"
+      - "${LAN_IP:-127.0.0.1}:${PGADMIN_PORT:-5050}:80"
     environment:
       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL:-admin@local.dev}
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:-admin}
       PGADMIN_LISTEN_PORT: 80
+    mem_limit: 256m
+    cpus: 0.25
+    logging:
+      driver: json-file
+      options:
+        max-size: "5m"
+        max-file: "2"
 
   watchtower:
     image: containrrr/watchtower
     restart: unless-stopped
     container_name: "matprat-watchtower"
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-    user: root
+      - ${DOCKER_SOCK:-/var/run/docker.sock}:/var/run/docker.sock
     environment:
       WATCHTOWER_CLEANUP: "true"
       WATCHTOWER_POLL_INTERVAL: 300
       WATCHTOWER_INCLUDE_STOPPED: "false"
     command: matprat-website
+    mem_limit: 64m
+    cpus: 0.1
+    logging:
+      driver: json-file
+      options:
+        max-size: "5m"
+        max-file: "2"
 
 volumes:
   matprat-data:
