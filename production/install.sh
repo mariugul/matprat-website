@@ -5,8 +5,7 @@ set -e
 # Usage: curl -fsSL https://raw.githubusercontent.com/mariugul/matprat-website/main/production/install.sh | bash
 
 INSTALL_DIR="${INSTALL_DIR:-/opt/matprat}"
-# TODO: Change back to 'main' after testing
-BRANCH="${BRANCH:-fix-prod}"
+BRANCH="${BRANCH:-main}"
 REPO_URL="https://raw.githubusercontent.com/mariugul/matprat-website/${BRANCH}/production"
 
 echo "========================================"
