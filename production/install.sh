@@ -81,6 +81,14 @@ if [ ! -f .env ]; then
     echo "   Generated session secret: ${SESSION_SECRET:0:16}..."
   fi
 
+  # Auto-detect Docker socket (rootless vs rootful)
+  if [ -S "${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/docker.sock" ]; then
+    DOCKER_SOCK="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/docker.sock"
+    echo "   Detected rootless Docker: $DOCKER_SOCK"
+  else
+    DOCKER_SOCK="/var/run/docker.sock"
+  fi
+
   # Write .env file (using printf to avoid heredoc issues when piped to bash)
   {
     printf '# Matprat Production Environment\n'
