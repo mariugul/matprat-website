@@ -114,11 +114,6 @@ fi
 # shellcheck disable=SC1091
 source .env
 
-# Create backup directory with correct permissions for postgres user (uid 70 in alpine)
-echo "📁 Creating backup directory..."
-sudo mkdir -p /var/opt/db_backups
-sudo chown -R 70:70 /var/opt/db_backups
-
 # Pull and start containers
 echo ""
 echo "🐳 Pulling Docker images..."

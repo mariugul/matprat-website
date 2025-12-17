@@ -57,7 +57,7 @@ services:
     container_name: "matprat-db-backup"
     user: postgres:postgres
     volumes:
-      - /var/opt/db_backups:/backups
+      - matprat-backups:/backups
     depends_on:
       - db
     environment:
@@ -110,7 +110,7 @@ services:
       WATCHTOWER_POLL_INTERVAL: 300
       WATCHTOWER_INCLUDE_STOPPED: "false"
     command: matprat-website
-    mem_limit: 64m
+    mem_limit: 128m
     cpus: 0.1
     logging:
       driver: json-file
@@ -120,3 +120,4 @@ services:
 
 volumes:
   matprat-data:
+  matprat-backups:
